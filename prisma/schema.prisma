@@ -1,0 +1,185 @@
+// H3 Network Media Platform - Database Schema
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User accounts and authentication
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          UserRole  @default(VIEWER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  progress    UserProgress[]
+  creator     Creator?
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Content creators
+model Creator {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  displayName String
+  bio         String?
+  avatarUrl   String?
+  showName    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videos Video[]
+  blogs  Blog[]
+}
+
+// Shows/Series
+model Show {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  thumbnailUrl String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  videos Video[]
+}
+
+// Video content
+model Video {
+  id           String      @id @default(cuid())
+  title        String
+  description  String?
+  youtubeId    String      @unique
+  youtubeUrl   String
+  thumbnailUrl String?
+  duration     Int?        // Duration in seconds
+  viewCount    Int         @default(0)
+  tags         String[]
+  topic        ContentTopic?
+  status       ContentStatus @default(DRAFT)
+  publishedAt  DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  creatorId String
+  showId    String?
+
+  creator  Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  show     Show?          @relation(fields: [showId], references: [id])
+  videoProgress UserProgress[] @relation("VideoProgress")
+}
+
+// Blog content
+model Blog {
+  id           String        @id @default(cuid())
+  title        String
+  content      String        @db.Text
+  excerpt      String?
+  featuredImage String?
+  viewCount    Int           @default(0)
+  tags         String[]
+  topic        ContentTopic?
+  status       ContentStatus @default(DRAFT)
+  publishedAt  DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  creatorId String
+  creator   Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  blogProgress UserProgress[] @relation("BlogProgress")
+}
+
+// User progress tracking
+model UserProgress {
+  id               String      @id @default(cuid())
+  userId           String
+  videoId          String?
+  blogId           String?
+  contentType      ContentType
+  progressSeconds  Int         @default(0) // For videos
+  completed        Boolean     @default(false)
+  lastWatched      DateTime    @default(now())
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video Video? @relation("VideoProgress", fields: [videoId], references: [id], onDelete: Cascade)
+  blog  Blog?  @relation("BlogProgress", fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+  @@unique([userId, blogId])
+}
+
+// Enums
+enum UserRole {
+  VIEWER
+  CREATOR
+  ADMIN
+}
+
+enum ContentStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ContentType {
+  VIDEO
+  BLOG
+}
+
+enum ContentTopic {
+  REENTRY
+  ADDICTION
+  INCARCERATION
+  CRIMINAL_JUSTICE_REFORM
+  GENERAL
+}
