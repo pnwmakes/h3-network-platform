@@ -38,12 +38,20 @@ export function NavBar() {
                                 </button>
                             </div>
                         ) : (
-                            <button
-                                onClick={() => signIn()}
-                                className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700'
-                            >
-                                Sign in
-                            </button>
+                            <div className='flex items-center space-x-2'>
+                                <Link
+                                    href='/auth/register'
+                                    className='text-sm text-gray-500 hover:text-gray-700 px-3 py-2'
+                                >
+                                    Create Account
+                                </Link>
+                                <button
+                                    onClick={() => signIn()}
+                                    className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700'
+                                >
+                                    Sign in
+                                </button>
+                            </div>
                         )}
                     </div>
                 </div>
