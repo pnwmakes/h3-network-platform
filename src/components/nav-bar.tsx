@@ -17,7 +17,7 @@ export function NavBar() {
                         >
                             H3 Network
                         </Link>
-                        
+
                         {/* Navigation Links */}
                         <div className='hidden md:flex items-center space-x-6'>
                             <Link

@@ -39,8 +39,12 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             name: 'credentials',
             credentials: {
-                email: { label: 'Email', type: 'email', placeholder: 'your@email.com' },
-                password: { label: 'Password', type: 'password' }
+                email: {
+                    label: 'Email',
+                    type: 'email',
+                    placeholder: 'your@email.com',
+                },
+                password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
                 if (!credentials?.email || !credentials?.password) {
@@ -50,7 +54,7 @@ export const authOptions: NextAuthOptions = {
                 try {
                     // Find user by email
                     const user = await prisma.user.findUnique({
-                        where: { email: credentials.email }
+                        where: { email: credentials.email },
                     });
 
                     if (!user || !user.password) {
@@ -58,8 +62,11 @@ export const authOptions: NextAuthOptions = {
                     }
 
                     // Verify password
-                    const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
-                    
+                    const isPasswordValid = await bcrypt.compare(
+                        credentials.password,
+                        user.password
+                    );
+
                     if (!isPasswordValid) {
                         return null;
                     }
@@ -76,7 +83,7 @@ export const authOptions: NextAuthOptions = {
                     console.error('Error during authentication:', error);
                     return null;
                 }
-            }
+            },
         }),
     ],
     session: {

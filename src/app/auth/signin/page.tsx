@@ -74,54 +74,63 @@ export default function SignIn() {
                 </div>
 
                 {message && (
-                    <div className="bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded">
+                    <div className='bg-green-50 border border-green-300 text-green-700 px-4 py-3 rounded'>
                         {message}
                     </div>
                 )}
 
                 <div className='mt-8 space-y-6'>
                     {/* Email/Password Form */}
-                    <form className='space-y-4' onSubmit={handleCredentialsSignIn}>
+                    <form
+                        className='space-y-4'
+                        onSubmit={handleCredentialsSignIn}
+                    >
                         {error && (
-                            <div className="bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded">
+                            <div className='bg-red-50 border border-red-300 text-red-700 px-4 py-3 rounded'>
                                 {error}
                             </div>
                         )}
-                        
+
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            <label
+                                htmlFor='email'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Email Address
                             </label>
                             <input
-                                id="email"
-                                name="email"
-                                type="email"
+                                id='email'
+                                name='email'
+                                type='email'
                                 required
-                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="your@email.com"
+                                className='mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm'
+                                placeholder='your@email.com'
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
-                        
+
                         <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            <label
+                                htmlFor='password'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Password
                             </label>
                             <input
-                                id="password"
-                                name="password"
-                                type="password"
+                                id='password'
+                                name='password'
+                                type='password'
                                 required
-                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                                placeholder="Your password"
+                                className='mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm'
+                                placeholder='Your password'
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                         </div>
 
                         <button
-                            type="submit"
+                            type='submit'
                             disabled={isLoadingCredentials}
                             className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed'
                         >
@@ -130,12 +139,14 @@ export default function SignIn() {
                     </form>
 
                     {/* Divider */}
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-300" />
+                    <div className='relative'>
+                        <div className='absolute inset-0 flex items-center'>
+                            <div className='w-full border-t border-gray-300' />
                         </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-gray-50 text-gray-500">Or continue with</span>
+                        <div className='relative flex justify-center text-sm'>
+                            <span className='px-2 bg-gray-50 text-gray-500'>
+                                Or continue with
+                            </span>
                         </div>
                     </div>
 
@@ -176,10 +187,13 @@ export default function SignIn() {
                     </button>
 
                     {/* Register Link */}
-                    <div className="text-center">
-                        <span className="text-sm text-gray-600">
+                    <div className='text-center'>
+                        <span className='text-sm text-gray-600'>
                             Don&apos;t have an account?{' '}
-                            <Link href="/auth/register" className="font-medium text-blue-600 hover:text-blue-500">
+                            <Link
+                                href='/auth/register'
+                                className='font-medium text-blue-600 hover:text-blue-500'
+                            >
                                 Create account
                             </Link>
                         </span>
