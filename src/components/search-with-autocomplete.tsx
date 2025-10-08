@@ -53,27 +53,31 @@ const SORT_OPTIONS = [
     { value: 'duration', label: 'Shortest First' },
 ];
 
-export function SearchWithAutocomplete({ 
-    onSearch, 
-    placeholder = 'Search videos, creators, and content...', 
+export function SearchWithAutocomplete({
+    onSearch,
+    placeholder = 'Search videos, creators, and content...',
     showFilters = true,
-    compact = false 
+    compact = false,
 }: SearchWithAutocompleteProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [query, setQuery] = useState(searchParams.get('q') || '');
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    const [suggestions, setSuggestions] = useState<SuggestionsResponse | null>(null);
+    const [suggestions, setSuggestions] = useState<SuggestionsResponse | null>(
+        null
+    );
     const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
     const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
-    
+
     const [filters, setFilters] = useState<SearchFilters>({
         type: (searchParams.get('type') as SearchFilters['type']) || 'all',
         topic: searchParams.get('topic') || '',
         creator: searchParams.get('creator') || '',
         tags: searchParams.get('tags') || '',
-        sortBy: (searchParams.get('sortBy') as SearchFilters['sortBy']) || 'relevance',
+        sortBy:
+            (searchParams.get('sortBy') as SearchFilters['sortBy']) ||
+            'relevance',
     });
 
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -89,9 +93,13 @@ export function SearchWithAutocomplete({
         }
 
         setIsLoadingSuggestions(true);
-        
+
         try {
-            const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(searchQuery)}&limit=8`);
+            const response = await fetch(
+                `/api/search/suggestions?q=${encodeURIComponent(
+                    searchQuery
+                )}&limit=8`
+            );
             if (response.ok) {
                 const data = await response.json();
                 setSuggestions(data);
@@ -104,7 +112,10 @@ export function SearchWithAutocomplete({
     };
 
     // Handle search submission
-    const handleSearch = (searchQuery?: string, searchFilters?: SearchFilters) => {
+    const handleSearch = (
+        searchQuery?: string,
+        searchFilters?: SearchFilters
+    ) => {
         const finalQuery = searchQuery ?? query;
         const finalFilters = searchFilters ?? filters;
 
@@ -129,12 +140,13 @@ export function SearchWithAutocomplete({
         // Otherwise, navigate to search results page
         const params = new URLSearchParams();
         params.set('q', finalQuery);
-        
+
         if (finalFilters.type !== 'all') params.set('type', finalFilters.type);
         if (finalFilters.topic) params.set('topic', finalFilters.topic);
         if (finalFilters.creator) params.set('creator', finalFilters.creator);
         if (finalFilters.tags) params.set('tags', finalFilters.tags);
-        if (finalFilters.sortBy !== 'relevance') params.set('sortBy', finalFilters.sortBy);
+        if (finalFilters.sortBy !== 'relevance')
+            params.set('sortBy', finalFilters.sortBy);
 
         router.push(`/search?${params.toString()}`);
     };
@@ -143,7 +155,7 @@ export function SearchWithAutocomplete({
     const handleInputChange = (value: string) => {
         setQuery(value);
         setSelectedSuggestionIndex(-1);
-        
+
         if (searchTimeoutRef.current) {
             clearTimeout(searchTimeoutRef.current);
         }
@@ -170,24 +182,27 @@ export function SearchWithAutocomplete({
             ...suggestions.quickSearches,
             ...suggestions.videos,
             ...suggestions.creators,
-            ...suggestions.tags
+            ...suggestions.tags,
         ];
 
         switch (e.key) {
             case 'ArrowDown':
                 e.preventDefault();
-                setSelectedSuggestionIndex(prev => 
+                setSelectedSuggestionIndex((prev) =>
                     prev < allSuggestions.length - 1 ? prev + 1 : prev
                 );
                 break;
             case 'ArrowUp':
                 e.preventDefault();
-                setSelectedSuggestionIndex(prev => prev > -1 ? prev - 1 : -1);
+                setSelectedSuggestionIndex((prev) =>
+                    prev > -1 ? prev - 1 : -1
+                );
                 break;
             case 'Enter':
                 e.preventDefault();
                 if (selectedSuggestionIndex >= 0) {
-                    const selectedSuggestion = allSuggestions[selectedSuggestionIndex];
+                    const selectedSuggestion =
+                        allSuggestions[selectedSuggestionIndex];
                     router.push(selectedSuggestion.url);
                 } else {
                     handleSearch();
@@ -204,7 +219,9 @@ export function SearchWithAutocomplete({
     // Handle suggestion click
     const handleSuggestionClick = (suggestion: Suggestion) => {
         if (suggestion.type === 'search') {
-            handleSearch(suggestion.title.replace('Search for "', '').replace('"', ''));
+            handleSearch(
+                suggestion.title.replace('Search for "', '').replace('"', '')
+            );
         } else {
             router.push(suggestion.url);
         }
@@ -214,21 +231,25 @@ export function SearchWithAutocomplete({
     // Close suggestions when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (suggestionsRef.current && !suggestionsRef.current.contains(event.target as Node)) {
+            if (
+                suggestionsRef.current &&
+                !suggestionsRef.current.contains(event.target as Node)
+            ) {
                 setShowSuggestions(false);
                 setSelectedSuggestionIndex(-1);
             }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     // Handle filter changes
     const updateFilter = (key: keyof SearchFilters, value: string) => {
         const newFilters = { ...filters, [key]: value };
         setFilters(newFilters);
-        
+
         if (query.trim().length >= 1) {
             handleSearch(query, newFilters);
         }
@@ -244,30 +265,40 @@ export function SearchWithAutocomplete({
             sortBy: 'relevance',
         };
         setFilters(defaultFilters);
-        
+
         if (query.trim().length >= 1) {
             handleSearch(query, defaultFilters);
         }
     };
 
     // Check if any filters are active
-    const hasActiveFilters = filters.type !== 'all' || filters.topic || filters.creator || filters.tags || filters.sortBy !== 'relevance';
+    const hasActiveFilters =
+        filters.type !== 'all' ||
+        filters.topic ||
+        filters.creator ||
+        filters.tags ||
+        filters.sortBy !== 'relevance';
 
     // Get icon for suggestion type
     const getSuggestionIcon = (type: string) => {
         switch (type) {
-            case 'video': return <Play className='h-4 w-4 text-red-500' />;
-            case 'creator': return <User className='h-4 w-4 text-blue-500' />;
-            case 'tag': return <Hash className='h-4 w-4 text-green-500' />;
-            case 'search': return <Search className='h-4 w-4 text-gray-500' />;
-            default: return <Search className='h-4 w-4 text-gray-500' />;
+            case 'video':
+                return <Play className='h-4 w-4 text-red-500' />;
+            case 'creator':
+                return <User className='h-4 w-4 text-blue-500' />;
+            case 'tag':
+                return <Hash className='h-4 w-4 text-green-500' />;
+            case 'search':
+                return <Search className='h-4 w-4 text-gray-500' />;
+            default:
+                return <Search className='h-4 w-4 text-gray-500' />;
         }
     };
 
     // Render suggestion item
     const renderSuggestion = (suggestion: Suggestion, index: number) => {
         const isSelected = index === selectedSuggestionIndex;
-        
+
         return (
             <button
                 key={`${suggestion.type}-${suggestion.id}`}
@@ -318,7 +349,10 @@ export function SearchWithAutocomplete({
     };
 
     return (
-        <div className={`w-full ${compact ? 'max-w-md' : 'max-w-4xl'} relative`} ref={suggestionsRef}>
+        <div
+            className={`w-full ${compact ? 'max-w-md' : 'max-w-4xl'} relative`}
+            ref={suggestionsRef}
+        >
             {/* Main Search Bar */}
             <div className='relative'>
                 <div className='relative'>
@@ -365,8 +399,9 @@ export function SearchWithAutocomplete({
                     ) : suggestions ? (
                         <div>
                             {/* Quick Search */}
-                            {suggestions.quickSearches.map((suggestion, index) => 
-                                renderSuggestion(suggestion, index)
+                            {suggestions.quickSearches.map(
+                                (suggestion, index) =>
+                                    renderSuggestion(suggestion, index)
                             )}
 
                             {/* Videos */}
@@ -375,8 +410,13 @@ export function SearchWithAutocomplete({
                                     <div className='px-4 py-2 bg-gray-50 text-xs font-medium text-gray-700 uppercase tracking-wide'>
                                         Videos
                                     </div>
-                                    {suggestions.videos.map((suggestion, index) => 
-                                        renderSuggestion(suggestion, suggestions.quickSearches.length + index)
+                                    {suggestions.videos.map(
+                                        (suggestion, index) =>
+                                            renderSuggestion(
+                                                suggestion,
+                                                suggestions.quickSearches
+                                                    .length + index
+                                            )
                                     )}
                                 </div>
                             )}
@@ -387,8 +427,15 @@ export function SearchWithAutocomplete({
                                     <div className='px-4 py-2 bg-gray-50 text-xs font-medium text-gray-700 uppercase tracking-wide'>
                                         Creators
                                     </div>
-                                    {suggestions.creators.map((suggestion, index) => 
-                                        renderSuggestion(suggestion, suggestions.quickSearches.length + suggestions.videos.length + index)
+                                    {suggestions.creators.map(
+                                        (suggestion, index) =>
+                                            renderSuggestion(
+                                                suggestion,
+                                                suggestions.quickSearches
+                                                    .length +
+                                                    suggestions.videos.length +
+                                                    index
+                                            )
                                     )}
                                 </div>
                             )}
@@ -399,8 +446,14 @@ export function SearchWithAutocomplete({
                                     <div className='px-4 py-2 bg-gray-50 text-xs font-medium text-gray-700 uppercase tracking-wide'>
                                         Tags
                                     </div>
-                                    {suggestions.tags.map((suggestion, index) => 
-                                        renderSuggestion(suggestion, suggestions.quickSearches.length + suggestions.videos.length + suggestions.creators.length + index)
+                                    {suggestions.tags.map((suggestion, index) =>
+                                        renderSuggestion(
+                                            suggestion,
+                                            suggestions.quickSearches.length +
+                                                suggestions.videos.length +
+                                                suggestions.creators.length +
+                                                index
+                                        )
                                     )}
                                 </div>
                             )}
@@ -417,7 +470,9 @@ export function SearchWithAutocomplete({
             {!compact && showFilters && showAdvanced && (
                 <div className='mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200'>
                     <div className='flex items-center justify-between mb-4'>
-                        <h3 className='text-sm font-medium text-gray-900'>Advanced Filters</h3>
+                        <h3 className='text-sm font-medium text-gray-900'>
+                            Advanced Filters
+                        </h3>
                         {hasActiveFilters && (
                             <button
                                 onClick={clearFilters}
@@ -437,7 +492,9 @@ export function SearchWithAutocomplete({
                             </label>
                             <select
                                 value={filters.type}
-                                onChange={(e) => updateFilter('type', e.target.value)}
+                                onChange={(e) =>
+                                    updateFilter('type', e.target.value)
+                                }
                                 className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                             >
                                 <option value='all'>All Content</option>
@@ -454,12 +511,17 @@ export function SearchWithAutocomplete({
                             </label>
                             <select
                                 value={filters.topic}
-                                onChange={(e) => updateFilter('topic', e.target.value)}
+                                onChange={(e) =>
+                                    updateFilter('topic', e.target.value)
+                                }
                                 className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                             >
                                 <option value=''>All Topics</option>
-                                {TOPIC_OPTIONS.map(option => (
-                                    <option key={option.value} value={option.value}>
+                                {TOPIC_OPTIONS.map((option) => (
+                                    <option
+                                        key={option.value}
+                                        value={option.value}
+                                    >
                                         {option.label}
                                     </option>
                                 ))}
@@ -474,7 +536,9 @@ export function SearchWithAutocomplete({
                             <input
                                 type='text'
                                 value={filters.creator}
-                                onChange={(e) => updateFilter('creator', e.target.value)}
+                                onChange={(e) =>
+                                    updateFilter('creator', e.target.value)
+                                }
                                 placeholder='Search by creator...'
                                 className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                             />
@@ -487,11 +551,16 @@ export function SearchWithAutocomplete({
                             </label>
                             <select
                                 value={filters.sortBy}
-                                onChange={(e) => updateFilter('sortBy', e.target.value)}
+                                onChange={(e) =>
+                                    updateFilter('sortBy', e.target.value)
+                                }
                                 className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                             >
-                                {SORT_OPTIONS.map(option => (
-                                    <option key={option.value} value={option.value}>
+                                {SORT_OPTIONS.map((option) => (
+                                    <option
+                                        key={option.value}
+                                        value={option.value}
+                                    >
                                         {option.label}
                                     </option>
                                 ))}
@@ -507,7 +576,9 @@ export function SearchWithAutocomplete({
                         <input
                             type='text'
                             value={filters.tags}
-                            onChange={(e) => updateFilter('tags', e.target.value)}
+                            onChange={(e) =>
+                                updateFilter('tags', e.target.value)
+                            }
                             placeholder='e.g. recovery, education, support'
                             className='w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                         />
@@ -531,7 +602,12 @@ export function SearchWithAutocomplete({
                     )}
                     {filters.topic && (
                         <span className='inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs'>
-                            Topic: {TOPIC_OPTIONS.find(t => t.value === filters.topic)?.label}
+                            Topic:{' '}
+                            {
+                                TOPIC_OPTIONS.find(
+                                    (t) => t.value === filters.topic
+                                )?.label
+                            }
                             <button
                                 onClick={() => updateFilter('topic', '')}
                                 className='text-blue-600 hover:text-blue-800'
@@ -553,9 +629,16 @@ export function SearchWithAutocomplete({
                     )}
                     {filters.sortBy !== 'relevance' && (
                         <span className='inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs'>
-                            Sort: {SORT_OPTIONS.find(s => s.value === filters.sortBy)?.label}
+                            Sort:{' '}
+                            {
+                                SORT_OPTIONS.find(
+                                    (s) => s.value === filters.sortBy
+                                )?.label
+                            }
                             <button
-                                onClick={() => updateFilter('sortBy', 'relevance')}
+                                onClick={() =>
+                                    updateFilter('sortBy', 'relevance')
+                                }
                                 className='text-blue-600 hover:text-blue-800'
                             >
                                 <X className='h-3 w-3' />

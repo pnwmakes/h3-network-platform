@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: 'H3 Network Media Platform',
+    title: 'H3 Network - Hope, Help, Humor',
     description:
-        'Supporting creators in criminal justice reform, addiction recovery, and reentry support',
+        'A community for justice-impacted people and those who work within criminal justice. Find Hope, Help, and Humor through content covering addiction recovery, reentry support, and criminal justice reform.',
 };
 
 export default function RootLayout({

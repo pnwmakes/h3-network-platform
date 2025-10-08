@@ -24,10 +24,16 @@ export default function AuthError() {
         <div className='min-h-screen flex items-center justify-center bg-gray-50'>
             <div className='max-w-md w-full space-y-8'>
                 <div className='text-center'>
-                    <h2 className='mt-6 text-3xl font-extrabold text-gray-900'>
-                        Authentication Error
+                    <h2 className='text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight'>
+                        H3 NETWORK
                     </h2>
-                    <p className='mt-2 text-sm text-red-600'>
+                    <div className='inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-lg font-bold mb-6'>
+                        Hope • Help • Humor
+                    </div>
+                    <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                        Authentication Error
+                    </h3>
+                    <p className='text-lg text-red-600 leading-relaxed'>
                         {getErrorMessage(error)}
                     </p>
                 </div>

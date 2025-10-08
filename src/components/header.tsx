@@ -26,16 +26,19 @@ export function Header() {
     };
 
     return (
-        <header className='bg-white shadow-sm border-b border-gray-200'>
+        <header className='bg-white shadow-lg border-b border-gray-200'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                 <div className='flex justify-between items-center h-16'>
                     {/* Logo */}
-                    <div className='flex-shrink-0'>
+                    <div className='flex items-center space-x-4'>
                         <Link href='/' className='flex items-center'>
-                            <div className='text-2xl font-bold text-blue-600'>
-                                H3 Network
+                            <div className='text-2xl font-black text-gray-900 hover:text-blue-600 transition-colors duration-200'>
+                                H3 NETWORK
                             </div>
                         </Link>
+                        <div className='hidden md:block text-sm text-gray-500 border-l border-gray-200 pl-4'>
+                            Hope • Help • Humor
+                        </div>
                     </div>
 
                     {/* Desktop Navigation */}
@@ -57,21 +60,23 @@ export function Header() {
 
                     {/* Search Bar - Desktop */}
                     <div className='hidden lg:flex flex-1 max-w-lg mx-8'>
-                        <SearchWithAutocomplete 
+                        <SearchWithAutocomplete
                             placeholder='Search...'
                             showFilters={false}
                             compact={true}
                         />
-                    </div>                    {/* User Menu */}
+                    </div>
+
+                    {/* User Menu */}
                     <div className='hidden md:flex items-center space-x-4'>
                         {session ? (
                             <div className='flex items-center space-x-4'>
-                                <span className='text-sm text-gray-700'>
+                                <span className='text-sm font-medium text-gray-700'>
                                     Welcome, {session.user?.name}
                                 </span>
                                 <button
                                     onClick={() => signOut()}
-                                    className='text-sm text-gray-700 hover:text-blue-600 transition-colors'
+                                    className='text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors duration-200'
                                 >
                                     Sign Out
                                 </button>
@@ -80,15 +85,15 @@ export function Header() {
                             <div className='flex items-center space-x-4'>
                                 <Link
                                     href='/auth/signin'
-                                    className='text-sm text-gray-700 hover:text-blue-600 transition-colors'
+                                    className='text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors duration-200'
                                 >
                                     Sign In
                                 </Link>
                                 <Link
                                     href='/auth/register'
-                                    className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors'
+                                    className='bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200'
                                 >
-                                    Get Started
+                                    Join Our Community
                                 </Link>
                             </div>
                         )}
@@ -100,7 +105,7 @@ export function Header() {
                             onClick={() =>
                                 setIsMobileMenuOpen(!isMobileMenuOpen)
                             }
-                            className='text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600'
+                            className='text-gray-700 hover:text-blue-600 focus:outline-none focus:text-blue-600 transition-colors duration-200'
                         >
                             <svg
                                 className='h-6 w-6'
@@ -130,6 +135,10 @@ export function Header() {
                 {/* Mobile Navigation Menu */}
                 {isMobileMenuOpen && (
                     <div className='md:hidden border-t border-gray-200 py-4'>
+                        <div className='text-center text-xs text-gray-500 mb-4'>
+                            Hope • Help • Humor
+                        </div>
+
                         <div className='space-y-2'>
                             {navigation.map((item) => (
                                 <Link
@@ -151,7 +160,7 @@ export function Header() {
                         <div className='mt-4 pt-4 border-t border-gray-200'>
                             {session ? (
                                 <div className='space-y-2'>
-                                    <div className='px-3 py-2 text-sm text-gray-700'>
+                                    <div className='px-3 py-2 text-sm font-medium text-gray-700'>
                                         Welcome, {session.user?.name}
                                     </div>
                                     <button
@@ -159,7 +168,7 @@ export function Header() {
                                             signOut();
                                             setIsMobileMenuOpen(false);
                                         }}
-                                        className='block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                                        className='block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'
                                     >
                                         Sign Out
                                     </button>
@@ -171,7 +180,7 @@ export function Header() {
                                         onClick={() =>
                                             setIsMobileMenuOpen(false)
                                         }
-                                        className='block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                                        className='block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'
                                     >
                                         Sign In
                                     </Link>
@@ -180,9 +189,9 @@ export function Header() {
                                         onClick={() =>
                                             setIsMobileMenuOpen(false)
                                         }
-                                        className='block mx-3 my-2 bg-blue-600 text-white px-4 py-2 rounded-md text-base font-medium hover:bg-blue-700 text-center'
+                                        className='block mx-3 my-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-blue-700 text-center transition-colors duration-200'
                                     >
-                                        Get Started
+                                        Join Our Community
                                     </Link>
                                 </div>
                             )}

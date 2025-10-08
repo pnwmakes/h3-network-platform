@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const params = Object.fromEntries(searchParams.entries());
-        
+
         const { q, limit } = suggestionsSchema.parse(params);
 
         const query = q.toLowerCase().trim();
@@ -22,8 +22,8 @@ export async function GET(request: NextRequest) {
                 status: 'PUBLISHED',
                 title: {
                     contains: query,
-                    mode: 'insensitive'
-                }
+                    mode: 'insensitive',
+                },
             },
             select: {
                 id: true,
@@ -32,14 +32,14 @@ export async function GET(request: NextRequest) {
                 viewCount: true,
                 creator: {
                     select: {
-                        displayName: true
-                    }
-                }
+                        displayName: true,
+                    },
+                },
             },
             orderBy: {
-                viewCount: 'desc'
+                viewCount: 'desc',
             },
-            take: Math.ceil(limit * 0.6) // 60% for videos
+            take: Math.ceil(limit * 0.6), // 60% for videos
         });
 
         // Get creator suggestions
@@ -47,8 +47,8 @@ export async function GET(request: NextRequest) {
             where: {
                 displayName: {
                     contains: query,
-                    mode: 'insensitive'
-                }
+                    mode: 'insensitive',
+                },
             },
             select: {
                 id: true,
@@ -58,18 +58,18 @@ export async function GET(request: NextRequest) {
                     select: {
                         videos: {
                             where: {
-                                status: 'PUBLISHED'
-                            }
-                        }
-                    }
-                }
+                                status: 'PUBLISHED',
+                            },
+                        },
+                    },
+                },
             },
             orderBy: {
                 videos: {
-                    _count: 'desc'
-                }
+                    _count: 'desc',
+                },
             },
-            take: Math.ceil(limit * 0.3) // 30% for creators
+            take: Math.ceil(limit * 0.3), // 30% for creators
         });
 
         // Get popular tags that match query
@@ -77,19 +77,19 @@ export async function GET(request: NextRequest) {
             where: {
                 status: 'PUBLISHED',
                 tags: {
-                    hasSome: await getMatchingTags(query)
-                }
+                    hasSome: await getMatchingTags(query),
+                },
             },
             select: {
-                tags: true
+                tags: true,
             },
-            take: 50
+            take: 50,
         });
 
         // Process tags to find matches and count frequency
         const tagFrequency: { [key: string]: number } = {};
-        tagSuggestions.forEach(video => {
-            video.tags.forEach(tag => {
+        tagSuggestions.forEach((video) => {
+            video.tags.forEach((tag) => {
                 if (tag.toLowerCase().includes(query)) {
                     tagFrequency[tag] = (tagFrequency[tag] || 0) + 1;
                 }
@@ -104,28 +104,32 @@ export async function GET(request: NextRequest) {
         // Format response
         const suggestions = {
             query: q,
-            videos: videoSuggestions.map(video => ({
+            videos: videoSuggestions.map((video) => ({
                 id: video.id,
                 title: video.title,
                 type: 'video' as const,
                 thumbnailUrl: video.thumbnailUrl,
                 subtitle: `by ${video.creator.displayName} • ${video.viewCount} views`,
-                url: `/videos/${video.id}`
+                url: `/videos/${video.id}`,
             })),
-            creators: creatorSuggestions.map(creator => ({
+            creators: creatorSuggestions.map((creator) => ({
                 id: creator.id,
                 title: creator.displayName,
                 type: 'creator' as const,
                 avatarUrl: creator.avatarUrl,
-                subtitle: `${creator._count.videos} video${creator._count.videos !== 1 ? 's' : ''}`,
-                url: `/search?creator=${encodeURIComponent(creator.displayName)}`
+                subtitle: `${creator._count.videos} video${
+                    creator._count.videos !== 1 ? 's' : ''
+                }`,
+                url: `/search?creator=${encodeURIComponent(
+                    creator.displayName
+                )}`,
             })),
             tags: popularTags.map(({ tag, count }) => ({
                 id: tag,
                 title: `#${tag}`,
                 type: 'tag' as const,
                 subtitle: `${count} video${count !== 1 ? 's' : ''}`,
-                url: `/search?tags=${encodeURIComponent(tag)}`
+                url: `/search?tags=${encodeURIComponent(tag)}`,
             })),
             quickSearches: [
                 {
@@ -133,16 +137,15 @@ export async function GET(request: NextRequest) {
                     title: `Search for "${q}"`,
                     type: 'search' as const,
                     subtitle: 'See all results',
-                    url: `/search?q=${encodeURIComponent(q)}`
-                }
-            ]
+                    url: `/search?q=${encodeURIComponent(q)}`,
+                },
+            ],
         };
 
         return NextResponse.json(suggestions);
-
     } catch (error) {
         console.error('Suggestions error:', error);
-        
+
         if (error instanceof z.ZodError) {
             return NextResponse.json(
                 { error: 'Invalid parameters', details: error.issues },
@@ -163,18 +166,18 @@ async function getMatchingTags(query: string): Promise<string[]> {
         where: {
             status: 'PUBLISHED',
             tags: {
-                isEmpty: false
-            }
+                isEmpty: false,
+            },
         },
         select: {
-            tags: true
+            tags: true,
         },
-        take: 200
+        take: 200,
     });
 
     const uniqueTags = new Set<string>();
-    allTags.forEach(video => {
-        video.tags.forEach(tag => {
+    allTags.forEach((video) => {
+        video.tags.forEach((tag) => {
             if (tag.toLowerCase().includes(query.toLowerCase())) {
                 uniqueTags.add(tag);
             }
