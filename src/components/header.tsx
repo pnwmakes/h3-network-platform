@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { SearchWithAutocomplete } from './search-with-autocomplete';
 
 export function Header() {
     const { data: session } = useSession();
@@ -13,6 +14,7 @@ export function Header() {
     const navigation = [
         { name: 'Home', href: '/' },
         { name: 'Videos', href: '/videos' },
+        { name: 'Search', href: '/search' },
         { name: 'Blog', href: '/blog' },
     ];
 
@@ -53,7 +55,14 @@ export function Header() {
                         ))}
                     </nav>
 
-                    {/* User Menu */}
+                    {/* Search Bar - Desktop */}
+                    <div className='hidden lg:flex flex-1 max-w-lg mx-8'>
+                        <SearchWithAutocomplete 
+                            placeholder='Search...'
+                            showFilters={false}
+                            compact={true}
+                        />
+                    </div>                    {/* User Menu */}
                     <div className='hidden md:flex items-center space-x-4'>
                         {session ? (
                             <div className='flex items-center space-x-4'>

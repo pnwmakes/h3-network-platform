@@ -63,18 +63,19 @@ function formatDuration(seconds: number): string {
 }
 
 export default async function VideoPage({ params }: VideoPageProps) {
-    const video = await getVideo(params.id);
+    const { id } = await params;
+    const video = await getVideo(id);
 
     if (!video) {
         notFound();
     }
 
     const session = await getServerSession(authOptions);
-    const relatedVideos = await getRelatedVideos(video.id, video.creatorId);
+    const relatedVideos = await getRelatedVideos(id, video.creatorId);
 
     let userProgress = null;
     if (session?.user) {
-        userProgress = await getUserProgress(session.user.id, video.id);
+        userProgress = await getUserProgress(session.user.id, id);
     }
 
     const progressPercentage =
