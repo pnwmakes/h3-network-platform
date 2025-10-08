@@ -52,6 +52,7 @@ model User {
   accounts    Account[]
   sessions    Session[]
   progress    UserProgress[]
+  savedContent SavedContent[]
   creator     Creator?
 }
 
@@ -116,6 +117,7 @@ model Video {
   creator  Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   show     Show?          @relation(fields: [showId], references: [id])
   videoProgress UserProgress[] @relation("VideoProgress")
+  savedBy  SavedContent[] @relation("SavedVideos")
 }
 
 // Blog content
@@ -137,6 +139,7 @@ model Blog {
   creator   Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 
   blogProgress UserProgress[] @relation("BlogProgress")
+  savedBy     SavedContent[] @relation("SavedBlogs")
 }
 
 // User progress tracking
@@ -153,6 +156,22 @@ model UserProgress {
   user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   video Video? @relation("VideoProgress", fields: [videoId], references: [id], onDelete: Cascade)
   blog  Blog?  @relation("BlogProgress", fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoId])
+  @@unique([userId, blogId])
+}
+
+// Saved content
+model SavedContent {
+  id        String   @id @default(cuid())
+  userId    String
+  videoId   String?
+  blogId    String?
+  savedAt   DateTime @default(now())
+
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video Video? @relation("SavedVideos", fields: [videoId], references: [id], onDelete: Cascade)
+  blog  Blog?  @relation("SavedBlogs", fields: [blogId], references: [id], onDelete: Cascade)
 
   @@unique([userId, videoId])
   @@unique([userId, blogId])
