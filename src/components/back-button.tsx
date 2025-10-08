@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 interface BackButtonProps {
     href?: string;
@@ -45,13 +44,6 @@ export function BackButton({
                 </svg>
                 {label}
             </button>
-            {/* Also provide a direct link as fallback */}
-            <Link
-                href={href}
-                className='ml-4 text-sm text-gray-400 hover:text-blue-600 transition-colors duration-200'
-            >
-                or go to Videos page
-            </Link>
         </div>
     );
 }
