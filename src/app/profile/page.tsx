@@ -1,7 +1,8 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import {
     User,
     History,
@@ -21,7 +22,21 @@ type TabType = 'overview' | 'history' | 'saved' | 'settings' | 'privacy';
 
 export default function ProfilePage() {
     const { data: session, status } = useSession();
+    const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState<TabType>('overview');
+
+    // Handle URL tab parameter
+    useEffect(() => {
+        const tab = searchParams.get('tab') as TabType;
+        if (
+            tab &&
+            ['overview', 'history', 'saved', 'settings', 'privacy'].includes(
+                tab
+            )
+        ) {
+            setActiveTab(tab);
+        }
+    }, [searchParams]);
 
     if (status === 'loading') {
         return (

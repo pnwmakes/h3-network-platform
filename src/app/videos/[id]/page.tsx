@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { VideoPlayer } from '@/components/video-player';
 import { BackButton } from '@/components/back-button';
+import { SaveButton } from '@/components/save-button';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -145,21 +146,30 @@ export default async function VideoPage({ params }: VideoPageProps) {
                                     </div>
                                 </div>
 
-                                <div className='flex items-center space-x-4 text-sm text-gray-600'>
-                                    <span>{video.viewCount} views</span>
-                                    {video.duration && (
-                                        <span>
-                                            {formatDuration(video.duration)}
-                                        </span>
-                                    )}
-                                    {video.publishedAt && (
-                                        <span>
-                                            {formatDistanceToNow(
-                                                new Date(video.publishedAt),
-                                                { addSuffix: true }
-                                            )}
-                                        </span>
-                                    )}
+                                <div className='flex items-center space-x-4'>
+                                    {/* Save Button */}
+                                    <SaveButton
+                                        videoId={video.id}
+                                        showText={true}
+                                    />
+
+                                    {/* Video Stats */}
+                                    <div className='flex items-center space-x-4 text-sm text-gray-600'>
+                                        <span>{video.viewCount} views</span>
+                                        {video.duration && (
+                                            <span>
+                                                {formatDuration(video.duration)}
+                                            </span>
+                                        )}
+                                        {video.publishedAt && (
+                                            <span>
+                                                {formatDistanceToNow(
+                                                    new Date(video.publishedAt),
+                                                    { addSuffix: true }
+                                                )}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 

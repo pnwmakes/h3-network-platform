@@ -11,6 +11,22 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('🌱 Starting database seed...');
 
+    // Create sample test viewer
+    const viewerPassword = await bcrypt.hash('password123', 12);
+
+    const testViewer = await prisma.user.upsert({
+        where: { email: 'test@h3network.org' },
+        update: {},
+        create: {
+            email: 'test@h3network.org',
+            name: 'Test Viewer',
+            password: viewerPassword,
+            role: UserRole.VIEWER,
+        },
+    });
+
+    console.log('✅ Created test viewer:', testViewer.email);
+
     // Create sample creators
     const creatorPassword = await bcrypt.hash('creator123', 12);
 
@@ -243,10 +259,16 @@ Remember: Recovery is not linear, and every person's journey is different. What 
 
     console.log('✅ Database seeded successfully!');
     console.log(`Created:`);
+    console.log(`- 1 test viewer (test@h3network.org / password123)`);
     console.log(`- 2 creators`);
     console.log(`- 2 shows`);
     console.log(`- ${videos.length} videos`);
     console.log(`- ${blogPosts.length} blog posts`);
+    console.log('');
+    console.log('🧪 To test saved content:');
+    console.log('1. Sign in with test@h3network.org / password123');
+    console.log('2. Go to /videos and save some videos');
+    console.log('3. Check /profile?tab=saved to see saved content');
 }
 
 main()

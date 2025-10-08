@@ -3,6 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PreviewNotice } from '@/components/preview-notice';
+import { SaveButton } from '@/components/save-button';
 
 async function getVideos() {
     return await prisma.video.findMany({
@@ -49,33 +50,52 @@ export default async function VideosPage() {
 
                 <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
                     {videos.map((video) => (
-                        <Link
+                        <div
                             key={video.id}
-                            href={`/videos/${video.id}`}
-                            className='group block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300'
+                            className='group bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300'
                         >
-                            <div className='relative aspect-video rounded-t-lg overflow-hidden'>
-                                <Image
-                                    src={
-                                        video.thumbnailUrl ||
-                                        '/placeholder-video.svg'
-                                    }
-                                    alt={video.title}
-                                    fill
-                                    className='object-cover group-hover:scale-105 transition-transform duration-300'
-                                    sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
-                                />
-                                {video.duration && (
-                                    <div className='absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded'>
-                                        {formatDuration(video.duration)}
-                                    </div>
-                                )}
-                            </div>
+                            <Link
+                                href={`/videos/${video.id}`}
+                                className='block'
+                            >
+                                <div className='relative aspect-video rounded-t-lg overflow-hidden'>
+                                    <Image
+                                        src={
+                                            video.thumbnailUrl ||
+                                            '/placeholder-video.svg'
+                                        }
+                                        alt={video.title}
+                                        fill
+                                        className='object-cover group-hover:scale-105 transition-transform duration-300'
+                                        sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+                                    />
+                                    {video.duration && (
+                                        <div className='absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded'>
+                                            {formatDuration(video.duration)}
+                                        </div>
+                                    )}
+                                </div>
+                            </Link>
 
                             <div className='p-4'>
-                                <h3 className='font-semibold text-lg text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors'>
-                                    {video.title}
-                                </h3>
+                                <div className='flex items-start justify-between mb-2'>
+                                    <Link
+                                        href={`/videos/${video.id}`}
+                                        className='flex-1'
+                                    >
+                                        <h3 className='font-semibold text-lg text-gray-900 line-clamp-2 group-hover:text-blue-600 transition-colors'>
+                                            {video.title}
+                                        </h3>
+                                    </Link>
+
+                                    {/* Save Button */}
+                                    <div className='ml-2 flex-shrink-0'>
+                                        <SaveButton
+                                            videoId={video.id}
+                                            className='!p-2'
+                                        />
+                                    </div>
+                                </div>
 
                                 <div className='mt-2 flex items-center text-sm text-gray-600'>
                                     <span className='font-medium'>
@@ -137,7 +157,7 @@ export default async function VideosPage() {
                                     </div>
                                 )}
                             </div>
-                        </Link>
+                        </div>
                     ))}
                 </div>
 

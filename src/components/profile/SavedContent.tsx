@@ -39,9 +39,15 @@ export default function SavedContent({ userId }: SavedContentProps) {
         const fetchSavedContent = async () => {
             try {
                 const response = await fetch(`/api/users/${userId}/saved`);
+
                 if (response.ok) {
                     const data = await response.json();
                     setSavedItems(data);
+                } else {
+                    console.error(
+                        'Failed to fetch saved content:',
+                        response.status
+                    );
                 }
             } catch (error) {
                 console.error('Failed to fetch saved content:', error);

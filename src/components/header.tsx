@@ -14,6 +14,7 @@ export function Header() {
     const navigation = [
         { name: 'Home', href: '/' },
         { name: 'Videos', href: '/videos' },
+        { name: 'Creators', href: '/creators' },
         { name: 'Search', href: '/search' },
         { name: 'Blog', href: '/blog' },
     ];
@@ -71,6 +72,16 @@ export function Header() {
                     <div className='hidden md:flex items-center space-x-4'>
                         {session ? (
                             <div className='flex items-center space-x-4'>
+                                <Link
+                                    href='/profile'
+                                    className={`text-sm font-medium transition-colors duration-200 ${
+                                        isActive('/profile')
+                                            ? 'text-blue-600'
+                                            : 'text-gray-700 hover:text-blue-600'
+                                    }`}
+                                >
+                                    My Profile
+                                </Link>
                                 <span className='text-sm font-medium text-gray-700'>
                                     Welcome, {session.user?.name}
                                 </span>
@@ -163,6 +174,19 @@ export function Header() {
                                     <div className='px-3 py-2 text-sm font-medium text-gray-700'>
                                         Welcome, {session.user?.name}
                                     </div>
+                                    <Link
+                                        href='/profile'
+                                        onClick={() =>
+                                            setIsMobileMenuOpen(false)
+                                        }
+                                        className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
+                                            isActive('/profile')
+                                                ? 'text-blue-600 bg-blue-50'
+                                                : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        My Profile
+                                    </Link>
                                     <button
                                         onClick={() => {
                                             signOut();

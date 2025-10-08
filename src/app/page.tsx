@@ -1,7 +1,9 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import CountdownBanner from '@/components/CountdownBanner';
+import { QuickAccessCard } from '@/components/quick-access-card';
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -58,6 +60,13 @@ export default function Home() {
                         </div>
                     )}
                 </div>
+
+                {/* Quick Access for Logged-in Users */}
+                {session && (
+                    <div className='mb-16'>
+                        <QuickAccessCard />
+                    </div>
+                )}
 
                 {/* Hope Help Humor Sections */}
                 <div className='grid md:grid-cols-3 gap-8 mb-16'>
@@ -188,6 +197,59 @@ export default function Home() {
                                 subjects.
                             </p>
                         </div>
+                    </div>
+                </div>
+
+                {/* Meet Our Creators Section */}
+                <div className='text-center bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl shadow-lg p-12 mb-16'>
+                    <h2 className='text-4xl font-bold text-gray-900 mb-6'>
+                        MEET OUR H3 NETWORK CREATORS
+                    </h2>
+                    <p className='text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8'>
+                        Discover the passionate voices behind our community. Our
+                        creators share their authentic stories of Hope, Help,
+                        and Humor to support those affected by criminal justice
+                        issues and addiction recovery.
+                    </p>
+                    <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+                        <Link
+                            href='/creators'
+                            className='inline-flex items-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-lg'
+                        >
+                            <svg
+                                className='w-5 h-5 mr-2'
+                                fill='none'
+                                stroke='currentColor'
+                                viewBox='0 0 24 24'
+                            >
+                                <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth={2}
+                                    d='M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z'
+                                />
+                            </svg>
+                            Browse Creators
+                        </Link>
+                        <Link
+                            href='/videos'
+                            className='inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-50 transition-colors duration-200 shadow-lg border border-blue-200'
+                        >
+                            <svg
+                                className='w-5 h-5 mr-2'
+                                fill='none'
+                                stroke='currentColor'
+                                viewBox='0 0 24 24'
+                            >
+                                <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth={2}
+                                    d='M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-8V6a2 2 0 00-2-2H4a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2h-2M7 4V2m10 0v2M7 4h10v16H7V4z'
+                                />
+                            </svg>
+                            Watch Videos
+                        </Link>
                     </div>
                 </div>
 
