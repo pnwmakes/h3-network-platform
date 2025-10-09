@@ -1,8 +1,8 @@
 'use client';
 
 import { useSession } from 'next-auth/react';
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { Suspense } from 'react';
 import {
     User,
     History,
@@ -20,23 +20,9 @@ import PrivacySettings from '@/components/profile/PrivacySettings';
 
 type TabType = 'overview' | 'history' | 'saved' | 'settings' | 'privacy';
 
-export default function ProfilePage() {
+function ProfileContent() {
     const { data: session, status } = useSession();
-    const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState<TabType>('overview');
-
-    // Handle URL tab parameter
-    useEffect(() => {
-        const tab = searchParams.get('tab') as TabType;
-        if (
-            tab &&
-            ['overview', 'history', 'saved', 'settings', 'privacy'].includes(
-                tab
-            )
-        ) {
-            setActiveTab(tab);
-        }
-    }, [searchParams]);
 
     if (status === 'loading') {
         return (
@@ -145,5 +131,19 @@ export default function ProfilePage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ProfilePage() {
+    return (
+        <Suspense
+            fallback={
+                <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+                    <div className='w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin'></div>
+                </div>
+            }
+        >
+            <ProfileContent />
+        </Suspense>
     );
 }

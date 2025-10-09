@@ -26,14 +26,16 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'H3 Network - Hope, Help, Humor',
-        description: 'A community for justice-impacted people and those who work within criminal justice. Find Hope, Help, and Humor through content covering addiction recovery, reentry support, and criminal justice reform.',
+        description:
+            'A community for justice-impacted people and those who work within criminal justice. Find Hope, Help, and Humor through content covering addiction recovery, reentry support, and criminal justice reform.',
         images: ['/logos/H3 Logo_with HopeHelpHumor.png'],
         type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
         title: 'H3 Network - Hope, Help, Humor',
-        description: 'A community for justice-impacted people and those who work within criminal justice.',
+        description:
+            'A community for justice-impacted people and those who work within criminal justice.',
         images: ['/logos/H3 Logo_with HopeHelpHumor.png'],
     },
 };

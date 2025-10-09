@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { SearchWithAutocomplete } from '@/components/search-with-autocomplete';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
-import { User, Play, Eye, Calendar, Tag } from 'lucide-react';
+import { User, Play, Eye, Calendar, Tag, Search } from 'lucide-react';
 
 interface SearchResult {
     query: string;
@@ -72,6 +71,20 @@ interface Creator {
 }
 
 export default function SearchPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+                    <div className='w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin'></div>
+                </div>
+            }
+        >
+            <SearchContent />
+        </Suspense>
+    );
+}
+
+function SearchContent() {
     const searchParams = useSearchParams();
     const [searchResults, setSearchResults] = useState<SearchResult | null>(
         null
@@ -150,7 +163,13 @@ export default function SearchPage() {
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                     <div className='text-center py-12'>
                         <div className='mb-8'>
-                            <SearchWithAutocomplete placeholder='Search for videos, creators, and content...' />
+                            <div className='max-w-md mx-auto relative'>
+                                <div className='flex items-center bg-white border border-gray-300 rounded-lg px-4 py-3 shadow-sm'>
+                                    <Search className='h-5 w-5 text-gray-400 mr-3' />
+                                    <span className='text-gray-500'>Search for videos, creators, and content...</span>
+                                </div>
+                                <p className='text-sm text-center text-gray-600 mt-2'>Search coming soon</p>
+                            </div>
                         </div>
                         <h1 className='text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight'>
                             SEARCH H3 NETWORK
@@ -175,7 +194,12 @@ export default function SearchPage() {
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                 {/* Search Interface */}
                 <div className='mb-8'>
-                    <SearchWithAutocomplete />
+                    <div className='max-w-2xl mx-auto relative'>
+                        <div className='flex items-center bg-white border border-gray-300 rounded-lg px-4 py-3 shadow-sm'>
+                            <Search className='h-5 w-5 text-gray-400 mr-3' />
+                            <span className='text-gray-500'>Search coming soon</span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Loading State */}

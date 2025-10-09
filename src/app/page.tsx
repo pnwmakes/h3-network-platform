@@ -142,12 +142,14 @@ export default function Home() {
                                     </span>
                                 </div>
                                 <p className='text-gray-600 mb-6'>
-                                    Join Rita Williams and Trip Taylor as they tackle the topics that matter most to our community.
+                                    Join Rita Williams and Trip Taylor as they
+                                    tackle the topics that matter most to our
+                                    community.
                                 </p>
                                 <Link
-                                    href="http://linktr.ee/h3dontpanic"
+                                    href='http://linktr.ee/h3dontpanic'
                                     className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target="_blank"
+                                    target='_blank'
                                 >
                                     Learn More →
                                 </Link>
@@ -165,12 +167,14 @@ export default function Home() {
                                     </span>
                                 </div>
                                 <p className='text-gray-600 mb-6'>
-                                    Kardell Sims and Trinese McDowell share powerful stories of redemption and second chances.
+                                    Kardell Sims and Trinese McDowell share
+                                    powerful stories of redemption and second
+                                    chances.
                                 </p>
                                 <Link
-                                    href="https://linktr.ee/secondchancesessions"
+                                    href='https://linktr.ee/secondchancesessions'
                                     className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target="_blank"
+                                    target='_blank'
                                 >
                                     Learn More →
                                 </Link>
@@ -188,12 +192,14 @@ export default function Home() {
                                     </span>
                                 </div>
                                 <p className='text-gray-600 mb-6'>
-                                    Hunter and Kristen bring hope and healing to those struggling with addiction and recovery.
+                                    Hunter and Kristen bring hope and healing to
+                                    those struggling with addiction and
+                                    recovery.
                                 </p>
                                 <Link
-                                    href="https://linktr.ee/hopejunkiespodcast"
+                                    href='https://linktr.ee/hopejunkiespodcast'
                                     className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target="_blank"
+                                    target='_blank'
                                 >
                                     Learn More →
                                 </Link>
@@ -211,12 +217,13 @@ export default function Home() {
                                     </span>
                                 </div>
                                 <p className='text-gray-600 mb-6'>
-                                    George K L Smith provides insights from inside the system and beyond.
+                                    George K L Smith provides insights from
+                                    inside the system and beyond.
                                 </p>
                                 <Link
-                                    href="https://linktr.ee/insideoutgkls"
+                                    href='https://linktr.ee/insideoutgkls'
                                     className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target="_blank"
+                                    target='_blank'
                                 >
                                     Learn More →
                                 </Link>
@@ -234,12 +241,14 @@ export default function Home() {
                                     </span>
                                 </div>
                                 <p className='text-gray-600 mb-6'>
-                                    Valerie Cartonio brings authentic perspectives from the justice-impacted community.
+                                    Valerie Cartonio brings authentic
+                                    perspectives from the justice-impacted
+                                    community.
                                 </p>
                                 <Link
-                                    href="https://linktr.ee/prisonpod"
+                                    href='https://linktr.ee/prisonpod'
                                     className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target="_blank"
+                                    target='_blank'
                                 >
                                     Learn More →
                                 </Link>
@@ -257,12 +266,13 @@ export default function Home() {
                                     </span>
                                 </div>
                                 <p className='text-gray-600 mb-6'>
-                                    We believe in quality over quantity. Share your show or blog idea with us!
+                                    We believe in quality over quantity. Share
+                                    your show or blog idea with us!
                                 </p>
                                 <Link
-                                    href="https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf"
+                                    href='https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf'
                                     className='inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold transition-colors duration-200'
-                                    target="_blank"
+                                    target='_blank'
                                 >
                                     LEARN MORE!
                                 </Link>
@@ -364,45 +374,69 @@ export default function Home() {
                         <div className='bg-white rounded-xl shadow-lg p-8'>
                             <div className='mb-6'>
                                 <div className='w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4'></div>
-                                <h3 className='text-xl font-bold text-gray-900 text-center'>Noah Asher</h3>
-                                <p className='text-sm text-gray-600 text-center'>Founder and Executive Producer</p>
+                                <h3 className='text-xl font-bold text-gray-900 text-center'>
+                                    Noah Asher
+                                </h3>
+                                <p className='text-sm text-gray-600 text-center'>
+                                    Founder and Executive Producer
+                                </p>
                             </div>
                             <blockquote className='text-gray-700 italic mb-4'>
-                                &quot;I remember how hopeless and helpless I felt while being locked up. I thought 
-                                there was no coming back from this. I took a short sentence, but I was beginning 
-                                to think I took a life sentence. After being released, I realized there was a way 
-                                forward. And ever since then, I have wanted to create a place where people 
-                                could find Hope, Help, and even laugh a little along the way!&quot;
+                                &quot;I remember how hopeless and helpless I
+                                felt while being locked up. I thought there was
+                                no coming back from this. I took a short
+                                sentence, but I was beginning to think I took a
+                                life sentence. After being released, I realized
+                                there was a way forward. And ever since then, I
+                                have wanted to create a place where people could
+                                find Hope, Help, and even laugh a little along
+                                the way!&quot;
                             </blockquote>
                         </div>
 
                         <div className='bg-white rounded-xl shadow-lg p-8'>
                             <div className='mb-6'>
                                 <div className='w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4'></div>
-                                <h3 className='text-xl font-bold text-gray-900 text-center'>Rita Williams</h3>
-                                <p className='text-sm text-gray-600 text-center'>Media Director and Show Host</p>
+                                <h3 className='text-xl font-bold text-gray-900 text-center'>
+                                    Rita Williams
+                                </h3>
+                                <p className='text-sm text-gray-600 text-center'>
+                                    Media Director and Show Host
+                                </p>
                             </div>
                             <blockquote className='text-gray-700 italic mb-4'>
-                                &quot;Noah and I&apos;ve poured countless hours into building the H3 Network, and I 
-                                couldn&apos;t be more excited to finally share it with the world. This project has been a 
-                                true labor of love, designed to bring hope, help, and humor to a community too 
-                                often overlooked: those impacted by the system. No one else is doing what we&apos;re 
-                                doing, and I&apos;m proud that H3 is stepping into that gap with authenticity and 
-                                purpose. The best part? We&apos;re just getting started.&quot;
+                                &quot;Noah and I&apos;ve poured countless hours
+                                into building the H3 Network, and I
+                                couldn&apos;t be more excited to finally share
+                                it with the world. This project has been a true
+                                labor of love, designed to bring hope, help, and
+                                humor to a community too often overlooked: those
+                                impacted by the system. No one else is doing
+                                what we&apos;re doing, and I&apos;m proud that
+                                H3 is stepping into that gap with authenticity
+                                and purpose. The best part? We&apos;re just
+                                getting started.&quot;
                             </blockquote>
                         </div>
 
                         <div className='bg-white rounded-xl shadow-lg p-8'>
                             <div className='mb-6'>
                                 <div className='w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4'></div>
-                                <h3 className='text-xl font-bold text-gray-900 text-center'>Kardell Sims</h3>
-                                <p className='text-sm text-gray-600 text-center'>Content Creator and Show Host</p>
+                                <h3 className='text-xl font-bold text-gray-900 text-center'>
+                                    Kardell Sims
+                                </h3>
+                                <p className='text-sm text-gray-600 text-center'>
+                                    Content Creator and Show Host
+                                </p>
                             </div>
                             <blockquote className='text-gray-700 italic mb-4'>
-                                &quot;The H3 Network has created a place where I can connect with other 
-                                justice-impacted people while also having a voice of my own. When Noah first pitched this 
-                                network to me, he said, &apos;I want to create a platform for people to share their own 
-                                message of Hope.&apos; And H3 has done it. No other community like this.&quot;
+                                &quot;The H3 Network has created a place where I
+                                can connect with other justice-impacted people
+                                while also having a voice of my own. When Noah
+                                first pitched this network to me, he said,
+                                &apos;I want to create a platform for people to
+                                share their own message of Hope.&apos; And H3
+                                has done it. No other community like this.&quot;
                             </blockquote>
                         </div>
                     </div>
