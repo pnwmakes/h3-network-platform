@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
@@ -33,9 +34,14 @@ export function Header() {
                     {/* Logo */}
                     <div className='flex items-center space-x-4'>
                         <Link href='/' className='flex items-center'>
-                            <div className='text-2xl font-black text-gray-900 hover:text-blue-600 transition-colors duration-200'>
-                                H3 NETWORK
-                            </div>
+                            <Image
+                                src='/logos/H3 Logo.png'
+                                alt='H3 Network - Hope, Help, Humor'
+                                width={120}
+                                height={40}
+                                className='h-8 w-auto hover:opacity-80 transition-opacity duration-200'
+                                priority
+                            />
                         </Link>
                         <div className='hidden md:block text-sm text-gray-500 border-l border-gray-200 pl-4'>
                             Hope • Help • Humor

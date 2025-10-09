@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import Image from 'next/image';
 import CountdownBanner from '@/components/CountdownBanner';
 import { QuickAccessCard } from '@/components/quick-access-card';
 
@@ -16,9 +17,17 @@ export default function Home() {
             <main className='max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8'>
                 {/* Hero Section */}
                 <div className='text-center mb-16'>
-                    <h1 className='text-5xl md:text-7xl font-black text-gray-900 mb-6 tracking-tight'>
-                        HOPE HELP HUMOR
-                    </h1>
+                    {/* H3 Logo with Hope Help Humor */}
+                    <div className='mb-8 flex justify-center'>
+                        <Image
+                            src='/logos/H3 Logo_with HopeHelpHumor.png'
+                            alt='H3 Network - Hope, Help, Humor'
+                            width={600}
+                            height={200}
+                            className='h-32 md:h-48 w-auto max-w-full'
+                            priority
+                        />
+                    </div>
                     <p className='text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-8 leading-relaxed'>
                         We are more than a network. We are a community! A
                         community for justice-impacted people and those who work
@@ -116,6 +125,152 @@ export default function Home() {
                     </div>
                 </div>
 
+                {/* NEW NETWORK SHOWS! Section */}
+                <div className='mb-16'>
+                    <h2 className='text-4xl font-bold text-gray-900 text-center mb-12'>
+                        NEW NETWORK SHOWS!
+                    </h2>
+                    <div className='grid md:grid-cols-2 lg:grid-cols-3 gap-8'>
+                        <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
+                            <div className='p-8 text-center'>
+                                <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                                    DON&apos;T PANIC! THE SHOW
+                                </h3>
+                                <div className='mb-6'>
+                                    <span className='inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-full text-sm font-semibold'>
+                                        COMING JAN 2026!
+                                    </span>
+                                </div>
+                                <p className='text-gray-600 mb-6'>
+                                    Join Rita Williams and Trip Taylor as they tackle the topics that matter most to our community.
+                                </p>
+                                <Link
+                                    href="http://linktr.ee/h3dontpanic"
+                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                    target="_blank"
+                                >
+                                    Learn More →
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
+                            <div className='p-8 text-center'>
+                                <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                                    SECOND CHANCE SESSIONS
+                                </h3>
+                                <div className='mb-6'>
+                                    <span className='inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-full text-sm font-semibold'>
+                                        COMING JAN 2026!
+                                    </span>
+                                </div>
+                                <p className='text-gray-600 mb-6'>
+                                    Kardell Sims and Trinese McDowell share powerful stories of redemption and second chances.
+                                </p>
+                                <Link
+                                    href="https://linktr.ee/secondchancesessions"
+                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                    target="_blank"
+                                >
+                                    Learn More →
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
+                            <div className='p-8 text-center'>
+                                <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                                    HOPE JUNKIES
+                                </h3>
+                                <div className='mb-6'>
+                                    <span className='inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-full text-sm font-semibold'>
+                                        COMING JAN 2026!
+                                    </span>
+                                </div>
+                                <p className='text-gray-600 mb-6'>
+                                    Hunter and Kristen bring hope and healing to those struggling with addiction and recovery.
+                                </p>
+                                <Link
+                                    href="https://linktr.ee/hopejunkiespodcast"
+                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                    target="_blank"
+                                >
+                                    Learn More →
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
+                            <div className='p-8 text-center'>
+                                <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                                    INSIDE OUT
+                                </h3>
+                                <div className='mb-6'>
+                                    <span className='inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-full text-sm font-semibold'>
+                                        COMING JAN 2026!
+                                    </span>
+                                </div>
+                                <p className='text-gray-600 mb-6'>
+                                    George K L Smith provides insights from inside the system and beyond.
+                                </p>
+                                <Link
+                                    href="https://linktr.ee/insideoutgkls"
+                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                    target="_blank"
+                                >
+                                    Learn More →
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className='bg-white rounded-xl shadow-lg overflow-hidden'>
+                            <div className='p-8 text-center'>
+                                <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                                    PRISON POD
+                                </h3>
+                                <div className='mb-6'>
+                                    <span className='inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-full text-sm font-semibold'>
+                                        COMING JAN 2026!
+                                    </span>
+                                </div>
+                                <p className='text-gray-600 mb-6'>
+                                    Valerie Cartonio brings authentic perspectives from the justice-impacted community.
+                                </p>
+                                <Link
+                                    href="https://linktr.ee/prisonpod"
+                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                    target="_blank"
+                                >
+                                    Learn More →
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className='bg-gradient-to-br from-blue-50 to-green-50 rounded-xl shadow-lg overflow-hidden border-2 border-blue-200'>
+                            <div className='p-8 text-center'>
+                                <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                                    WANT TO PITCH YOUR IDEA?
+                                </h3>
+                                <div className='mb-6'>
+                                    <span className='inline-block bg-yellow-500 text-gray-900 px-6 py-2 rounded-full text-sm font-semibold'>
+                                        NOW ACCEPTING PITCHES!
+                                    </span>
+                                </div>
+                                <p className='text-gray-600 mb-6'>
+                                    We believe in quality over quantity. Share your show or blog idea with us!
+                                </p>
+                                <Link
+                                    href="https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf"
+                                    className='inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold transition-colors duration-200'
+                                    target="_blank"
+                                >
+                                    LEARN MORE!
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Why a Network Section */}
                 <div className='text-center bg-white rounded-xl shadow-lg p-12 mb-16'>
                     <h2 className='text-4xl font-bold text-gray-900 mb-6'>
@@ -196,6 +351,59 @@ export default function Home() {
                                 those uncomfortable talks around uncomfortable
                                 subjects.
                             </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* FROM OUR TEAM - Testimonials Section */}
+                <div className='mb-16'>
+                    <h2 className='text-4xl font-bold text-gray-900 text-center mb-12'>
+                        FROM OUR TEAM
+                    </h2>
+                    <div className='grid md:grid-cols-3 gap-8'>
+                        <div className='bg-white rounded-xl shadow-lg p-8'>
+                            <div className='mb-6'>
+                                <div className='w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4'></div>
+                                <h3 className='text-xl font-bold text-gray-900 text-center'>Noah Asher</h3>
+                                <p className='text-sm text-gray-600 text-center'>Founder and Executive Producer</p>
+                            </div>
+                            <blockquote className='text-gray-700 italic mb-4'>
+                                &quot;I remember how hopeless and helpless I felt while being locked up. I thought 
+                                there was no coming back from this. I took a short sentence, but I was beginning 
+                                to think I took a life sentence. After being released, I realized there was a way 
+                                forward. And ever since then, I have wanted to create a place where people 
+                                could find Hope, Help, and even laugh a little along the way!&quot;
+                            </blockquote>
+                        </div>
+
+                        <div className='bg-white rounded-xl shadow-lg p-8'>
+                            <div className='mb-6'>
+                                <div className='w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4'></div>
+                                <h3 className='text-xl font-bold text-gray-900 text-center'>Rita Williams</h3>
+                                <p className='text-sm text-gray-600 text-center'>Media Director and Show Host</p>
+                            </div>
+                            <blockquote className='text-gray-700 italic mb-4'>
+                                &quot;Noah and I&apos;ve poured countless hours into building the H3 Network, and I 
+                                couldn&apos;t be more excited to finally share it with the world. This project has been a 
+                                true labor of love, designed to bring hope, help, and humor to a community too 
+                                often overlooked: those impacted by the system. No one else is doing what we&apos;re 
+                                doing, and I&apos;m proud that H3 is stepping into that gap with authenticity and 
+                                purpose. The best part? We&apos;re just getting started.&quot;
+                            </blockquote>
+                        </div>
+
+                        <div className='bg-white rounded-xl shadow-lg p-8'>
+                            <div className='mb-6'>
+                                <div className='w-20 h-20 bg-gray-200 rounded-full mx-auto mb-4'></div>
+                                <h3 className='text-xl font-bold text-gray-900 text-center'>Kardell Sims</h3>
+                                <p className='text-sm text-gray-600 text-center'>Content Creator and Show Host</p>
+                            </div>
+                            <blockquote className='text-gray-700 italic mb-4'>
+                                &quot;The H3 Network has created a place where I can connect with other 
+                                justice-impacted people while also having a voice of my own. When Noah first pitched this 
+                                network to me, he said, &apos;I want to create a platform for people to share their own 
+                                message of Hope.&apos; And H3 has done it. No other community like this.&quot;
+                            </blockquote>
                         </div>
                     </div>
                 </div>
