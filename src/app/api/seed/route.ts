@@ -71,7 +71,8 @@ export async function POST() {
             update: {},
             create: {
                 name: 'Noah & Rita Show',
-                description: 'The flagship show featuring honest conversations about reentry, addiction recovery, and criminal justice reform.',
+                description:
+                    'The flagship show featuring honest conversations about reentry, addiction recovery, and criminal justice reform.',
                 thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
                 isActive: true,
             },
@@ -82,7 +83,8 @@ export async function POST() {
             update: {},
             create: {
                 name: 'Fresh Out Life',
-                description: 'Real stories from people navigating life after incarceration.',
+                description:
+                    'Real stories from people navigating life after incarceration.',
                 thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
                 isActive: true,
             },
@@ -92,7 +94,8 @@ export async function POST() {
         const videos = [
             {
                 title: 'Welcome to H3 Network: Hope, Help, and Humor',
-                description: 'Noah and Rita introduce the H3 Network mission and share their vision for supporting those affected by the criminal justice system.',
+                description:
+                    'Noah and Rita introduce the H3 Network mission and share their vision for supporting those affected by the criminal justice system.',
                 youtubeId: 'dQw4w9WgXcQ',
                 youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                 duration: 1248,
@@ -105,7 +108,8 @@ export async function POST() {
             },
             {
                 title: 'Overcoming Shame: A Conversation About Healing',
-                description: 'Noah and Rita have an honest conversation about dealing with shame and guilt, and how humor can be a tool for healing.',
+                description:
+                    'Noah and Rita have an honest conversation about dealing with shame and guilt, and how humor can be a tool for healing.',
                 youtubeId: 'ScMzIvxBSi4',
                 youtubeUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
                 duration: 1623,
@@ -125,7 +129,9 @@ export async function POST() {
                 update: {},
                 create: {
                     ...videoData,
-                    publishedAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+                    publishedAt: new Date(
+                        Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000
+                    ),
                     thumbnailUrl: `https://img.youtube.com/vi/${videoData.youtubeId}/maxresdefault.jpg`,
                 },
             });
@@ -139,14 +145,16 @@ export async function POST() {
                 creators: 2,
                 shows: 2,
                 videos: videos.length,
-            }
+            },
         });
-
     } catch (error) {
         console.error('Seeding error:', error);
-        return NextResponse.json({
-            success: false,
-            error: error instanceof Error ? error.message : 'Unknown error'
-        }, { status: 500 });
+        return NextResponse.json(
+            {
+                success: false,
+                error: error instanceof Error ? error.message : 'Unknown error',
+            },
+            { status: 500 }
+        );
     }
 }

@@ -406,15 +406,21 @@ Because sometimes, the bravest thing you can do is laugh in the face of adversit
     console.log(`Created:`);
     console.log(`- 1 test viewer (test@h3network.org / password123)`);
     console.log(`- 4 H3 Network creators (Noah, Rita, Marcus, Sarah)`);
-    console.log(`- 4 shows (Noah & Rita Show, Fresh Out Life, Recovery Journeys, Justice Talks)`);
-    console.log(`- ${videos.length} sample videos with realistic H3 Network content`);
+    console.log(
+        `- 4 shows (Noah & Rita Show, Fresh Out Life, Recovery Journeys, Justice Talks)`
+    );
+    console.log(
+        `- ${videos.length} sample videos with realistic H3 Network content`
+    );
     console.log(`- ${blogPosts.length} blog posts with authentic stories`);
     console.log('');
     console.log('🧪 To test the platform:');
     console.log('1. Sign in with test@h3network.org / password123');
     console.log('2. Browse videos and creators');
     console.log('3. Save content and check /profile?tab=saved');
-    console.log('4. Creators: noah@h3network.org, rita@h3network.org, etc. (creator123)');
+    console.log(
+        '4. Creators: noah@h3network.org, rita@h3network.org, etc. (creator123)'
+    );
 }
 
 main()

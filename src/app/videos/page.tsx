@@ -20,7 +20,10 @@ async function getVideos() {
             },
         });
     } catch (error) {
-        console.warn('Database not available, returning empty videos list:', error);
+        console.warn(
+            'Database not available, returning empty videos list:',
+            error
+        );
         return [];
     }
 }

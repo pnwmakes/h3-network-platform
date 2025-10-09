@@ -35,7 +35,10 @@ async function getCreators() {
             },
         });
     } catch (error) {
-        console.warn('Database not available, returning empty creators list:', error);
+        console.warn(
+            'Database not available, returning empty creators list:',
+            error
+        );
         return [];
     }
 }
