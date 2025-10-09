@@ -6,18 +6,23 @@ import { PreviewNotice } from '@/components/preview-notice';
 import { SaveButton } from '@/components/save-button';
 
 async function getVideos() {
-    return await prisma.video.findMany({
-        where: {
-            status: 'PUBLISHED',
-        },
-        include: {
-            creator: true,
-            show: true,
-        },
-        orderBy: {
-            publishedAt: 'desc',
-        },
-    });
+    try {
+        return await prisma.video.findMany({
+            where: {
+                status: 'PUBLISHED',
+            },
+            include: {
+                creator: true,
+                show: true,
+            },
+            orderBy: {
+                publishedAt: 'desc',
+            },
+        });
+    } catch (error) {
+        console.warn('Database not available, returning empty videos list:', error);
+        return [];
+    }
 }
 
 function formatDuration(seconds: number): string {

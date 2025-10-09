@@ -13,34 +13,39 @@ interface CreatorPageProps {
 }
 
 async function getCreator(id: string) {
-    return await prisma.creator.findUnique({
-        where: {
-            id,
-            isActive: true,
-        },
-        include: {
-            user: true,
-            videos: {
-                where: {
-                    status: 'PUBLISHED',
+    try {
+        return await prisma.creator.findUnique({
+            where: {
+                id,
+                isActive: true,
+            },
+            include: {
+                user: true,
+                videos: {
+                    where: {
+                        status: 'PUBLISHED',
+                    },
+                    include: {
+                        show: true,
+                    },
+                    orderBy: {
+                        publishedAt: 'desc',
+                    },
                 },
-                include: {
-                    show: true,
-                },
-                orderBy: {
-                    publishedAt: 'desc',
+                blogs: {
+                    where: {
+                        status: 'PUBLISHED',
+                    },
+                    orderBy: {
+                        publishedAt: 'desc',
+                    },
                 },
             },
-            blogs: {
-                where: {
-                    status: 'PUBLISHED',
-                },
-                orderBy: {
-                    publishedAt: 'desc',
-                },
-            },
-        },
-    });
+        });
+    } catch (error) {
+        console.warn('Database not available:', error);
+        return null;
+    }
 }
 
 function formatDuration(seconds: number): string {

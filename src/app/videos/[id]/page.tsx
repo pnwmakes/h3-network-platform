@@ -16,45 +16,60 @@ interface VideoPageProps {
 }
 
 async function getVideo(id: string) {
-    return await prisma.video.findUnique({
-        where: {
-            id,
-            status: 'PUBLISHED',
-        },
-        include: {
-            creator: true,
-            show: true,
-        },
-    });
+    try {
+        return await prisma.video.findUnique({
+            where: {
+                id,
+                status: 'PUBLISHED',
+            },
+            include: {
+                creator: true,
+                show: true,
+            },
+        });
+    } catch (error) {
+        console.warn('Database not available:', error);
+        return null;
+    }
 }
 
 async function getRelatedVideos(videoId: string, creatorId: string, limit = 4) {
-    return await prisma.video.findMany({
-        where: {
-            status: 'PUBLISHED',
-            id: { not: videoId },
-            creatorId: creatorId,
-        },
-        include: {
-            creator: true,
-            show: true,
-        },
-        orderBy: {
-            publishedAt: 'desc',
-        },
-        take: limit,
-    });
+    try {
+        return await prisma.video.findMany({
+            where: {
+                status: 'PUBLISHED',
+                id: { not: videoId },
+                creatorId: creatorId,
+            },
+            include: {
+                creator: true,
+                show: true,
+            },
+            orderBy: {
+                publishedAt: 'desc',
+            },
+            take: limit,
+        });
+    } catch (error) {
+        console.warn('Database not available for related videos:', error);
+        return [];
+    }
 }
 
 async function getUserProgress(userId: string, videoId: string) {
-    return await prisma.userProgress.findUnique({
-        where: {
-            userId_videoId: {
-                userId,
-                videoId,
+    try {
+        return await prisma.userProgress.findUnique({
+            where: {
+                userId_videoId: {
+                    userId,
+                    videoId,
+                },
             },
-        },
-    });
+        });
+    } catch (error) {
+        console.warn('Database not available for user progress:', error);
+        return null;
+    }
 }
 
 function formatDuration(seconds: number): string {

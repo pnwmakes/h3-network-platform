@@ -4,35 +4,40 @@ import Image from 'next/image';
 import { BackButton } from '@/components/back-button';
 
 async function getCreators() {
-    return await prisma.creator.findMany({
-        where: {
-            isActive: true,
-        },
-        include: {
-            user: true,
-            videos: {
-                where: {
-                    status: 'PUBLISHED',
+    try {
+        return await prisma.creator.findMany({
+            where: {
+                isActive: true,
+            },
+            include: {
+                user: true,
+                videos: {
+                    where: {
+                        status: 'PUBLISHED',
+                    },
+                    select: {
+                        id: true,
+                        viewCount: true,
+                    },
                 },
-                select: {
-                    id: true,
-                    viewCount: true,
+                blogs: {
+                    where: {
+                        status: 'PUBLISHED',
+                    },
+                    select: {
+                        id: true,
+                        viewCount: true,
+                    },
                 },
             },
-            blogs: {
-                where: {
-                    status: 'PUBLISHED',
-                },
-                select: {
-                    id: true,
-                    viewCount: true,
-                },
+            orderBy: {
+                displayName: 'asc',
             },
-        },
-        orderBy: {
-            displayName: 'asc',
-        },
-    });
+        });
+    } catch (error) {
+        console.warn('Database not available, returning empty creators list:', error);
+        return [];
+    }
 }
 
 type CreatorWithStats = Awaited<ReturnType<typeof getCreators>>[0];
