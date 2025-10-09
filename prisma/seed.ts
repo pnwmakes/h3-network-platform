@@ -27,22 +27,23 @@ async function main() {
 
     console.log('✅ Created test viewer:', testViewer.email);
 
-    // Create sample creators
+    // Create sample creators with H3 Network-specific branding
     const creatorPassword = await bcrypt.hash('creator123', 12);
 
-    const creator1 = await prisma.user.upsert({
-        where: { email: 'mike@h3network.com' },
+    const noah = await prisma.user.upsert({
+        where: { email: 'noah@h3network.org' },
         update: {},
         create: {
-            email: 'mike@h3network.com',
-            name: 'Mike Thompson',
+            email: 'noah@h3network.org',
+            name: 'Noah',
             password: creatorPassword,
             role: UserRole.CREATOR,
             creator: {
                 create: {
-                    displayName: 'Mike Thompson',
-                    bio: 'Formerly incarcerated advocate sharing stories of redemption and second chances. Host of "Second Chances Podcast".',
-                    showName: 'Second Chances',
+                    displayName: 'Noah',
+                    bio: 'Co-founder of H3 Network. Sharing stories of hope and transformation through lived experience with the criminal justice system. Passionate about reentry support and second chances.',
+                    showName: 'Noah & Rita Show',
+                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
                     isActive: true,
                 },
             },
@@ -52,19 +53,20 @@ async function main() {
         },
     });
 
-    const creator2 = await prisma.user.upsert({
-        where: { email: 'sarah@h3network.com' },
+    const rita = await prisma.user.upsert({
+        where: { email: 'rita@h3network.org' },
         update: {},
         create: {
-            email: 'sarah@h3network.com',
-            name: 'Sarah Martinez',
+            email: 'rita@h3network.org',
+            name: 'Rita',
             password: creatorPassword,
             role: UserRole.CREATOR,
             creator: {
                 create: {
-                    displayName: 'Sarah Martinez',
-                    bio: 'Recovery advocate and counselor helping others navigate addiction recovery and reentry challenges.',
-                    showName: 'Recovery Roads',
+                    displayName: 'Rita',
+                    bio: 'Co-founder of H3 Network. Passionate advocate for criminal justice reform and reentry support through education and community building. Expert in addiction recovery programs.',
+                    showName: 'Noah & Rita Show',
+                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
                     isActive: true,
                 },
             },
@@ -74,95 +76,214 @@ async function main() {
         },
     });
 
-    // Create shows
-    const show1 = await prisma.show.upsert({
-        where: { name: 'Second Chances' },
+    const marcus = await prisma.user.upsert({
+        where: { email: 'marcus@h3network.org' },
         update: {},
         create: {
-            name: 'Second Chances',
+            email: 'marcus@h3network.org',
+            name: 'Marcus Johnson',
+            password: creatorPassword,
+            role: UserRole.CREATOR,
+            creator: {
+                create: {
+                    displayName: 'Marcus Johnson',
+                    bio: 'Former federal inmate turned advocate. Sharing the realities of reentry and building bridges between formerly incarcerated individuals and their communities.',
+                    showName: 'Fresh Out Life',
+                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                    isActive: true,
+                },
+            },
+        },
+        include: {
+            creator: true,
+        },
+    });
+
+    const sarah = await prisma.user.upsert({
+        where: { email: 'sarah@h3network.org' },
+        update: {},
+        create: {
+            email: 'sarah@h3network.org',
+            name: 'Sarah Williams',
+            password: creatorPassword,
+            role: UserRole.CREATOR,
+            creator: {
+                create: {
+                    displayName: 'Sarah Williams',
+                    bio: 'Recovery advocate and counselor. 8 years in recovery, now helping others find hope and healing through evidence-based treatment and peer support.',
+                    showName: 'Recovery Journeys',
+                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                    isActive: true,
+                },
+            },
+        },
+        include: {
+            creator: true,
+        },
+    });
+
+    // Create shows with H3 Network branding
+    const noahRitaShow = await prisma.show.upsert({
+        where: { name: 'Noah & Rita Show' },
+        update: {},
+        create: {
+            name: 'Noah & Rita Show',
             description:
-                'Stories of redemption, second chances, and transformation from formerly incarcerated individuals.',
+                'The flagship show featuring honest conversations about reentry, addiction recovery, and criminal justice reform with Hope, Help, and Humor.',
+            thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
             isActive: true,
         },
     });
 
-    const show2 = await prisma.show.upsert({
-        where: { name: 'Recovery Roads' },
+    const freshOutLife = await prisma.show.upsert({
+        where: { name: 'Fresh Out Life' },
         update: {},
         create: {
-            name: 'Recovery Roads',
+            name: 'Fresh Out Life',
             description:
-                'Navigating addiction recovery and reentry challenges with expert guidance and real stories.',
+                'Real stories from people navigating life after incarceration, sharing practical advice and authentic experiences.',
+            thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
             isActive: true,
         },
     });
 
-    // Sample videos (using actual educational YouTube videos about criminal justice reform)
+    const recoveryJourneys = await prisma.show.upsert({
+        where: { name: 'Recovery Journeys' },
+        update: {},
+        create: {
+            name: 'Recovery Journeys',
+            description:
+                'Personal stories of addiction recovery and healing, featuring expert guidance and peer support.',
+            thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
+            isActive: true,
+        },
+    });
+
+    const justiceTalks = await prisma.show.upsert({
+        where: { name: 'Justice Talks' },
+        update: {},
+        create: {
+            name: 'Justice Talks',
+            description:
+                'Conversations about criminal justice reform and policy change with advocates and experts.',
+            thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
+            isActive: true,
+        },
+    });
+
+    // Sample videos with H3 Network content
     const videos = [
         {
-            title: 'Understanding Criminal Justice Reform',
+            title: 'Welcome to H3 Network: Hope, Help, and Humor',
             description:
-                'An introduction to the key issues in criminal justice reform and why it matters for communities.',
-            youtubeId: 'dQw4w9WgXcQ', // Placeholder - replace with actual educational content
+                'Noah and Rita introduce the H3 Network mission and share their vision for supporting those affected by the criminal justice system through Hope, Help, and Humor.',
+            youtubeId: 'dQw4w9WgXcQ',
             youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-            duration: 720, // 12 minutes
-            topic: ContentTopic.CRIMINAL_JUSTICE_REFORM,
+            duration: 1248, // 20:48
+            topic: ContentTopic.GENERAL,
             status: ContentStatus.PUBLISHED,
-            creatorId: creator1.creator!.id,
-            showId: show1.id,
-            tags: ['criminal justice', 'reform', 'introduction'],
+            creatorId: noah.creator!.id,
+            showId: noahRitaShow.id,
+            tags: ['introduction', 'mission', 'hope', 'help', 'humor'],
+            viewCount: 1250,
         },
         {
-            title: 'Life After Prison: Reentry Challenges',
+            title: 'Life After Prison: First 30 Days Home',
             description:
-                'Personal stories and practical advice for individuals reentering society after incarceration.',
-            youtubeId: 'ScMzIvxBSi4', // Placeholder - replace with actual educational content
+                'Marcus shares the real challenges of the first month after release - from finding housing to rebuilding relationships with family and community.',
+            youtubeId: 'ScMzIvxBSi4',
             youtubeUrl: 'https://www.youtube.com/watch?v=ScMzIvxBSi4',
-            duration: 1020, // 17 minutes
+            duration: 1890, // 31:30
             topic: ContentTopic.REENTRY,
             status: ContentStatus.PUBLISHED,
-            creatorId: creator1.creator!.id,
-            showId: show1.id,
-            tags: ['reentry', 'prison', 'rehabilitation', 'second chances'],
+            creatorId: marcus.creator!.id,
+            showId: freshOutLife.id,
+            tags: ['reentry', 'housing', 'relationships', 'challenges'],
+            viewCount: 892,
         },
         {
-            title: 'Breaking the Cycle: Addiction Recovery',
+            title: 'Finding Your Why in Recovery',
             description:
-                'Understanding addiction as a disease and the path to recovery and healing.',
-            youtubeId: 'astISOttCQ0', // Placeholder - replace with actual educational content
+                'Sarah discusses the importance of finding your personal motivation for recovery and how it can sustain you through the most difficult times.',
+            youtubeId: 'astISOttCQ0',
             youtubeUrl: 'https://www.youtube.com/watch?v=astISOttCQ0',
-            duration: 900, // 15 minutes
+            duration: 1456, // 24:16
             topic: ContentTopic.ADDICTION,
             status: ContentStatus.PUBLISHED,
-            creatorId: creator2.creator!.id,
-            showId: show2.id,
-            tags: ['addiction', 'recovery', 'mental health', 'healing'],
+            creatorId: sarah.creator!.id,
+            showId: recoveryJourneys.id,
+            tags: ['recovery', 'motivation', 'purpose', 'healing'],
+            viewCount: 673,
         },
         {
-            title: 'Family Support During Recovery',
+            title: 'Overcoming Shame: A Conversation About Healing',
             description:
-                'How families can support their loved ones through addiction recovery and reentry.',
-            youtubeId: 'oHg5SJYRHA0', // Placeholder - replace with actual educational content
+                'Noah and Rita have an honest conversation about dealing with shame and guilt, and how humor can be a powerful tool for healing from trauma.',
+            youtubeId: 'oHg5SJYRHA0',
             youtubeUrl: 'https://www.youtube.com/watch?v=oHg5SJYRHA0',
-            duration: 840, // 14 minutes
-            topic: ContentTopic.ADDICTION,
+            duration: 1623, // 27:03
+            topic: ContentTopic.GENERAL,
             status: ContentStatus.PUBLISHED,
-            creatorId: creator2.creator!.id,
-            showId: show2.id,
-            tags: ['family', 'support', 'recovery', 'relationships'],
+            creatorId: rita.creator!.id,
+            showId: noahRitaShow.id,
+            tags: ['shame', 'healing', 'mental health', 'humor'],
+            viewCount: 1089,
         },
         {
-            title: 'Policy Changes That Matter',
+            title: 'Job Hunting with a Record: Tips and Reality Check',
             description:
-                'Examining recent policy changes in criminal justice and their real-world impact.',
-            youtubeId: 'kJQP7kiw5Fk', // Placeholder - replace with actual educational content
+                'Marcus provides practical advice for finding employment after incarceration and addresses common misconceptions employers have about hiring formerly incarcerated individuals.',
+            youtubeId: 'kJQP7kiw5Fk',
             youtubeUrl: 'https://www.youtube.com/watch?v=kJQP7kiw5Fk',
-            duration: 1140, // 19 minutes
+            duration: 1789, // 29:49
+            topic: ContentTopic.REENTRY,
+            status: ContentStatus.PUBLISHED,
+            creatorId: marcus.creator!.id,
+            showId: freshOutLife.id,
+            tags: ['employment', 'job search', 'background check', 'practical'],
+            viewCount: 756,
+        },
+        {
+            title: 'Supporting a Loved One in Recovery',
+            description:
+                'Sarah offers guidance for family members and friends who want to support someone in recovery without enabling destructive behaviors.',
+            youtubeId: 'YQHsXMglC9A',
+            youtubeUrl: 'https://www.youtube.com/watch?v=YQHsXMglC9A',
+            duration: 1345, // 22:25
+            topic: ContentTopic.ADDICTION,
+            status: ContentStatus.PUBLISHED,
+            creatorId: sarah.creator!.id,
+            showId: recoveryJourneys.id,
+            tags: ['family', 'support', 'boundaries', 'enabling'],
+            viewCount: 523,
+        },
+        {
+            title: 'The Power of Second Chances: Community Impact',
+            description:
+                'Rita explores how giving people second chances benefits entire communities and breaks cycles of incarceration and addiction.',
+            youtubeId: 'RgKAFK5djSk',
+            youtubeUrl: 'https://www.youtube.com/watch?v=RgKAFK5djSk',
+            duration: 1987, // 33:07
             topic: ContentTopic.CRIMINAL_JUSTICE_REFORM,
             status: ContentStatus.PUBLISHED,
-            creatorId: creator1.creator!.id,
-            showId: show1.id,
-            tags: ['policy', 'reform', 'legislation', 'impact'],
+            creatorId: rita.creator!.id,
+            showId: noahRitaShow.id,
+            tags: ['second chances', 'community', 'prevention', 'impact'],
+            viewCount: 734,
+        },
+        {
+            title: 'Building Support Networks in Recovery',
+            description:
+                'Sarah and Marcus discuss the importance of building strong support networks and finding your tribe in recovery and reentry.',
+            youtubeId: 'WxnN4mKSC7I',
+            youtubeUrl: 'https://www.youtube.com/watch?v=WxnN4mKSC7I',
+            duration: 1654, // 27:34
+            topic: ContentTopic.GENERAL,
+            status: ContentStatus.PUBLISHED,
+            creatorId: sarah.creator!.id,
+            showId: recoveryJourneys.id,
+            tags: ['support', 'community', 'recovery', 'relationships'],
+            viewCount: 445,
         },
     ];
 
@@ -181,68 +302,92 @@ async function main() {
         });
     }
 
-    // Create some sample blog posts
+    // Create some sample blog posts with H3 Network themes
     const blogPosts = [
         {
-            title: 'My Journey: From Prison to Purpose',
-            content: `# My Journey: From Prison to Purpose
+            title: 'My First Week Home: A Reentry Story',
+            content: `# My First Week Home: A Reentry Story
 
-When I walked out of prison after serving 8 years, I thought the hardest part was behind me. I was wrong. The real challenge was just beginning.
+The door closed behind me, and for the first time in years, I was truly free. But freedom, I quickly learned, comes with its own set of challenges.
 
-## The Reality of Reentry
+## The Reality Check
 
-Reentry isn't just about finding a job or a place to live. It's about rebuilding your entire identity. For years, I was defined by my mistakes, my crimes, my prisoner number. Now I had to figure out who I was beyond those walls.
+After spending three years in federal prison, walking out those doors should have felt like the happiest moment of my life. Instead, I felt overwhelmed, anxious, and completely unprepared for the world that had moved on without me.
 
-## Finding Support
+Technology had advanced. My old phone was obsolete. My driver's license had expired. Even simple tasks like using a credit card reader at the grocery store felt foreign and intimidating.
 
-The H3 Network became my lifeline. Here, I found people who understood my struggles because they had walked the same path. I learned that:
+## The Practical Challenges
 
-- Recovery is a daily choice
-- Community support is essential
-- Everyone deserves a second chance
-- Your past doesn't define your future
+The first week was a whirlwind of appointments:
+- Parole officer meetings
+- Job interviews  
+- Trying to find housing
+- Rebuilding credit
+- Getting identification documents
+
+Everyone wanted documentation I didn't have, references I couldn't provide, and explanations for gaps in my resume that I was ashamed to give.
+
+## Finding Hope
+
+But here's what I learned: reentry isn't just about the formerly incarcerated person. It's about communities, families, and support systems coming together. The organizations that helped me - from halfway houses to employment programs - they understood that successful reentry benefits everyone.
 
 ## Moving Forward
 
-Today, I'm not just a formerly incarcerated person – I'm a father, a mentor, an advocate. I share my story not for sympathy, but to show others that transformation is possible.
+If you're about to come home, know this: it's going to be hard, but it's not impossible. Take it one day at a time, accept help when it's offered, and remember that your past doesn't define your future.
 
-If you're struggling with reentry, addiction, or just feeling lost, know that you're not alone. We're here to support each other on this journey.`,
+If you're supporting someone coming home, the best thing you can do is listen without judgment and help them navigate the practical challenges of rebuilding their life.
+
+Reentry is not just a second chance - it's a chance to build something better than what came before.`,
             excerpt:
-                'A personal story of transformation from incarceration to purpose, and the power of community support in the reentry process.',
+                'After spending three years in federal prison, walking out those doors should have felt like the happiest moment of my life. Instead, I felt overwhelmed, anxious, and completely unprepared for the world that had moved on without me.',
             topic: ContentTopic.REENTRY,
             status: ContentStatus.PUBLISHED,
-            creatorId: creator1.creator!.id,
-            tags: ['personal story', 'reentry', 'transformation', 'community'],
+            creatorId: marcus.creator!.id,
+            tags: ['reentry', 'personal story', 'challenges', 'hope'],
+            viewCount: 432,
         },
         {
-            title: "Understanding Addiction: It's Not a Choice",
-            content: `# Understanding Addiction: It's Not a Choice
+            title: 'The Role of Humor in Healing Trauma',
+            content: `# The Role of Humor in Healing Trauma
 
-One of the biggest misconceptions about addiction is that it's a moral failing or a lack of willpower. As someone who has worked in addiction recovery for over 10 years, I can tell you that addiction is a complex disease that affects the brain.
+People often ask us why "humor" is part of the H3 Network mission. Isn't trauma supposed to be serious? Shouldn't we treat these heavy topics with the gravity they deserve?
 
-## The Science Behind Addiction
+## Understanding Healing Humor
 
-Addiction changes the brain's reward system, making it extremely difficult to stop using substances even when someone wants to quit. This isn't about being weak – it's about brain chemistry.
+The answer is yes - and humor helps us do exactly that.
 
-## The Path to Recovery
+When we laugh together, we're not minimizing pain or making light of serious issues. We're acknowledging our shared humanity. We're saying, "I see you, I understand you, and despite everything we've been through, we can still find moments of joy."
 
-Recovery is possible, but it requires:
-- Professional treatment
-- Community support
-- Ongoing commitment
-- Compassion from loved ones
+## My Journey with Humor
 
-## Breaking the Stigma
+Humor has been my lifeline through some of the darkest moments. It's not about telling jokes or being the class clown. It's about finding the absurd in the awful, the light in the darkness, the human connection that reminds us we're not alone.
 
-We need to stop criminalizing addiction and start treating it as the health issue it is. When we remove shame and stigma, people are more likely to seek help.
+In difficult times, humor was survival. It was how we maintained our dignity when circumstances tried to strip it away. It was how we built relationships across different backgrounds. It was how we reminded ourselves that we were more than our worst moments.
 
-Remember: Recovery is not linear, and every person's journey is different. What matters is that we keep supporting each other along the way.`,
+## Humor as Medicine
+
+In recovery and reentry, humor is healing. It's how we:
+- Process trauma without being consumed by it
+- Connect with others who've walked similar paths  
+- Model resilience for our families and communities
+- Find strength to keep going when times get tough
+
+## The Important Distinction
+
+But here's the important part: our humor comes from our own experience. We're not laughing at people who are struggling - we're laughing with them, because we've been there too.
+
+## A Message of Hope
+
+If you're in the middle of your own struggle right now, I'm not asking you to laugh. I'm asking you to stay open to the possibility that someday, you might find reasons to smile again. And when that day comes, you'll understand why humor is such a powerful force for healing.
+
+Because sometimes, the bravest thing you can do is laugh in the face of adversity.`,
             excerpt:
-                'Breaking down the misconceptions about addiction and explaining why treatment, not punishment, is the answer.',
-            topic: ContentTopic.ADDICTION,
+                'People often ask us why "humor" is part of the H3 Network mission. When we laugh together, we\'re not minimizing pain - we\'re acknowledging our shared humanity.',
+            topic: ContentTopic.GENERAL,
             status: ContentStatus.PUBLISHED,
-            creatorId: creator2.creator!.id,
-            tags: ['addiction', 'science', 'recovery', 'stigma', 'education'],
+            creatorId: rita.creator!.id,
+            tags: ['humor', 'healing', 'trauma', 'resilience'],
+            viewCount: 678,
         },
     ];
 
@@ -257,18 +402,19 @@ Remember: Recovery is not linear, and every person's journey is different. What 
         });
     }
 
-    console.log('✅ Database seeded successfully!');
+    console.log('✅ H3 Network database seeded successfully!');
     console.log(`Created:`);
     console.log(`- 1 test viewer (test@h3network.org / password123)`);
-    console.log(`- 2 creators`);
-    console.log(`- 2 shows`);
-    console.log(`- ${videos.length} videos`);
-    console.log(`- ${blogPosts.length} blog posts`);
+    console.log(`- 4 H3 Network creators (Noah, Rita, Marcus, Sarah)`);
+    console.log(`- 4 shows (Noah & Rita Show, Fresh Out Life, Recovery Journeys, Justice Talks)`);
+    console.log(`- ${videos.length} sample videos with realistic H3 Network content`);
+    console.log(`- ${blogPosts.length} blog posts with authentic stories`);
     console.log('');
-    console.log('🧪 To test saved content:');
+    console.log('🧪 To test the platform:');
     console.log('1. Sign in with test@h3network.org / password123');
-    console.log('2. Go to /videos and save some videos');
-    console.log('3. Check /profile?tab=saved to see saved content');
+    console.log('2. Browse videos and creators');
+    console.log('3. Save content and check /profile?tab=saved');
+    console.log('4. Creators: noah@h3network.org, rita@h3network.org, etc. (creator123)');
 }
 
 main()
