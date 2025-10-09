@@ -1,6 +1,3 @@
-// H3 Network Media Platform - Database Schema
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,22 +7,20 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User accounts and authentication
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -39,21 +34,20 @@ model Session {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String?   @unique
-  password      String?   // For email/password authentication
+  email         String?        @unique
   emailVerified DateTime?
   image         String?
-  role          UserRole  @default(VIEWER)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  accounts    Account[]
-  sessions    Session[]
-  progress    UserProgress[]
-  savedContent SavedContent[]
-  creator     Creator?
+  role          UserRole       @default(VIEWER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  password      String?
+  accounts      Account[]
+  creator       Creator?
+  savedContent  SavedContent[]
+  sessions      Session[]
+  progress      UserProgress[]
 }
 
 model VerificationToken {
@@ -64,7 +58,6 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// Content creators
 model Creator {
   id          String   @id @default(cuid())
   userId      String   @unique
@@ -75,109 +68,95 @@ model Creator {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  videos Video[]
-  blogs  Blog[]
+  blogs       Blog[]
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videos      Video[]
 }
 
-// Shows/Series
 model Show {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String?
-  thumbnailUrl String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  videos Video[]
-}
-
-// Video content
-model Video {
-  id           String      @id @default(cuid())
-  title        String
+  id           String   @id @default(cuid())
+  name         String   @unique
   description  String?
-  youtubeId    String      @unique
-  youtubeUrl   String
   thumbnailUrl String?
-  duration     Int?        // Duration in seconds
-  viewCount    Int         @default(0)
-  tags         String[]
-  topic        ContentTopic?
-  status       ContentStatus @default(DRAFT)
-  publishedAt  DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  videos       Video[]
+}
 
-  creatorId String
-  showId    String?
-
-  creator  Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  show     Show?          @relation(fields: [showId], references: [id])
+model Video {
+  id            String         @id @default(cuid())
+  title         String
+  description   String?
+  youtubeId     String         @unique
+  youtubeUrl    String
+  thumbnailUrl  String?
+  duration      Int?
+  viewCount     Int            @default(0)
+  tags          String[]
+  topic         ContentTopic?
+  status        ContentStatus  @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  creatorId     String
+  showId        String?
+  savedBy       SavedContent[] @relation("SavedVideos")
   videoProgress UserProgress[] @relation("VideoProgress")
-  savedBy  SavedContent[] @relation("SavedVideos")
+  creator       Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  show          Show?          @relation(fields: [showId], references: [id])
 }
 
-// Blog content
 model Blog {
-  id           String        @id @default(cuid())
-  title        String
-  content      String        @db.Text
-  excerpt      String?
+  id            String         @id @default(cuid())
+  title         String
+  content       String
+  excerpt       String?
   featuredImage String?
-  viewCount    Int           @default(0)
-  tags         String[]
-  topic        ContentTopic?
-  status       ContentStatus @default(DRAFT)
-  publishedAt  DateTime?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-
-  creatorId String
-  creator   Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-
-  blogProgress UserProgress[] @relation("BlogProgress")
-  savedBy     SavedContent[] @relation("SavedBlogs")
+  viewCount     Int            @default(0)
+  tags          String[]
+  topic         ContentTopic?
+  status        ContentStatus  @default(DRAFT)
+  publishedAt   DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  creatorId     String
+  creator       Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  savedBy       SavedContent[] @relation("SavedBlogs")
+  blogProgress  UserProgress[] @relation("BlogProgress")
 }
 
-// User progress tracking
 model UserProgress {
-  id               String      @id @default(cuid())
-  userId           String
-  videoId          String?
-  blogId           String?
-  contentType      ContentType
-  progressSeconds  Int         @default(0) // For videos
-  completed        Boolean     @default(false)
-  lastWatched      DateTime    @default(now())
-
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  video Video? @relation("VideoProgress", fields: [videoId], references: [id], onDelete: Cascade)
-  blog  Blog?  @relation("BlogProgress", fields: [blogId], references: [id], onDelete: Cascade)
+  id              String      @id @default(cuid())
+  userId          String
+  videoId         String?
+  blogId          String?
+  contentType     ContentType
+  progressSeconds Int         @default(0)
+  completed       Boolean     @default(false)
+  lastWatched     DateTime    @default(now())
+  blog            Blog?       @relation("BlogProgress", fields: [blogId], references: [id], onDelete: Cascade)
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video           Video?      @relation("VideoProgress", fields: [videoId], references: [id], onDelete: Cascade)
 
   @@unique([userId, videoId])
   @@unique([userId, blogId])
 }
 
-// Saved content
 model SavedContent {
-  id        String   @id @default(cuid())
-  userId    String
-  videoId   String?
-  blogId    String?
-  savedAt   DateTime @default(now())
-
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  video Video? @relation("SavedVideos", fields: [videoId], references: [id], onDelete: Cascade)
-  blog  Blog?  @relation("SavedBlogs", fields: [blogId], references: [id], onDelete: Cascade)
+  id      String   @id @default(cuid())
+  userId  String
+  videoId String?
+  blogId  String?
+  savedAt DateTime @default(now())
+  blog    Blog?    @relation("SavedBlogs", fields: [blogId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  video   Video?   @relation("SavedVideos", fields: [videoId], references: [id], onDelete: Cascade)
 
   @@unique([userId, videoId])
   @@unique([userId, blogId])
 }
 
-// Enums
 enum UserRole {
   VIEWER
   CREATOR

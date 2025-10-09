@@ -54,7 +54,7 @@ export default function SeedPage() {
                     <p className="text-gray-600 mb-6">
                         Click the button below to populate the H3 Network database with sample content including Noah, Rita, videos, and shows.
                         <br />
-                        <small className="text-gray-500">Using direct database connection for reliable seeding.</small>
+                        <small className="text-gray-500">Now powered by reliable Neon PostgreSQL hosting.</small>
                     </p>
                     
                     <button
