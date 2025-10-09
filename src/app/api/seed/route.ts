@@ -1,15 +1,15 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { UserRole, ContentStatus, ContentTopic } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
-export async function POST(request: NextRequest) {
+export async function POST() {
     try {
         console.log('🌱 Starting H3 Network database seeding...');
 
         // Create test viewer
         const viewerPassword = await bcrypt.hash('password123', 12);
-        const testViewer = await prisma.user.upsert({
+        await prisma.user.upsert({
             where: { email: 'test@h3network.org' },
             update: {},
             create: {
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        const freshOutLife = await prisma.show.upsert({
+        await prisma.show.upsert({
             where: { name: 'Fresh Out Life' },
             update: {},
             create: {

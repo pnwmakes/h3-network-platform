@@ -1,10 +1,23 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+
+interface SeedResult {
+    success: boolean;
+    message?: string;
+    error?: string;
+    created?: {
+        users: number;
+        creators: number;
+        shows: number;
+        videos: number;
+    };
+}
 
 export default function SeedPage() {
     const [isSeeding, setIsSeeding] = useState(false);
-    const [result, setResult] = useState<any>(null);
+    const [result, setResult] = useState<SeedResult | null>(null);
 
     const runSeed = async () => {
         setIsSeeding(true);
@@ -82,8 +95,8 @@ export default function SeedPage() {
                         <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                             <h4 className="font-semibold text-blue-800 mb-2">Next Steps:</h4>
                             <div className="text-blue-700 text-sm space-y-1">
-                                <p>• <a href="/videos" className="underline hover:text-blue-900">Check Videos Page</a></p>
-                                <p>• <a href="/creators" className="underline hover:text-blue-900">Check Creators Page</a></p>
+                                <p>• <Link href="/videos" className="underline hover:text-blue-900">Check Videos Page</Link></p>
+                                <p>• <Link href="/creators" className="underline hover:text-blue-900">Check Creators Page</Link></p>
                                 <p>• Test user: test@h3network.org / password123</p>
                             </div>
                         </div>
