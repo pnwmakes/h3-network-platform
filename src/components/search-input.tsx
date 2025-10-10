@@ -33,10 +33,16 @@ export function SearchInput({
 
             setIsLoading(true);
             try {
-                const response = await fetch(`/api/search/suggestions?q=${encodeURIComponent(query)}`);
+                // For now, let's use simpler string-based suggestions
+                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=5`);
                 if (response.ok) {
                     const data = await response.json();
-                    setSuggestions(data.suggestions || []);
+                    // Extract simple text suggestions from results
+                    const suggestions = [
+                        ...data.results.videos.items.map((video: { title: string }) => video.title),
+                        ...data.results.creators.items.map((creator: { displayName: string }) => creator.displayName),
+                    ].slice(0, 5);
+                    setSuggestions(suggestions);
                     setShowSuggestions(true);
                 }
             } catch (error) {
@@ -94,7 +100,7 @@ export function SearchInput({
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                     placeholder={placeholder}
                     autoFocus={autoFocus}
-                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white font-medium"
                 />
                 
                 {query && (
@@ -114,7 +120,7 @@ export function SearchInput({
                         <button
                             key={index}
                             onClick={() => handleSuggestionClick(suggestion)}
-                            className="w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none first:rounded-t-lg last:rounded-b-lg"
+                            className="w-full px-4 py-2 text-left text-sm text-black font-medium hover:bg-gray-50 focus:bg-gray-50 focus:outline-none first:rounded-t-lg last:rounded-b-lg"
                         >
                             <div className="flex items-center">
                                 <Search className="h-3 w-3 text-gray-400 mr-2" />
