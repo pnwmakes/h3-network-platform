@@ -26,8 +26,8 @@ function ProfileContent() {
 
     if (status === 'loading') {
         return (
-            <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
-                <div className='w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin'></div>
+            <div className='min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center transition-colors duration-200'>
+                <div className='w-8 h-8 border-2 border-gray-300 dark:border-gray-600 border-t-blue-600 rounded-full animate-spin'></div>
             </div>
         );
     }
@@ -45,40 +45,40 @@ function ProfileContent() {
     ] as const;
 
     return (
-        <div className='min-h-screen bg-gray-50'>
+        <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                 {/* Header */}
                 <div className='text-center mb-12'>
-                    <h1 className='text-4xl md:text-5xl font-black text-gray-900 mb-4 tracking-tight'>
+                    <h1 className='text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-4 tracking-tight transition-colors duration-200'>
                         MY H3 PROFILE
                     </h1>
                     <div className='inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-lg font-bold mb-6'>
                         Hope • Help • Humor
                     </div>
-                    <p className='text-lg text-gray-600 leading-relaxed'>
+                    <p className='text-lg text-gray-600 dark:text-gray-300 leading-relaxed transition-colors duration-200'>
                         Track your journey through our community content and
                         manage your account
                     </p>
                 </div>
 
                 {/* User Info Card */}
-                <div className='bg-white rounded-xl shadow-lg p-6 mb-8'>
+                <div className='bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 mb-8 transition-colors duration-200'>
                     <div className='flex items-center space-x-4'>
                         <div className='w-16 h-16 bg-gradient-to-r from-blue-600 to-green-600 rounded-full flex items-center justify-center'>
                             <User className='h-8 w-8 text-white' />
                         </div>
                         <div>
-                            <h2 className='text-2xl font-bold text-gray-900'>
+                            <h2 className='text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-200'>
                                 {session.user.name}
                             </h2>
-                            <p className='text-gray-600'>
+                            <p className='text-gray-600 dark:text-gray-300 transition-colors duration-200'>
                                 {session.user.email}
                             </p>
                             <div className='flex items-center mt-2'>
-                                <span className='inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium'>
+                                <span className='inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm font-medium transition-colors duration-200'>
                                     {session.user.role.toLowerCase()}
                                 </span>
-                                <span className='ml-3 text-sm text-gray-500'>
+                                <span className='ml-3 text-sm text-gray-500 dark:text-gray-400 transition-colors duration-200'>
                                     H3 Network Member
                                 </span>
                             </div>
@@ -88,7 +88,7 @@ function ProfileContent() {
 
                 {/* Navigation Tabs */}
                 <div className='mb-8'>
-                    <nav className='flex space-x-1 bg-white rounded-lg p-1 shadow-lg overflow-x-auto'>
+                    <nav className='flex space-x-1 bg-white dark:bg-gray-900 rounded-lg p-1 shadow-lg overflow-x-auto transition-colors duration-200'>
                         {tabs.map((tab) => {
                             const Icon = tab.icon;
                             return (
@@ -100,7 +100,7 @@ function ProfileContent() {
                                     className={`flex items-center space-x-2 px-4 py-3 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                                         activeTab === tab.id
                                             ? 'bg-blue-600 text-white shadow-md'
-                                            : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
+                                            : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-gray-800'
                                     }`}
                                 >
                                     <Icon className='h-5 w-5' />
@@ -112,7 +112,7 @@ function ProfileContent() {
                 </div>
 
                 {/* Tab Content */}
-                <div className='bg-white rounded-xl shadow-lg p-6'>
+                <div className='bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 transition-colors duration-200'>
                     {activeTab === 'overview' && (
                         <UserStats userId={session.user.id} />
                     )}
