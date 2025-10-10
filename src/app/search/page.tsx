@@ -6,6 +6,7 @@ import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
 import { User, Play, Eye, Calendar, Tag, Search } from 'lucide-react';
+import { SearchInput } from '@/components/search-input';
 
 interface SearchResult {
     query: string;
@@ -163,17 +164,12 @@ function SearchContent() {
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                     <div className='text-center py-12'>
                         <div className='mb-8'>
-                            <div className='max-w-md mx-auto relative'>
-                                <div className='flex items-center bg-white border border-gray-300 rounded-lg px-4 py-3 shadow-sm'>
-                                    <Search className='h-5 w-5 text-gray-400 mr-3' />
-                                    <span className='text-gray-500'>
-                                        Search for videos, creators, and
-                                        content...
-                                    </span>
-                                </div>
-                                <p className='text-sm text-center text-gray-600 mt-2'>
-                                    Search coming soon
-                                </p>
+                            <div className='max-w-md mx-auto'>
+                                <SearchInput 
+                                    className="w-full" 
+                                    placeholder="Search for videos, creators, and content..."
+                                    autoFocus={true}
+                                />
                             </div>
                         </div>
                         <h1 className='text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight'>
@@ -199,13 +195,11 @@ function SearchContent() {
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                 {/* Search Interface */}
                 <div className='mb-8'>
-                    <div className='max-w-2xl mx-auto relative'>
-                        <div className='flex items-center bg-white border border-gray-300 rounded-lg px-4 py-3 shadow-sm'>
-                            <Search className='h-5 w-5 text-gray-400 mr-3' />
-                            <span className='text-gray-500'>
-                                Search coming soon
-                            </span>
-                        </div>
+                    <div className='max-w-2xl mx-auto'>
+                        <SearchInput 
+                            className="w-full" 
+                            placeholder="Search for videos, creators, and content..."
+                        />
                     </div>
                 </div>
 

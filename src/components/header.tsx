@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { SearchInput } from './search-input';
 
 export function Header() {
     const { data: session } = useSession();
@@ -66,9 +67,7 @@ export function Header() {
 
                     {/* Search Bar - Desktop */}
                     <div className='hidden lg:flex flex-1 max-w-lg mx-8'>
-                        <div className='w-full h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 text-sm'>
-                            Search coming soon
-                        </div>
+                        <SearchInput className="w-full" placeholder="Search videos, creators, and content..." />
                     </div>
 
                     {/* User Menu */}
