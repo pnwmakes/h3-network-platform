@@ -3,15 +3,15 @@ import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { 
-    Calendar, 
-    Eye, 
-    User, 
-    Clock, 
-    Tag, 
-    ArrowLeft, 
+import {
+    Calendar,
+    Eye,
+    User,
+    Clock,
+    Tag,
+    ArrowLeft,
     Share2,
-    Heart
+    Heart,
 } from 'lucide-react';
 
 interface BlogPostPageProps {
@@ -21,9 +21,9 @@ interface BlogPostPageProps {
 async function getBlogPost(id: string) {
     try {
         const blog = await prisma.blog.findUnique({
-            where: { 
+            where: {
                 id,
-                status: 'PUBLISHED'
+                status: 'PUBLISHED',
             },
             include: {
                 creator: {
@@ -56,12 +56,23 @@ async function getBlogPost(id: string) {
     }
 }
 
-async function getRelatedPosts(currentBlogId: string, topic?: string, creatorId?: string) {
+async function getRelatedPosts(
+    currentBlogId: string,
+    topic?: string,
+    creatorId?: string
+) {
     try {
         const whereConditions = [];
-        
+
         if (topic) {
-            whereConditions.push({ topic: topic as 'REENTRY' | 'ADDICTION' | 'INCARCERATION' | 'CRIMINAL_JUSTICE_REFORM' | 'GENERAL' });
+            whereConditions.push({
+                topic: topic as
+                    | 'REENTRY'
+                    | 'ADDICTION'
+                    | 'INCARCERATION'
+                    | 'CRIMINAL_JUSTICE_REFORM'
+                    | 'GENERAL',
+            });
         }
         if (creatorId) {
             whereConditions.push({ creatorId });
@@ -115,8 +126,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     }
 
     const relatedPosts = await getRelatedPosts(
-        blog.id, 
-        blog.topic || undefined, 
+        blog.id,
+        blog.topic || undefined,
         blog.creatorId
     );
 
@@ -125,7 +136,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className='max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                 {/* Back Button */}
                 <div className='mb-8'>
-                    <Link 
+                    <Link
                         href='/blog'
                         className='inline-flex items-center text-blue-600 hover:text-blue-700 font-medium'
                     >
@@ -214,19 +225,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                 <div className='flex items-center space-x-1'>
                                     <Calendar className='h-4 w-4' />
                                     <span>
-                                        Published {formatDistanceToNow(
+                                        Published{' '}
+                                        {formatDistanceToNow(
                                             new Date(blog.publishedAt),
                                             { addSuffix: true }
                                         )}
                                     </span>
                                 </div>
                             )}
-                            
+
                             <div className='flex items-center space-x-1'>
                                 <Clock className='h-4 w-4' />
-                                <span>{calculateReadTime(blog.content)} min read</span>
+                                <span>
+                                    {calculateReadTime(blog.content)} min read
+                                </span>
                             </div>
-                            
+
                             <div className='flex items-center space-x-1'>
                                 <Eye className='h-4 w-4' />
                                 <span>{blog.viewCount} views</span>
@@ -235,22 +249,31 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
                         {/* Blog Content */}
                         <div className='prose prose-lg prose-blue max-w-none'>
-                            {blog.content.split('\n').map((paragraph, index) => (
-                                <p key={index} className='mb-4 text-gray-800 leading-relaxed'>
-                                    {paragraph}
-                                </p>
-                            ))}
+                            {blog.content
+                                .split('\n')
+                                .map((paragraph, index) => (
+                                    <p
+                                        key={index}
+                                        className='mb-4 text-gray-800 leading-relaxed'
+                                    >
+                                        {paragraph}
+                                    </p>
+                                ))}
                         </div>
 
                         {/* Tags */}
                         {blog.tags.length > 0 && (
                             <div className='mt-8 pt-6 border-t border-gray-200'>
-                                <h3 className='text-sm font-medium text-gray-900 mb-3'>Tags</h3>
+                                <h3 className='text-sm font-medium text-gray-900 mb-3'>
+                                    Tags
+                                </h3>
                                 <div className='flex flex-wrap gap-2'>
                                     {blog.tags.map((tag, index) => (
                                         <Link
                                             key={index}
-                                            href={`/search?tags=${encodeURIComponent(tag)}`}
+                                            href={`/search?tags=${encodeURIComponent(
+                                                tag
+                                            )}`}
                                             className='inline-flex items-center gap-1 px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-sm transition-colors'
                                         >
                                             <Tag className='h-3 w-3' />
@@ -297,13 +320,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                             </p>
                                         )}
                                         <div className='flex items-center space-x-2 mt-3 text-xs text-gray-500'>
-                                            <span>{relatedPost.creator.displayName}</span>
+                                            <span>
+                                                {
+                                                    relatedPost.creator
+                                                        .displayName
+                                                }
+                                            </span>
                                             {relatedPost.publishedAt && (
                                                 <>
                                                     <span>•</span>
                                                     <span>
                                                         {formatDistanceToNow(
-                                                            new Date(relatedPost.publishedAt),
+                                                            new Date(
+                                                                relatedPost.publishedAt
+                                                            ),
                                                             { addSuffix: true }
                                                         )}
                                                     </span>

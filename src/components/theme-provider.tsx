@@ -23,7 +23,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
             document.documentElement.classList.remove('dark');
         } else {
             // Default to system preference
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const prefersDark = window.matchMedia(
+                '(prefers-color-scheme: dark)'
+            ).matches;
             setIsDarkMode(prefersDark);
             if (prefersDark) {
                 document.documentElement.classList.add('dark');
@@ -34,7 +36,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const toggleDarkMode = () => {
         const newDarkMode = !isDarkMode;
         setIsDarkMode(newDarkMode);
-        
+
         if (newDarkMode) {
             document.documentElement.classList.add('dark');
             localStorage.setItem('h3-theme', 'dark');

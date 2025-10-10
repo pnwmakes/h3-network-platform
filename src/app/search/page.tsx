@@ -75,7 +75,7 @@ export default function SearchPage() {
     return (
         <Suspense
             fallback={
-                <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+                <div className='min-h-screen bg-gray-50 dark:bg-gray-950 flex items-center justify-center transition-colors duration-200'>
                     <div className='w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin'></div>
                 </div>
             }
@@ -160,22 +160,22 @@ function SearchContent() {
 
     if (!query.trim()) {
         return (
-            <div className='min-h-screen bg-gray-50'>
+            <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                     <div className='text-center py-12'>
                         <div className='mb-8'>
                             <div className='max-w-md mx-auto'>
-                                <SearchInput 
-                                    className="w-full" 
-                                    placeholder="Search for videos, creators, and content..."
+                                <SearchInput
+                                    className='w-full'
+                                    placeholder='Search for videos, creators, and content...'
                                     autoFocus={true}
                                 />
                             </div>
                         </div>
-                        <h1 className='text-4xl md:text-5xl font-black text-gray-900 mb-6 tracking-tight'>
+                        <h1 className='text-4xl md:text-5xl font-black text-gray-900 dark:text-white mb-6 tracking-tight transition-colors duration-200'>
                             SEARCH H3 NETWORK
                         </h1>
-                        <p className='text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto mb-8 leading-relaxed'>
+                        <p className='text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed transition-colors duration-200'>
                             Find Hope, Help, and Humor through our content
                             covering criminal justice reform, addiction
                             recovery, and reentry support. Search by keywords,
@@ -191,14 +191,14 @@ function SearchContent() {
     }
 
     return (
-        <div className='min-h-screen bg-gray-50'>
+        <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                 {/* Search Interface */}
                 <div className='mb-8'>
                     <div className='max-w-2xl mx-auto'>
-                        <SearchInput 
-                            className="w-full" 
-                            placeholder="Search for videos, creators, and content..."
+                        <SearchInput
+                            className='w-full'
+                            placeholder='Search for videos, creators, and content...'
                         />
                     </div>
                 </div>
@@ -223,11 +223,11 @@ function SearchContent() {
                     <>
                         {/* Results Summary */}
                         <div className='mb-6'>
-                            <h1 className='text-2xl font-bold text-gray-900 mb-2'>
+                            <h1 className='text-2xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-200'>
                                 Search Results for &quot;{searchResults.query}
                                 &quot;
                             </h1>
-                            <p className='text-gray-600'>
+                            <p className='text-gray-600 dark:text-gray-300 transition-colors duration-200'>
                                 {searchResults.pagination.total} results found
                                 {searchResults.filters.topic && (
                                     <span>

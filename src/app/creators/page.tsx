@@ -67,16 +67,16 @@ export default async function CreatorsPage() {
     const creators = await getCreators();
 
     return (
-        <div className='min-h-screen bg-gray-50'>
+        <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
                 <BackButton href='/' label='Back to Home' />
 
                 {/* Header */}
                 <div className='text-center mb-12'>
-                    <h1 className='text-3xl font-bold text-gray-900 mb-4'>
+                    <h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-200'>
                         Meet Our H3 Network Creators
                     </h1>
-                    <p className='text-lg text-gray-600 max-w-3xl mx-auto'>
+                    <p className='text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto transition-colors duration-200'>
                         Discover the passionate creators sharing their stories
                         of{' '}
                         <span className='text-blue-600 font-semibold'>
@@ -107,9 +107,9 @@ export default async function CreatorsPage() {
                                     href={`/creators/${creator.id}`}
                                     className='group'
                                 >
-                                    <div className='bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
+                                    <div className='bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1'>
                                         {/* Creator Avatar */}
-                                        <div className='relative h-48 bg-gradient-to-br from-blue-100 to-purple-100'>
+                                        <div className='relative h-48 bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900'>
                                             <div className='absolute inset-0 flex items-center justify-center'>
                                                 {creator.avatarUrl ? (
                                                     <Image
@@ -135,37 +135,37 @@ export default async function CreatorsPage() {
 
                                         {/* Creator Info */}
                                         <div className='p-6'>
-                                            <h3 className='text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors'>
+                                            <h3 className='text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
                                                 {creator.displayName}
                                             </h3>
 
                                             {creator.showName && (
-                                                <p className='text-sm text-blue-600 font-medium mb-2'>
+                                                <p className='text-sm text-blue-600 dark:text-blue-400 font-medium mb-2'>
                                                     {creator.showName}
                                                 </p>
                                             )}
 
-                                            <p className='text-gray-600 text-sm mb-4 line-clamp-3'>
+                                            <p className='text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3'>
                                                 {creator.bio ||
                                                     'A passionate creator sharing stories of hope, help, and humor with the H3 Network community.'}
                                             </p>
 
                                             {/* Creator Stats */}
-                                            <div className='flex justify-between text-sm text-gray-500 border-t border-gray-100 pt-4'>
+                                            <div className='flex justify-between text-sm text-gray-500 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800 pt-4'>
                                                 <div className='text-center'>
-                                                    <div className='font-semibold text-gray-900'>
+                                                    <div className='font-semibold text-gray-900 dark:text-white'>
                                                         {stats.videoCount}
                                                     </div>
                                                     <div>Videos</div>
                                                 </div>
                                                 <div className='text-center'>
-                                                    <div className='font-semibold text-gray-900'>
+                                                    <div className='font-semibold text-gray-900 dark:text-white'>
                                                         {stats.blogCount}
                                                     </div>
                                                     <div>Blogs</div>
                                                 </div>
                                                 <div className='text-center'>
-                                                    <div className='font-semibold text-gray-900'>
+                                                    <div className='font-semibold text-gray-900 dark:text-white'>
                                                         {stats.totalViews.toLocaleString()}
                                                     </div>
                                                     <div>Views</div>
