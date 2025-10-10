@@ -94,7 +94,7 @@ export function SearchInput({
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                     placeholder={placeholder}
                     autoFocus={autoFocus}
-                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg text-sm placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
                 />
                 
                 {query && (
@@ -114,7 +114,7 @@ export function SearchInput({
                         <button
                             key={index}
                             onClick={() => handleSuggestionClick(suggestion)}
-                            className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none first:rounded-t-lg last:rounded-b-lg"
+                            className="w-full px-4 py-2 text-left text-sm text-gray-900 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none first:rounded-t-lg last:rounded-b-lg"
                         >
                             <div className="flex items-center">
                                 <Search className="h-3 w-3 text-gray-400 mr-2" />
