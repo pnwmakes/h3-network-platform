@@ -100,7 +100,7 @@ export function SearchInput({
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                     placeholder={placeholder}
                     autoFocus={autoFocus}
-                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg text-sm text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white font-medium"
+                    className="block w-full pl-10 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-black dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 font-medium transition-colors duration-200"
                 />
                 
                 {query && (

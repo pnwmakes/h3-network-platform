@@ -10,7 +10,7 @@ export default function Home() {
     const { data: session, status } = useSession();
 
     return (
-        <div className='min-h-screen bg-gray-50'>
+        <div className='min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200'>
             {/* Countdown Banner */}
             <CountdownBanner />
 
@@ -79,14 +79,14 @@ export default function Home() {
 
                 {/* Hope Help Humor Sections */}
                 <div className='grid md:grid-cols-3 gap-8 mb-16'>
-                    <div className='text-center p-8 bg-white rounded-xl shadow-lg'>
+                    <div className='text-center p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-200'>
                         <div className='text-6xl font-black text-blue-600 mb-4'>
                             01
                         </div>
-                        <h2 className='text-3xl font-bold text-gray-900 mb-4'>
+                        <h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-4'>
                             Hope
                         </h2>
-                        <p className='text-gray-600 leading-relaxed'>
+                        <p className='text-gray-600 dark:text-gray-300 leading-relaxed'>
                             We understand conversations on these topics can
                             leave people feeling hopeless. This is why we strive
                             to bring HOPE through each piece of our content.
@@ -94,14 +94,14 @@ export default function Home() {
                         </p>
                     </div>
 
-                    <div className='text-center p-8 bg-white rounded-xl shadow-lg'>
+                    <div className='text-center p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-200'>
                         <div className='text-6xl font-black text-green-600 mb-4'>
                             02
                         </div>
-                        <h2 className='text-3xl font-bold text-gray-900 mb-4'>
+                        <h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-4'>
                             Help
                         </h2>
-                        <p className='text-gray-600 leading-relaxed'>
+                        <p className='text-gray-600 dark:text-gray-300 leading-relaxed'>
                             We don&apos;t just discuss problems; we discuss
                             solutions. We want our viewers to leave feeling
                             empowered to make a positive difference in our
@@ -109,14 +109,14 @@ export default function Home() {
                         </p>
                     </div>
 
-                    <div className='text-center p-8 bg-white rounded-xl shadow-lg'>
+                    <div className='text-center p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg transition-colors duration-200'>
                         <div className='text-6xl font-black text-yellow-600 mb-4'>
                             03
                         </div>
-                        <h2 className='text-3xl font-bold text-gray-900 mb-4'>
+                        <h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-4'>
                             Humor
                         </h2>
-                        <p className='text-gray-600 leading-relaxed'>
+                        <p className='text-gray-600 dark:text-gray-300 leading-relaxed'>
                             When we can take a moment to laugh, we own the
                             moment instead of it owning us. Laughter is truly
                             the best medicine and the good news? There&apos;s no
