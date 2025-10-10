@@ -214,10 +214,10 @@ export default async function CreatorsPage() {
                                 />
                             </svg>
                         </div>
-                        <h3 className='text-lg font-medium text-gray-900 mb-2'>
+                        <h3 className='text-lg font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-200'>
                             No Creators Yet
                         </h3>
-                        <p className='text-gray-500'>
+                        <p className='text-gray-500 dark:text-gray-400 transition-colors duration-200'>
                             Creators will appear here once they join the H3
                             Network platform.
                         </p>
@@ -227,10 +227,10 @@ export default async function CreatorsPage() {
                 {/* Featured Creators Section - Future Enhancement */}
                 {creators.length > 0 && (
                     <div className='mt-16 text-center'>
-                        <h2 className='text-2xl font-bold text-gray-900 mb-4'>
+                        <h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-200'>
                             Join the H3 Network Community
                         </h2>
-                        <p className='text-gray-600 mb-6 max-w-2xl mx-auto'>
+                        <p className='text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto transition-colors duration-200'>
                             Be part of a community dedicated to supporting those
                             affected by criminal justice issues and addiction
                             recovery through authentic storytelling and shared

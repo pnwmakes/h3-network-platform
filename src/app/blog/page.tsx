@@ -25,7 +25,10 @@ async function getBlogs() {
             },
         });
     } catch (error) {
-        console.warn('Database not available, returning empty blogs list:', error);
+        console.warn(
+            'Database not available, returning empty blogs list:',
+            error
+        );
         return [];
     }
 }
@@ -55,10 +58,10 @@ export default async function BlogPage() {
                         H3 NETWORK BLOG
                     </h1>
                     <p className='text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed transition-colors duration-200'>
-                        Stories of Hope, Help, and Humor from our community
-                        of justice-impacted individuals, advocates, and
-                        experts in criminal justice reform, addiction
-                        recovery, and reentry support.
+                        Stories of Hope, Help, and Humor from our community of
+                        justice-impacted individuals, advocates, and experts in
+                        criminal justice reform, addiction recovery, and reentry
+                        support.
                     </p>
                     <div className='inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-2 rounded-lg font-bold'>
                         Hope • Help • Humor
@@ -86,7 +89,7 @@ export default async function BlogPage() {
                                             className='object-cover group-hover:scale-105 transition-transform duration-300'
                                             sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
                                         />
-                                        
+
                                         {/* Topic Badge */}
                                         {blog.topic && (
                                             <div className='absolute top-4 left-4'>
@@ -100,13 +103,13 @@ export default async function BlogPage() {
                                     {/* Content */}
                                     <div className='p-6'>
                                         {/* Title */}
-                                        <h2 className='text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors'>
+                                        <h2 className='text-xl font-bold text-gray-900 dark:text-white mb-3 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'>
                                             {blog.title}
                                         </h2>
 
                                         {/* Excerpt */}
                                         {blog.excerpt && (
-                                            <p className='text-gray-600 text-sm mb-4 line-clamp-3'>
+                                            <p className='text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-3 transition-colors duration-200'>
                                                 {blog.excerpt}
                                             </p>
                                         )}
@@ -116,8 +119,14 @@ export default async function BlogPage() {
                                             <div className='flex items-center space-x-2'>
                                                 {blog.creator.avatarUrl ? (
                                                     <Image
-                                                        src={blog.creator.avatarUrl}
-                                                        alt={blog.creator.displayName}
+                                                        src={
+                                                            blog.creator
+                                                                .avatarUrl
+                                                        }
+                                                        alt={
+                                                            blog.creator
+                                                                .displayName
+                                                        }
                                                         width={32}
                                                         height={32}
                                                         className='rounded-full'
@@ -127,37 +136,47 @@ export default async function BlogPage() {
                                                         <User className='h-4 w-4 text-gray-400' />
                                                     </div>
                                                 )}
-                                                <span className='text-sm font-medium text-gray-700'>
+                                                <span className='text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors duration-200'>
                                                     {blog.creator.displayName}
                                                 </span>
                                             </div>
                                         </div>
 
                                         {/* Post Meta */}
-                                        <div className='flex items-center justify-between text-xs text-gray-500'>
+                                        <div className='flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 transition-colors duration-200'>
                                             <div className='flex items-center space-x-4'>
                                                 {blog.publishedAt && (
                                                     <div className='flex items-center space-x-1'>
                                                         <Calendar className='h-3 w-3' />
                                                         <span>
                                                             {formatDistanceToNow(
-                                                                new Date(blog.publishedAt),
-                                                                { addSuffix: true }
+                                                                new Date(
+                                                                    blog.publishedAt
+                                                                ),
+                                                                {
+                                                                    addSuffix:
+                                                                        true,
+                                                                }
                                                             )}
                                                         </span>
                                                     </div>
                                                 )}
-                                                
+
                                                 <div className='flex items-center space-x-1'>
                                                     <Clock className='h-3 w-3' />
                                                     <span>
-                                                        {calculateReadTime(blog.content)} min read
+                                                        {calculateReadTime(
+                                                            blog.content
+                                                        )}{' '}
+                                                        min read
                                                     </span>
                                                 </div>
-                                                
+
                                                 <div className='flex items-center space-x-1'>
                                                     <Eye className='h-3 w-3' />
-                                                    <span>{blog.viewCount} views</span>
+                                                    <span>
+                                                        {blog.viewCount} views
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -165,18 +184,21 @@ export default async function BlogPage() {
                                         {/* Tags */}
                                         {blog.tags.length > 0 && (
                                             <div className='mt-4 flex flex-wrap gap-1'>
-                                                {blog.tags.slice(0, 3).map((tag, index) => (
-                                                    <span
-                                                        key={index}
-                                                        className='inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs'
-                                                    >
-                                                        <Tag className='h-3 w-3' />
-                                                        {tag}
-                                                    </span>
-                                                ))}
+                                                {blog.tags
+                                                    .slice(0, 3)
+                                                    .map((tag, index) => (
+                                                        <span
+                                                            key={index}
+                                                            className='inline-flex items-center gap-1 px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs'
+                                                        >
+                                                            <Tag className='h-3 w-3' />
+                                                            {tag}
+                                                        </span>
+                                                    ))}
                                                 {blog.tags.length > 3 && (
                                                     <span className='text-xs text-gray-500 px-2 py-1'>
-                                                        +{blog.tags.length - 3} more
+                                                        +{blog.tags.length - 3}{' '}
+                                                        more
                                                     </span>
                                                 )}
                                             </div>
@@ -192,11 +214,12 @@ export default async function BlogPage() {
                             <div className='w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4'>
                                 <User className='h-8 w-8 text-gray-400' />
                             </div>
-                            <h3 className='text-lg font-medium text-gray-900 mb-2'>
+                            <h3 className='text-lg font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-200'>
                                 No blog posts yet
                             </h3>
-                            <p className='text-gray-600'>
-                                Check back soon for inspiring stories and insights from our H3 Network community.
+                            <p className='text-gray-600 dark:text-gray-300 transition-colors duration-200'>
+                                Check back soon for inspiring stories and
+                                insights from our H3 Network community.
                             </p>
                         </div>
                     </div>
