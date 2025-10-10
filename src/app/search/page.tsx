@@ -277,12 +277,12 @@ function SearchContent() {
                         {/* No Results */}
                         {searchResults.pagination.total === 0 && (
                             <div className='text-center py-12'>
-                                <div className='text-gray-500 text-lg mb-4'>
+                                <div className='text-gray-500 dark:text-gray-400 text-lg mb-4 transition-colors duration-200'>
                                     No results found for &quot;
                                     {searchResults.query}
                                     &quot;
                                 </div>
-                                <p className='text-gray-600'>
+                                <p className='text-gray-600 dark:text-gray-300 transition-colors duration-200'>
                                     Try adjusting your search terms or filters.
                                 </p>
                             </div>
@@ -291,7 +291,7 @@ function SearchContent() {
                         {/* Creators Results */}
                         {searchResults.results.creators.count > 0 && (
                             <div className='mb-8'>
-                                <h2 className='text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2'>
+                                <h2 className='text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2 transition-colors duration-200'>
                                     <User className='h-5 w-5' />
                                     Creators (
                                     {searchResults.results.creators.count})
@@ -357,7 +357,7 @@ function SearchContent() {
                         {/* Videos Results */}
                         {searchResults.results.videos.count > 0 && (
                             <div className='mb-8'>
-                                <h2 className='text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2'>
+                                <h2 className='text-xl font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2 transition-colors duration-200'>
                                     <Play className='h-5 w-5' />
                                     Videos ({searchResults.results.videos.count}
                                     )

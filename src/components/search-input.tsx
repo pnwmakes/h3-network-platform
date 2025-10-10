@@ -119,22 +119,22 @@ export function SearchInput({
                         onClick={clearSearch}
                         className='absolute inset-y-0 right-0 pr-3 flex items-center'
                     >
-                        <X className='h-4 w-4 text-gray-400 hover:text-gray-600' />
+                        <X className='h-4 w-4 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200' />
                     </button>
                 )}
             </div>
 
             {/* Search Suggestions Dropdown */}
             {showSuggestions && suggestions.length > 0 && (
-                <div className='absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-96 overflow-y-auto'>
+                <div className='absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg max-h-96 overflow-y-auto transition-colors duration-200'>
                     {suggestions.map((suggestion, index) => (
                         <button
                             key={index}
                             onClick={() => handleSuggestionClick(suggestion)}
-                            className='w-full px-4 py-2 text-left text-sm text-black font-medium hover:bg-gray-50 focus:bg-gray-50 focus:outline-none first:rounded-t-lg last:rounded-b-lg'
+                            className='w-full px-4 py-2 text-left text-sm text-black dark:text-white font-medium hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700 focus:outline-none first:rounded-t-lg last:rounded-b-lg transition-colors duration-200'
                         >
                             <div className='flex items-center'>
-                                <Search className='h-3 w-3 text-gray-400 mr-2' />
+                                <Search className='h-3 w-3 text-gray-400 dark:text-gray-500 mr-2 transition-colors duration-200' />
                                 <span className='truncate'>{suggestion}</span>
                             </div>
                         </button>
@@ -144,10 +144,10 @@ export function SearchInput({
 
             {/* Loading indicator */}
             {isLoading && showSuggestions && (
-                <div className='absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg p-4'>
+                <div className='absolute z-50 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg p-4 transition-colors duration-200'>
                     <div className='flex items-center justify-center'>
-                        <div className='w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin'></div>
-                        <span className='ml-2 text-sm text-gray-500'>
+                        <div className='w-4 h-4 border-2 border-gray-300 dark:border-gray-600 border-t-blue-600 rounded-full animate-spin'></div>
+                        <span className='ml-2 text-sm text-gray-500 dark:text-gray-400 transition-colors duration-200'>
                             Searching...
                         </span>
                     </div>
