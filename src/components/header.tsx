@@ -91,6 +91,42 @@ export function Header() {
                                 >
                                     My Profile
                                 </Link>
+                                {session.user.role === 'CREATOR' && (
+                                    <Link
+                                        href='/creator/dashboard'
+                                        className={`text-sm font-medium transition-colors duration-200 ${
+                                            isActive('/creator')
+                                                ? 'text-blue-600 dark:text-blue-400'
+                                                : 'text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400'
+                                        }`}
+                                    >
+                                        Creator Dashboard
+                                    </Link>
+                                )}
+                                {session.user.role === 'SUPER_ADMIN' && (
+                                    <>
+                                        <Link
+                                            href='/creator/dashboard'
+                                            className={`text-sm font-medium transition-colors duration-200 ${
+                                                isActive('/creator')
+                                                    ? 'text-blue-600 dark:text-blue-400'
+                                                    : 'text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400'
+                                            }`}
+                                        >
+                                            Creator Dashboard
+                                        </Link>
+                                        <Link
+                                            href='/admin/dashboard'
+                                            className={`text-sm font-medium px-3 py-1 rounded-md transition-colors duration-200 ${
+                                                isActive('/admin')
+                                                    ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
+                                                    : 'bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/50 dark:text-red-400 dark:hover:bg-red-900'
+                                            }`}
+                                        >
+                                            Admin Dashboard
+                                        </Link>
+                                    </>
+                                )}
                                 <span className='text-sm font-medium text-gray-700 dark:text-gray-100 transition-colors duration-200'>
                                     Welcome, {session.user?.name}
                                 </span>
@@ -196,6 +232,51 @@ export function Header() {
                                     >
                                         My Profile
                                     </Link>
+                                    {session.user.role === 'CREATOR' && (
+                                        <Link
+                                            href='/creator/dashboard'
+                                            onClick={() =>
+                                                setIsMobileMenuOpen(false)
+                                            }
+                                            className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
+                                                isActive('/creator')
+                                                    ? 'text-blue-600 bg-blue-50'
+                                                    : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                                            }`}
+                                        >
+                                            Creator Dashboard
+                                        </Link>
+                                    )}
+                                    {session.user.role === 'SUPER_ADMIN' && (
+                                        <>
+                                            <Link
+                                                href='/creator/dashboard'
+                                                onClick={() =>
+                                                    setIsMobileMenuOpen(false)
+                                                }
+                                                className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
+                                                    isActive('/creator')
+                                                        ? 'text-blue-600 bg-blue-50'
+                                                        : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                Creator Dashboard
+                                            </Link>
+                                            <Link
+                                                href='/admin/dashboard'
+                                                onClick={() =>
+                                                    setIsMobileMenuOpen(false)
+                                                }
+                                                className={`block px-3 py-2 text-base font-medium transition-colors duration-200 ${
+                                                    isActive('/admin')
+                                                        ? 'text-red-600 bg-red-50'
+                                                        : 'text-red-600 hover:text-red-700 hover:bg-red-50'
+                                                }`}
+                                            >
+                                                Admin Dashboard
+                                            </Link>
+                                        </>
+                                    )}
                                     <button
                                         onClick={() => {
                                             signOut();
