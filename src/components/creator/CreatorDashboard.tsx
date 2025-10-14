@@ -55,8 +55,11 @@ export function CreatorDashboard() {
             return;
         }
 
-        // Check if user is a creator
-        if (session.user.role !== 'CREATOR') {
+        // Check if user is a creator or super admin
+        if (
+            session.user.role !== 'CREATOR' &&
+            session.user.role !== 'SUPER_ADMIN'
+        ) {
             router.push('/dashboard');
             return;
         }

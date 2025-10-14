@@ -95,7 +95,39 @@ export async function GET() {
             include: { creator: true },
         });
 
-        if (!user || !user.creator) {
+        if (!user) {
+            return NextResponse.json(
+                { error: 'User not found' },
+                { status: 404 }
+            );
+        }
+
+        // If user is SUPER_ADMIN but doesn't have a creator profile, create a temporary one for dashboard access
+        if (user.role === 'SUPER_ADMIN' && !user.creator) {
+            return NextResponse.json({
+                success: true,
+                creator: {
+                    id: 'temp-admin',
+                    displayName: user.name || 'Super Admin',
+                    bio: 'Platform Administrator - Full Access',
+                    showName: 'Admin Dashboard',
+                    isActive: true,
+                    profileComplete: true,
+                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                    funnyFact: 'Has administrative superpowers! 🚀',
+                    linkedinUrl: '',
+                    instagramUrl: '',
+                    tiktokUrl: '',
+                    websiteUrl: '',
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    userId: user.id,
+                },
+                isAdminAccess: true,
+            });
+        }
+
+        if (!user.creator) {
             return NextResponse.json(
                 { error: 'Creator profile not found' },
                 { status: 404 }
@@ -105,6 +137,7 @@ export async function GET() {
         return NextResponse.json({
             success: true,
             creator: user.creator,
+            isAdminAccess: false,
         });
     } catch (error) {
         console.error('Creator profile fetch error:', error);
