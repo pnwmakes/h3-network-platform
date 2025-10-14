@@ -59,18 +59,24 @@ model VerificationToken {
 }
 
 model Creator {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  displayName String
-  bio         String?
-  avatarUrl   String?
-  showName    String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  blogs       Blog[]
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  videos      Video[]
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  displayName     String
+  bio             String?
+  avatarUrl       String?
+  showName        String?
+  funnyFact       String?
+  linkedinUrl     String?
+  instagramUrl    String?
+  tiktokUrl       String?
+  websiteUrl      String?
+  isActive        Boolean  @default(true)
+  profileComplete Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  blogs           Blog[]
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videos          Video[]
 }
 
 model Show {
@@ -85,22 +91,39 @@ model Show {
 }
 
 model Video {
-  id            String         @id @default(cuid())
-  title         String
-  description   String?
-  youtubeId     String         @unique
-  youtubeUrl    String
-  thumbnailUrl  String?
-  duration      Int?
-  viewCount     Int            @default(0)
-  tags          String[]
-  topic         ContentTopic?
-  status        ContentStatus  @default(DRAFT)
-  publishedAt   DateTime?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  creatorId     String
-  showId        String?
+  id             String         @id @default(cuid())
+  title          String
+  description    String?
+  youtubeId      String         @unique
+  youtubeUrl     String
+  thumbnailUrl   String?
+  duration       Int?
+  viewCount      Int            @default(0)
+  seasonNumber   Int?
+  episodeNumber  Int?
+  guestName      String?
+  guestLinks     String[]       @default([])
+  hostLinks      String[]       @default([])
+  sponsorLogo    String?
+  sponsorUrl     String?
+  showNotes      String?
+  tags           String[]
+  topic          ContentTopic?
+  status         ContentStatus  @default(DRAFT)
+  scheduledAt    DateTime?
+  publishedAt    DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  creatorId      String
+  showId         String?
+  // New template fields
+  showName       String?
+  guestNames     String[]       @default([])
+  guestBios      String[]       @default([])
+  sponsorNames   String[]       @default([])
+  sponsorMessages String[]       @default([])
+  contentTopics  String[]       @default([])
+  
   savedBy       SavedContent[] @relation("SavedVideos")
   videoProgress UserProgress[] @relation("VideoProgress")
   creator       Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
@@ -108,22 +131,36 @@ model Video {
 }
 
 model Blog {
-  id            String         @id @default(cuid())
-  title         String
-  content       String
-  excerpt       String?
-  featuredImage String?
-  viewCount     Int            @default(0)
-  tags          String[]
-  topic         ContentTopic?
-  status        ContentStatus  @default(DRAFT)
-  publishedAt   DateTime?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  creatorId     String
-  creator       Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  savedBy       SavedContent[] @relation("SavedBlogs")
-  blogProgress  UserProgress[] @relation("BlogProgress")
+  id               String         @id @default(cuid())
+  title            String
+  content          String
+  excerpt          String?
+  featuredImage    String?
+  horizontalImage  String?
+  squareImages     String[]       @default([])
+  viewCount        Int            @default(0)
+  readTime         Int?
+  hostLinks        String[]       @default([])
+  sponsorLogo      String?
+  sponsorUrl       String?
+  tags             String[]
+  topic            ContentTopic?
+  status           ContentStatus  @default(DRAFT)
+  scheduledAt      DateTime?
+  publishedAt      DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  creatorId        String
+  // New template fields
+  guestContributors String[]       @default([])
+  guestBios         String[]       @default([])
+  sponsorNames      String[]       @default([])
+  sponsorMessages   String[]       @default([])
+  contentTopics     String[]       @default([])
+  
+  creator          Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  savedBy          SavedContent[] @relation("SavedBlogs")
+  blogProgress     UserProgress[] @relation("BlogProgress")
 }
 
 model UserProgress {
@@ -141,6 +178,14 @@ model UserProgress {
 
   @@unique([userId, videoId])
   @@unique([userId, blogId])
+}
+
+model GuestViewingLimit {
+  id            String   @id @default(cuid())
+  sessionId     String   @unique
+  viewCount     Int      @default(0)
+  lastViewedAt  DateTime @default(now())
+  createdAt     DateTime @default(now())
 }
 
 model SavedContent {
@@ -161,6 +206,7 @@ enum UserRole {
   VIEWER
   CREATOR
   ADMIN
+  SUPER_ADMIN
 }
 
 enum ContentStatus {
@@ -177,8 +223,18 @@ enum ContentType {
 
 enum ContentTopic {
   REENTRY
-  ADDICTION
   INCARCERATION
+  CRIMINAL_JUSTICE
   CRIMINAL_JUSTICE_REFORM
+  ADDICTION
+  RECOVERY
+  FAMILY
+  RELATIONSHIPS
+  LAW
+  GAME
+  REHABILITATION
+  NON_PROFIT
+  READING
+  POLITICS
   GENERAL
 }
