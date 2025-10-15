@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import CountdownBanner from '@/components/CountdownBanner';
 import { QuickAccessCard } from '@/components/quick-access-card';
+import ContentGrid from '@/components/ContentGrid';
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -494,6 +495,9 @@ export default function Home() {
                         </Link>
                     </div>
                 </div>
+
+                {/* Latest Content Section */}
+                <ContentGrid limit={6} className='mb-16' />
 
                 {/* Platform Features - Updated to match their style */}
                 <div className='text-center'>
