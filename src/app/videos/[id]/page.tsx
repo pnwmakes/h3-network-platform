@@ -10,9 +10,9 @@ import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 
 interface VideoPageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
 async function getVideo(id: string) {

@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -74,7 +74,7 @@ const VIDEO_TOPICS = [
     'GENERAL',
 ];
 
-export default function VideoUploadPage() {
+function VideoUploadPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const editId = searchParams.get('edit');
@@ -328,8 +328,8 @@ export default function VideoUploadPage() {
             }
 
             // Create or update video
-            const url = isEditing 
-                ? `/api/creator/videos/${editId}` 
+            const url = isEditing
+                ? `/api/creator/videos/${editId}`
                 : '/api/creator/videos';
             const method = isEditing ? 'PUT' : 'POST';
 
@@ -347,14 +347,15 @@ export default function VideoUploadPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || `Failed to ${isEditing ? 'update' : 'create'} video`);
+                throw new Error(
+                    data.error ||
+                        `Failed to ${isEditing ? 'update' : 'create'} video`
+                );
             }
 
             setSuccess(
                 `Video ${isEditing ? 'updated' : 'created'} ${
-                    asDraft
-                        ? 'and submitted for approval'
-                        : 'successfully'
+                    asDraft ? 'and submitted for approval' : 'successfully'
                 } successfully!`
             );
 
@@ -394,10 +395,9 @@ export default function VideoUploadPage() {
                                 {isEditing ? 'Edit Video' : 'Upload Video'}
                             </h1>
                             <p className='text-gray-600'>
-                                {isEditing 
+                                {isEditing
                                     ? 'Update your video content and settings'
-                                    : 'Share your story with the H3 Network community'
-                                }
+                                    : 'Share your story with the H3 Network community'}
                             </p>
                         </div>
                     </div>
@@ -940,12 +940,16 @@ export default function VideoUploadPage() {
                                         {isLoading ? (
                                             <>
                                                 <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
-                                                {isEditing ? 'Updating...' : 'Submitting...'}
+                                                {isEditing
+                                                    ? 'Updating...'
+                                                    : 'Submitting...'}
                                             </>
                                         ) : (
                                             <>
                                                 <Save className='h-4 w-4 mr-2' />
-                                                {isEditing ? 'Update Video' : 'Submit for Approval'}
+                                                {isEditing
+                                                    ? 'Update Video'
+                                                    : 'Submit for Approval'}
                                             </>
                                         )}
                                     </Button>
@@ -963,10 +967,9 @@ export default function VideoUploadPage() {
                                 </div>
 
                                 <p className='text-sm text-gray-500 mt-3 text-center'>
-                                    {isEditing 
+                                    {isEditing
                                         ? 'Your changes will be saved and may require re-approval if the video was previously published.'
-                                        : 'Your video will be saved as a draft and submitted to admins for review before publication.'
-                                    }
+                                        : 'Your video will be saved as a draft and submitted to admins for review before publication.'}
                                 </p>
                             </CardContent>
                         </Card>
@@ -974,5 +977,17 @@ export default function VideoUploadPage() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function VideoUploadPageWrapper() {
+    return (
+        <Suspense fallback={
+            <div className='flex items-center justify-center min-h-screen'>
+                <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500'></div>
+            </div>
+        }>
+            <VideoUploadPage />
+        </Suspense>
     );
 }

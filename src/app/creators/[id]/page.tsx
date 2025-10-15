@@ -7,9 +7,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { Users, Video, FileText, Eye, Calendar } from 'lucide-react';
 
 interface CreatorPageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>;
 }
 
 async function getCreator(id: string) {

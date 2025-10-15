@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -67,7 +67,7 @@ const BLOG_TOPICS = [
     'GENERAL',
 ];
 
-export default function BlogUploadPage() {
+function BlogUploadPage() {
     const router = useRouter();
 
     const [formData, setFormData] = useState<BlogFormData>({
@@ -602,5 +602,17 @@ export default function BlogUploadPage() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function BlogUploadPageWrapper() {
+    return (
+        <Suspense fallback={
+            <div className='flex items-center justify-center min-h-screen'>
+                <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500'></div>
+            </div>
+        }>
+            <BlogUploadPage />
+        </Suspense>
     );
 }
