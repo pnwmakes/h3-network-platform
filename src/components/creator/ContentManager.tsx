@@ -167,7 +167,9 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
         return content.filter((item) => {
             const matchesSearch = search
                 ? item.title.toLowerCase().includes(search.toLowerCase()) ||
-                  item.description?.toLowerCase().includes(search.toLowerCase()) ||
+                  item.description
+                      ?.toLowerCase()
+                      .includes(search.toLowerCase()) ||
                   item.tags.some((tag) =>
                       tag.toLowerCase().includes(search.toLowerCase())
                   )
@@ -191,15 +193,21 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
     const filteredBlogs = filterContent(blogs, searchTerm, statusFilter);
 
     const allContent = [...videos, ...blogs].sort(
-        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
     );
-    const filteredAllContent = filterContent(allContent, searchTerm, statusFilter);
+    const filteredAllContent = filterContent(
+        allContent,
+        searchTerm,
+        statusFilter
+    );
 
     const stats = {
         total: videos.length + blogs.length,
         videos: videos.length,
         blogs: blogs.length,
-        published: allContent.filter((item) => item.status === 'PUBLISHED').length,
+        published: allContent.filter((item) => item.status === 'PUBLISHED')
+            .length,
         pending: allContent.filter((item) => item.status === 'PENDING').length,
         totalViews: allContent.reduce((sum, item) => sum + item.viewCount, 0),
     };
@@ -226,7 +234,9 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
                                 <p className='text-sm font-medium text-gray-600'>
                                     Total Content
                                 </p>
-                                <p className='text-2xl font-bold'>{stats.total}</p>
+                                <p className='text-2xl font-bold'>
+                                    {stats.total}
+                                </p>
                             </div>
                         </div>
                     </CardContent>
@@ -242,7 +252,9 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
                                 <p className='text-sm font-medium text-gray-600'>
                                     Published
                                 </p>
-                                <p className='text-2xl font-bold'>{stats.published}</p>
+                                <p className='text-2xl font-bold'>
+                                    {stats.published}
+                                </p>
                             </div>
                         </div>
                     </CardContent>
@@ -258,7 +270,9 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
                                 <p className='text-sm font-medium text-gray-600'>
                                     Pending Review
                                 </p>
-                                <p className='text-2xl font-bold'>{stats.pending}</p>
+                                <p className='text-2xl font-bold'>
+                                    {stats.pending}
+                                </p>
                             </div>
                         </div>
                     </CardContent>
@@ -372,7 +386,6 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
                     />
                 </TabsContent>
             </Tabs>
-
         </div>
     );
 }
@@ -420,7 +433,7 @@ function ContentList({
         <div className='space-y-4'>
             {items.map((item) => {
                 const itemType = 'youtubeUrl' in item ? 'video' : 'blog';
-                
+
                 return (
                     <Card key={item.id} className='overflow-hidden'>
                         <CardContent className='p-6'>
@@ -470,21 +483,25 @@ function ContentList({
                                                 <span>{item.showName}</span>
                                             )}
                                             {item.readTime && (
-                                                <span>{item.readTime} min read</span>
+                                                <span>
+                                                    {item.readTime} min read
+                                                </span>
                                             )}
                                         </div>
 
                                         {item.tags.length > 0 && (
                                             <div className='flex items-center space-x-1 mt-2'>
-                                                {item.tags.slice(0, 3).map((tag) => (
-                                                    <Badge
-                                                        key={tag}
-                                                        variant='outline'
-                                                        className='text-xs'
-                                                    >
-                                                        {tag}
-                                                    </Badge>
-                                                ))}
+                                                {item.tags
+                                                    .slice(0, 3)
+                                                    .map((tag) => (
+                                                        <Badge
+                                                            key={tag}
+                                                            variant='outline'
+                                                            className='text-xs'
+                                                        >
+                                                            {tag}
+                                                        </Badge>
+                                                    ))}
                                                 {item.tags.length > 3 && (
                                                     <Badge
                                                         variant='outline'
@@ -510,7 +527,9 @@ function ContentList({
                                         <Button
                                             variant='ghost'
                                             size='sm'
-                                            onClick={() => onEdit(item, itemType)}
+                                            onClick={() =>
+                                                onEdit(item, itemType)
+                                            }
                                         >
                                             <Edit className='h-4 w-4' />
                                         </Button>
@@ -518,7 +537,11 @@ function ContentList({
                                             variant='ghost'
                                             size='sm'
                                             onClick={() => {
-                                                if (confirm(`Delete "${item.title}"? This cannot be undone.`)) {
+                                                if (
+                                                    confirm(
+                                                        `Delete "${item.title}"? This cannot be undone.`
+                                                    )
+                                                ) {
                                                     onDelete(item, itemType);
                                                 }
                                             }}

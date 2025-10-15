@@ -121,7 +121,10 @@ export async function PUT(
         }
 
         // Check ownership (creators can only edit their own content, super admins can edit any)
-        if (user.role === 'CREATOR' && existingBlog.creator.id !== user.creator?.id) {
+        if (
+            user.role === 'CREATOR' &&
+            existingBlog.creator.id !== user.creator?.id
+        ) {
             return NextResponse.json(
                 { error: 'You can only edit your own content' },
                 { status: 403 }
@@ -160,7 +163,8 @@ export async function PUT(
             excerpt?.trim() || content.substring(0, 200) + '...';
 
         // Update blog - if published content is edited, it goes back to DRAFT for re-approval
-        const newStatus = existingBlog.status === 'PUBLISHED' ? 'DRAFT' : existingBlog.status;
+        const newStatus =
+            existingBlog.status === 'PUBLISHED' ? 'DRAFT' : existingBlog.status;
 
         const updatedBlog = await prisma.blog.update({
             where: { id },
@@ -194,9 +198,10 @@ export async function PUT(
         return NextResponse.json({
             success: true,
             blog: updatedBlog,
-            message: existingBlog.status === 'PUBLISHED' 
-                ? 'Blog updated and resubmitted for approval'
-                : 'Blog updated successfully',
+            message:
+                existingBlog.status === 'PUBLISHED'
+                    ? 'Blog updated and resubmitted for approval'
+                    : 'Blog updated successfully',
         });
     } catch (error) {
         console.error('Blog update error:', error);

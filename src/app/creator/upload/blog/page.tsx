@@ -252,8 +252,8 @@ function BlogUploadPage() {
                 formData.content.substring(0, 200) + '...';
 
             // Create or update blog
-            const url = isEditing 
-                ? `/api/creator/blogs/${editId}` 
+            const url = isEditing
+                ? `/api/creator/blogs/${editId}`
                 : '/api/creator/blogs';
             const method = isEditing ? 'PUT' : 'POST';
 
@@ -275,11 +275,14 @@ function BlogUploadPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || `Failed to ${isEditing ? 'update' : 'create'} blog`);
+                throw new Error(
+                    data.error ||
+                        `Failed to ${isEditing ? 'update' : 'create'} blog`
+                );
             }
 
             setSuccess(
-                isEditing 
+                isEditing
                     ? 'Blog updated and submitted for approval successfully!'
                     : 'Blog saved as draft and submitted for approval successfully!'
             );
@@ -317,13 +320,14 @@ function BlogUploadPage() {
                         </div>
                         <div>
                             <h1 className='text-3xl font-bold text-gray-900'>
-                                {isEditing ? 'Edit Blog Post' : 'Write Blog Post'}
+                                {isEditing
+                                    ? 'Edit Blog Post'
+                                    : 'Write Blog Post'}
                             </h1>
                             <p className='text-gray-600'>
-                                {isEditing 
+                                {isEditing
                                     ? 'Update your blog content and settings'
-                                    : 'Share your insights and experiences'
-                                }
+                                    : 'Share your insights and experiences'}
                             </p>
                         </div>
                     </div>
@@ -621,12 +625,16 @@ function BlogUploadPage() {
                                         {isLoading ? (
                                             <>
                                                 <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
-                                                {isEditing ? 'Updating...' : 'Submitting...'}
+                                                {isEditing
+                                                    ? 'Updating...'
+                                                    : 'Submitting...'}
                                             </>
                                         ) : (
                                             <>
                                                 <Save className='h-4 w-4 mr-2' />
-                                                {isEditing ? 'Update Blog' : 'Submit for Approval'}
+                                                {isEditing
+                                                    ? 'Update Blog'
+                                                    : 'Submit for Approval'}
                                             </>
                                         )}
                                     </Button>
@@ -644,10 +652,9 @@ function BlogUploadPage() {
                                 </div>
 
                                 <p className='text-sm text-gray-500 mt-3 text-center'>
-                                    {isEditing 
+                                    {isEditing
                                         ? 'Your changes will be saved and may require re-approval if the blog was previously published.'
-                                        : 'Your blog will be saved as a draft and submitted to admins for review before publication.'
-                                    }
+                                        : 'Your blog will be saved as a draft and submitted to admins for review before publication.'}
                                 </p>
                             </CardContent>
                         </Card>

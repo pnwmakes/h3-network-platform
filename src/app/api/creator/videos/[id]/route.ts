@@ -121,7 +121,10 @@ export async function PUT(
         }
 
         // Check ownership (creators can only edit their own content, super admins can edit any)
-        if (user.role === 'CREATOR' && existingVideo.creator.id !== user.creator?.id) {
+        if (
+            user.role === 'CREATOR' &&
+            existingVideo.creator.id !== user.creator?.id
+        ) {
             return NextResponse.json(
                 { error: 'You can only edit your own content' },
                 { status: 403 }
@@ -165,9 +168,9 @@ export async function PUT(
         // Check if another video with this YouTube ID exists
         if (youtubeId !== existingVideo.youtubeId) {
             const duplicateVideo = await prisma.video.findFirst({
-                where: { 
+                where: {
                     youtubeId,
-                    id: { not: id }
+                    id: { not: id },
                 },
             });
 
@@ -185,7 +188,10 @@ export async function PUT(
             `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
 
         // Update video - if published content is edited, it goes back to DRAFT for re-approval
-        const newStatus = existingVideo.status === 'PUBLISHED' ? 'DRAFT' : existingVideo.status;
+        const newStatus =
+            existingVideo.status === 'PUBLISHED'
+                ? 'DRAFT'
+                : existingVideo.status;
 
         const updatedVideo = await prisma.video.update({
             where: { id },
@@ -228,9 +234,10 @@ export async function PUT(
         return NextResponse.json({
             success: true,
             video: updatedVideo,
-            message: existingVideo.status === 'PUBLISHED' 
-                ? 'Video updated and resubmitted for approval'
-                : 'Video updated successfully',
+            message:
+                existingVideo.status === 'PUBLISHED'
+                    ? 'Video updated and resubmitted for approval'
+                    : 'Video updated successfully',
         });
     } catch (error) {
         console.error('Video update error:', error);
