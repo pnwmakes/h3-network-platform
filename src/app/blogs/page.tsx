@@ -9,6 +9,9 @@ async function getBlogs() {
         return await prisma.blog.findMany({
             where: {
                 status: 'PUBLISHED',
+                publishedAt: {
+                    lte: new Date(),
+                },
             },
             include: {
                 creator: true,
