@@ -14,6 +14,9 @@ import {
     Calendar,
     MessageSquare,
     ChevronLeft,
+    ChevronDown,
+    ChevronUp,
+    Eye,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -348,6 +351,8 @@ function ContentCard({
     formatDate,
     getYouTubeEmbedUrl,
 }: ContentCardProps) {
+    const [showFullContent, setShowFullContent] = useState(false);
+
     return (
         <Card className='overflow-hidden'>
             <CardHeader>
@@ -417,6 +422,64 @@ function ContentCard({
                             {item.description || 'No description provided'}
                         </p>
                     </div>
+
+                    {/* Full Blog Content - Only for blogs */}
+                    {item.type === 'BLOG' && item.content && (
+                        <div>
+                            <div className='flex items-center justify-between mb-2'>
+                                <h4 className='font-medium'>Blog Content</h4>
+                                <Button
+                                    variant='outline'
+                                    size='sm'
+                                    onClick={() =>
+                                        setShowFullContent(!showFullContent)
+                                    }
+                                    className='flex items-center gap-2'
+                                >
+                                    <Eye className='h-4 w-4' />
+                                    {showFullContent
+                                        ? 'Hide Content'
+                                        : 'Read Full Content'}
+                                    {showFullContent ? (
+                                        <ChevronUp className='h-4 w-4' />
+                                    ) : (
+                                        <ChevronDown className='h-4 w-4' />
+                                    )}
+                                </Button>
+                            </div>
+
+                            {showFullContent && (
+                                <div className='max-h-96 overflow-y-auto border rounded-lg p-4 bg-white'>
+                                    <div className='prose prose-sm max-w-none'>
+                                        {item.content
+                                            .split('\n')
+                                            .map((paragraph, index) =>
+                                                paragraph.trim() ? (
+                                                    <p
+                                                        key={index}
+                                                        className='mb-3 text-gray-700'
+                                                    >
+                                                        {paragraph}
+                                                    </p>
+                                                ) : (
+                                                    <br key={index} />
+                                                )
+                                            )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {!showFullContent && (
+                                <div className='bg-gray-50 p-3 rounded-lg border'>
+                                    <p className='text-gray-600 text-sm italic'>
+                                        Click &quot;Read Full Content&quot; above to
+                                        review the complete blog post before
+                                        approval.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* Content Details */}
                     <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
