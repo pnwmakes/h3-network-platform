@@ -17,6 +17,7 @@ import {
     ChevronDown,
     ChevronUp,
     Eye,
+    Trash2,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -60,6 +61,7 @@ export default function ContentModerationPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [processingId, setProcessingId] = useState<string | null>(null);
+    const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
     const [feedback, setFeedback] = useState<{ [key: string]: string }>({});
 
     const fetchPendingContent = useCallback(async () => {
@@ -334,24 +336,31 @@ interface ContentCardProps {
     item: PendingContent;
     onApprove: (id: string) => void;
     onReject: (id: string) => void;
+    onDelete: (id: string, type: string) => void;
     processing: boolean;
     feedback: string;
     onFeedbackChange: (value: string) => void;
     formatDate: (date: string) => string;
     getYouTubeEmbedUrl: (url: string) => string;
+    deleteConfirm: string | null;
 }
 
 function ContentCard({
     item,
     onApprove,
     onReject,
+    onDelete,
     processing,
     feedback,
     onFeedbackChange,
     formatDate,
     getYouTubeEmbedUrl,
+    deleteConfirm,
 }: ContentCardProps) {
     const [showFullContent, setShowFullContent] = useState(false);
+
+    const contentType = item.type === 'VIDEO' ? 'video' : 'blog';
+    const isDeleteConfirm = deleteConfirm === item.id;
 
     return (
         <Card className='overflow-hidden'>
@@ -472,9 +481,9 @@ function ContentCard({
                             {!showFullContent && (
                                 <div className='bg-gray-50 p-3 rounded-lg border'>
                                     <p className='text-gray-600 text-sm italic'>
-                                        Click &quot;Read Full Content&quot; above to
-                                        review the complete blog post before
-                                        approval.
+                                        Click &quot;Read Full Content&quot;
+                                        above to review the complete blog post
+                                        before approval.
                                     </p>
                                 </div>
                             )}
@@ -596,6 +605,19 @@ function ContentCard({
                             >
                                 <FileX className='h-4 w-4 mr-2' />
                                 {processing ? 'Processing...' : 'Reject'}
+                            </Button>
+                            <Button
+                                onClick={() => onDelete(item.id, contentType)}
+                                disabled={processing}
+                                variant={isDeleteConfirm ? 'destructive' : 'outline'}
+                                className='flex-1'
+                            >
+                                <Trash2 className='h-4 w-4 mr-2' />
+                                {processing
+                                    ? 'Processing...'
+                                    : isDeleteConfirm
+                                    ? 'Confirm Delete'
+                                    : 'Delete'}
                             </Button>
                         </div>
                     </div>
