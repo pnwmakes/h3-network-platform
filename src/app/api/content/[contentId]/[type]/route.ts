@@ -33,18 +33,18 @@ export async function DELETE(
                 where: { id: contentId },
                 include: {
                     creator: {
-                        select: { id: true }
-                    }
-                }
+                        select: { id: true },
+                    },
+                },
             });
         } else {
             content = await prisma.blog.findUnique({
                 where: { id: contentId },
                 include: {
                     creator: {
-                        select: { id: true }
-                    }
-                }
+                        select: { id: true },
+                    },
+                },
             });
         }
 
@@ -69,21 +69,22 @@ export async function DELETE(
         // Delete the content
         if (type === 'video') {
             await prisma.video.delete({
-                where: { id: contentId }
+                where: { id: contentId },
             });
         } else {
             await prisma.blog.delete({
-                where: { id: contentId }
+                where: { id: contentId },
             });
         }
 
         return NextResponse.json({
             success: true,
-            message: `${type.charAt(0).toUpperCase() + type.slice(1)} deleted successfully`,
+            message: `${
+                type.charAt(0).toUpperCase() + type.slice(1)
+            } deleted successfully`,
             contentId,
-            type
+            type,
         });
-
     } catch (error) {
         console.error('Content delete error:', error);
         return NextResponse.json(

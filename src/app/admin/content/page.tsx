@@ -144,6 +144,47 @@ export default function ContentModerationPage() {
         }
     };
 
+    const handleDelete = async (contentId: string, contentType: string) => {
+        if (deleteConfirm !== contentId) {
+            // First click - show confirmation
+            setDeleteConfirm(contentId);
+            return;
+        }
+
+        // Second click - confirm deletion
+        try {
+            setProcessingId(contentId);
+            const response = await fetch(
+                `/api/content/${contentId}/${contentType}`,
+                {
+                    method: 'DELETE',
+                }
+            );
+
+            const result = await response.json();
+            if (result.success) {
+                // Remove the deleted content from the list
+                setPendingContent((prev) =>
+                    prev.filter((item) => item.id !== contentId)
+                );
+                // Clear feedback and confirmation
+                setFeedback((prev) => {
+                    const newFeedback = { ...prev };
+                    delete newFeedback[contentId];
+                    return newFeedback;
+                });
+                setDeleteConfirm(null);
+            } else {
+                alert('Failed to delete content: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Content deletion error:', error);
+            alert('Failed to delete content');
+        } finally {
+            setProcessingId(null);
+        }
+    };
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -262,6 +303,7 @@ export default function ContentModerationPage() {
                                     onReject={(id) =>
                                         handleApproval(id, 'reject')
                                     }
+                                    onDelete={(id, type) => handleDelete(id, type)}
                                     processing={processingId === item.id}
                                     feedback={feedback[item.id] || ''}
                                     onFeedbackChange={(value) =>
@@ -272,6 +314,7 @@ export default function ContentModerationPage() {
                                     }
                                     formatDate={formatDate}
                                     getYouTubeEmbedUrl={getYouTubeEmbedUrl}
+                                    deleteConfirm={deleteConfirm}
                                 />
                             ))}
                         </TabsContent>
@@ -287,6 +330,7 @@ export default function ContentModerationPage() {
                                     onReject={(id) =>
                                         handleApproval(id, 'reject')
                                     }
+                                    onDelete={(id, type) => handleDelete(id, type)}
                                     processing={processingId === item.id}
                                     feedback={feedback[item.id] || ''}
                                     onFeedbackChange={(value) =>
@@ -297,6 +341,7 @@ export default function ContentModerationPage() {
                                     }
                                     formatDate={formatDate}
                                     getYouTubeEmbedUrl={getYouTubeEmbedUrl}
+                                    deleteConfirm={deleteConfirm}
                                 />
                             ))}
                         </TabsContent>
@@ -312,6 +357,7 @@ export default function ContentModerationPage() {
                                     onReject={(id) =>
                                         handleApproval(id, 'reject')
                                     }
+                                    onDelete={(id, type) => handleDelete(id, type)}
                                     processing={processingId === item.id}
                                     feedback={feedback[item.id] || ''}
                                     onFeedbackChange={(value) =>
@@ -322,6 +368,7 @@ export default function ContentModerationPage() {
                                     }
                                     formatDate={formatDate}
                                     getYouTubeEmbedUrl={getYouTubeEmbedUrl}
+                                    deleteConfirm={deleteConfirm}
                                 />
                             ))}
                         </TabsContent>
@@ -609,7 +656,9 @@ function ContentCard({
                             <Button
                                 onClick={() => onDelete(item.id, contentType)}
                                 disabled={processing}
-                                variant={isDeleteConfirm ? 'destructive' : 'outline'}
+                                variant={
+                                    isDeleteConfirm ? 'destructive' : 'outline'
+                                }
                                 className='flex-1'
                             >
                                 <Trash2 className='h-4 w-4 mr-2' />
