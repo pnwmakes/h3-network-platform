@@ -42,7 +42,11 @@ export default function ContentGrid({
         const fetchContent = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/api/content?limit=${limit}`);
+                // Add cache-busting timestamp to ensure fresh data
+                const cacheBuster = Date.now();
+                const response = await fetch(`/api/content?limit=${limit}&_=${cacheBuster}`, {
+                    cache: 'no-store'
+                });
                 if (!response.ok) {
                     throw new Error('Failed to fetch content');
                 }

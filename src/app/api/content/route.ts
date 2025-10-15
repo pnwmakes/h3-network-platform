@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ContentTopic } from '@prisma/client';
 
+// Disable caching for this route
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
@@ -127,7 +131,7 @@ export async function GET(request: NextRequest) {
         const hasMore = skip + content.length < totalCount;
         const totalPages = Math.ceil(totalCount / limit);
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             content,
             pagination: {
                 page,
@@ -141,6 +145,13 @@ export async function GET(request: NextRequest) {
                 totalBlogs,
             },
         });
+
+        // Disable browser caching
+        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        response.headers.set('Pragma', 'no-cache');
+        response.headers.set('Expires', '0');
+
+        return response;
     } catch (error) {
         console.error('Error fetching content:', error);
         return NextResponse.json(
