@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import {
     Play,
-    Eye,
     Clock,
     CheckCircle,
     TrendingUp,

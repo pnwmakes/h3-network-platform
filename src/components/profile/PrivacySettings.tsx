@@ -85,11 +85,8 @@ export default function PrivacySettings({ userId }: PrivacySettingsProps) {
                     text: data.error || 'Failed to update settings',
                 });
             }
-        } catch (error) {
-            setMessage({
-                type: 'error',
-                text: 'Failed to update privacy settings',
-            });
+        } catch {
+            alert('Failed to update privacy settings');
         } finally {
             setSaving(false);
         }

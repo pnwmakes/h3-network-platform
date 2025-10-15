@@ -67,7 +67,7 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
                     text: data.error || 'Failed to update profile',
                 });
             }
-        } catch (error) {
+        } catch {
             setMessage({ type: 'error', text: 'Failed to update profile' });
         } finally {
             setLoading(false);
@@ -123,7 +123,7 @@ export default function AccountSettings({ user }: AccountSettingsProps) {
                     text: data.error || 'Failed to update password',
                 });
             }
-        } catch (error) {
+        } catch {
             setMessage({ type: 'error', text: 'Failed to update password' });
         } finally {
             setLoading(false);

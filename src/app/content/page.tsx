@@ -1,11 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import ContentGrid from '@/components/ContentGrid';
 
-export default function ContentPage() {
+function ContentPageContent() {
     const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState(
         searchParams.get('type') || 'all'
@@ -337,5 +337,19 @@ function ContentGridWithFilters({
                 </div>
             )}
         </div>
+    );
+}
+
+export default function ContentPage() {
+    return (
+        <Suspense
+            fallback={
+                <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
+                    <div className='w-8 h-8 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin'></div>
+                </div>
+            }
+        >
+            <ContentPageContent />
+        </Suspense>
     );
 }

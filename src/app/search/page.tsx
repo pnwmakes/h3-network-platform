@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
-import { User, Play, Eye, Calendar, Tag, Search } from 'lucide-react';
+import { User, Play, Eye, Calendar, Tag } from 'lucide-react';
 import { SearchInput } from '@/components/search-input';
 
 interface SearchResult {
