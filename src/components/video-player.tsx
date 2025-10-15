@@ -33,6 +33,7 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
     const [progressLoaded, setProgressLoaded] = useState(false);
     const [showRegistrationPrompt, setShowRegistrationPrompt] = useState(false);
     const [lastTrackedTime, setLastTrackedTime] = useState(0);
+    const [playerError, setPlayerError] = useState<string | null>(null);
 
     // Check if user can watch this video
     const canWatch = canWatchVideo(videoId);
@@ -193,6 +194,34 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
         }
     };
 
+    const onError: YouTubeProps['onError'] = (event) => {
+        console.error('YouTube Player Error:', event.data);
+        console.error('YouTube Video ID:', youtubeId);
+
+        let errorMessage = 'Video player error';
+        // Error codes: https://developers.google.com/youtube/iframe_api_reference#onError
+        switch (event.data) {
+            case 2:
+                errorMessage = 'Invalid video ID';
+                console.error('Invalid video ID');
+                break;
+            case 5:
+                errorMessage = 'Video cannot be played in HTML5 player';
+                console.error('Video cannot be played in HTML5 player');
+                break;
+            case 100:
+                errorMessage = 'Video not found or private';
+                console.error('Video not found or private');
+                break;
+            case 101:
+            case 150:
+                errorMessage = 'Video embedding not allowed by owner';
+                console.error('Video not allowed to be embedded');
+                break;
+        }
+        setPlayerError(errorMessage);
+    };
+
     const opts: YouTubeProps['opts'] = {
         height: '100%',
         width: '100%',
@@ -212,17 +241,37 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
     return (
         <div className='w-full'>
             <div className='relative aspect-video bg-black rounded-lg overflow-hidden'>
-                <YouTube
-                    videoId={youtubeId}
-                    opts={opts}
-                    onReady={onReady}
-                    onPlay={onPlay}
-                    onPause={onPause}
-                    onEnd={onEnd}
-                    onStateChange={onStateChange}
-                    className='absolute inset-0 w-full h-full'
-                    iframeClassName='w-full h-full'
-                />
+                {playerError ? (
+                    <div className='absolute inset-0 flex items-center justify-center bg-red-50 text-red-700'>
+                        <div className='text-center'>
+                            <p className='font-medium mb-2'>
+                                Video Player Error
+                            </p>
+                            <p className='text-sm'>{playerError}</p>
+                            <a
+                                href={`https://www.youtube.com/watch?v=${youtubeId}`}
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='inline-block mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+                            >
+                                Watch on YouTube
+                            </a>
+                        </div>
+                    </div>
+                ) : (
+                    <YouTube
+                        videoId={youtubeId}
+                        opts={opts}
+                        onReady={onReady}
+                        onPlay={onPlay}
+                        onPause={onPause}
+                        onEnd={onEnd}
+                        onStateChange={onStateChange}
+                        onError={onError}
+                        className='absolute inset-0 w-full h-full'
+                        iframeClassName='w-full h-full'
+                    />
+                )}
             </div>
 
             {/* Progress indicator for signed-in users */}

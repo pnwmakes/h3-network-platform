@@ -277,14 +277,22 @@ export function CreatorDashboard() {
                                     </Button>
                                     <div className='flex space-x-2'>
                                         <Button
-                                            onClick={() => router.push('/creator/upload/video')}
+                                            onClick={() =>
+                                                router.push(
+                                                    '/creator/upload/video'
+                                                )
+                                            }
                                         >
                                             <Video className='h-4 w-4 mr-2' />
                                             Upload Video
                                         </Button>
                                         <Button
                                             variant='outline'
-                                            onClick={() => router.push('/creator/upload/blog')}
+                                            onClick={() =>
+                                                router.push(
+                                                    '/creator/upload/blog'
+                                                )
+                                            }
                                         >
                                             <FileText className='h-4 w-4 mr-2' />
                                             Write Blog

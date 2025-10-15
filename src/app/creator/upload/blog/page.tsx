@@ -69,7 +69,7 @@ const BLOG_TOPICS = [
 
 export default function BlogUploadPage() {
     const router = useRouter();
-    
+
     const [formData, setFormData] = useState<BlogFormData>({
         title: '',
         content: '',
@@ -81,59 +81,73 @@ export default function BlogUploadPage() {
     });
 
     const [newTag, setNewTag] = useState('');
-    const [selectedContentTopics, setSelectedContentTopics] = useState<string[]>([]);
-    const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
-    const [featuredImagePreview, setFeaturedImagePreview] = useState<string>('');
+    const [selectedContentTopics, setSelectedContentTopics] = useState<
+        string[]
+    >([]);
+    const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(
+        null
+    );
+    const [featuredImagePreview, setFeaturedImagePreview] =
+        useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    const handleInputChange = (field: keyof BlogFormData, value: string | number) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-        
+    const handleInputChange = (
+        field: keyof BlogFormData,
+        value: string | number
+    ) => {
+        setFormData((prev) => ({ ...prev, [field]: value }));
+
         // Auto-calculate read time based on content length
         if (field === 'content' && typeof value === 'string') {
             const wordCount = value.trim().split(/\s+/).length;
             const estimatedReadTime = Math.ceil(wordCount / 200); // Assuming 200 words per minute
-            setFormData(prev => ({ ...prev, readTime: Math.max(1, estimatedReadTime) }));
+            setFormData((prev) => ({
+                ...prev,
+                readTime: Math.max(1, estimatedReadTime),
+            }));
         }
-        
+
         if (error) setError('');
     };
 
     const addTag = () => {
         if (newTag.trim() && !formData.tags.includes(newTag.trim())) {
-            setFormData(prev => ({
+            setFormData((prev) => ({
                 ...prev,
-                tags: [...prev.tags, newTag.trim()]
+                tags: [...prev.tags, newTag.trim()],
             }));
             setNewTag('');
         }
     };
 
     const removeTag = (tagToRemove: string) => {
-        setFormData(prev => ({
+        setFormData((prev) => ({
             ...prev,
-            tags: prev.tags.filter(tag => tag !== tagToRemove)
+            tags: prev.tags.filter((tag) => tag !== tagToRemove),
         }));
     };
 
     const toggleContentTopic = (topic: string) => {
-        setSelectedContentTopics(prev => 
-            prev.includes(topic) 
-                ? prev.filter(t => t !== topic)
+        setSelectedContentTopics((prev) =>
+            prev.includes(topic)
+                ? prev.filter((t) => t !== topic)
                 : [...prev, topic]
         );
     };
 
-    const handleFeaturedImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFeaturedImageChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (file.size > 5 * 1024 * 1024) { // 5MB limit
+            if (file.size > 5 * 1024 * 1024) {
+                // 5MB limit
                 setError('Featured image must be less than 5MB');
                 return;
             }
-            
+
             setFeaturedImageFile(file);
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -179,7 +193,9 @@ export default function BlogUploadPage() {
             }
 
             // Generate excerpt if not provided
-            const excerpt = formData.excerpt.trim() || formData.content.substring(0, 200) + '...';
+            const excerpt =
+                formData.excerpt.trim() ||
+                formData.content.substring(0, 200) + '...';
 
             // Create blog
             const response = await fetch('/api/creator/blogs', {
@@ -203,15 +219,18 @@ export default function BlogUploadPage() {
                 throw new Error(data.error || 'Failed to create blog');
             }
 
-            setSuccess('Blog saved as draft and submitted for approval successfully!');
-            
+            setSuccess(
+                'Blog saved as draft and submitted for approval successfully!'
+            );
+
             // Redirect to creator dashboard after a delay
             setTimeout(() => {
                 router.push('/creator/dashboard');
             }, 2000);
-
         } catch (error) {
-            setError(error instanceof Error ? error.message : 'An error occurred');
+            setError(
+                error instanceof Error ? error.message : 'An error occurred'
+            );
         } finally {
             setIsLoading(false);
         }
@@ -230,7 +249,7 @@ export default function BlogUploadPage() {
                         <ArrowLeft className='h-4 w-4 mr-2' />
                         Back
                     </Button>
-                    
+
                     <div className='flex items-center space-x-3 mb-2'>
                         <div className='p-3 bg-green-100 rounded-lg'>
                             <FileText className='h-8 w-8 text-green-600' />
@@ -244,15 +263,19 @@ export default function BlogUploadPage() {
                             </p>
                         </div>
                     </div>
-                    
+
                     <div className='bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4'>
                         <div className='flex items-start space-x-3'>
                             <AlertCircle className='h-5 w-5 text-blue-600 mt-0.5' />
                             <div>
-                                <h3 className='font-medium text-blue-900'>Content Review Process</h3>
+                                <h3 className='font-medium text-blue-900'>
+                                    Content Review Process
+                                </h3>
                                 <p className='text-sm text-blue-700 mt-1'>
-                                    Your blog will be submitted as a draft and reviewed by our admin team before being published. 
-                                    You&apos;ll receive a notification once it&apos;s approved.
+                                    Your blog will be submitted as a draft and
+                                    reviewed by our admin team before being
+                                    published. You&apos;ll receive a
+                                    notification once it&apos;s approved.
                                 </p>
                             </div>
                         </div>
@@ -294,52 +317,79 @@ export default function BlogUploadPage() {
                                     <Input
                                         id='title'
                                         value={formData.title}
-                                        onChange={(e) => handleInputChange('title', e.target.value)}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                'title',
+                                                e.target.value
+                                            )
+                                        }
                                         placeholder='Enter a compelling blog title'
                                         className='mt-1'
                                     />
                                 </div>
-                                
+
                                 <div>
                                     <Label htmlFor='excerpt'>Excerpt</Label>
                                     <Textarea
                                         id='excerpt'
                                         value={formData.excerpt}
-                                        onChange={(e) => handleInputChange('excerpt', e.target.value)}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                'excerpt',
+                                                e.target.value
+                                            )
+                                        }
                                         placeholder='Brief summary of your blog post (optional - will be auto-generated if empty)'
                                         rows={2}
                                         className='mt-1'
                                     />
                                 </div>
-                                
+
                                 <div>
                                     <Label htmlFor='content'>Content *</Label>
                                     <Textarea
                                         id='content'
                                         value={formData.content}
-                                        onChange={(e) => handleInputChange('content', e.target.value)}
+                                        onChange={(e) =>
+                                            handleInputChange(
+                                                'content',
+                                                e.target.value
+                                            )
+                                        }
                                         placeholder='Write your blog content here...'
                                         rows={12}
                                         className='mt-1'
                                     />
                                     <p className='text-sm text-gray-500 mt-2'>
-                                        Estimated read time: {formData.readTime} minute{formData.readTime !== 1 ? 's' : ''}
+                                        Estimated read time: {formData.readTime}{' '}
+                                        minute
+                                        {formData.readTime !== 1 ? 's' : ''}
                                     </p>
                                 </div>
-                                
+
                                 <div>
                                     <Label htmlFor='topic'>Primary Topic</Label>
                                     <Select
                                         value={formData.topic}
-                                        onValueChange={(value) => handleInputChange('topic', value)}
+                                        onValueChange={(value) =>
+                                            handleInputChange('topic', value)
+                                        }
                                     >
                                         <SelectTrigger className='mt-1'>
                                             <SelectValue placeholder='Select a topic' />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {BLOG_TOPICS.map(topic => (
-                                                <SelectItem key={topic} value={topic}>
-                                                    {topic.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase())}
+                                            {BLOG_TOPICS.map((topic) => (
+                                                <SelectItem
+                                                    key={topic}
+                                                    value={topic}
+                                                >
+                                                    {topic
+                                                        .replace('_', ' ')
+                                                        .toLowerCase()
+                                                        .replace(/\b\w/g, (l) =>
+                                                            l.toUpperCase()
+                                                        )}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -355,18 +405,28 @@ export default function BlogUploadPage() {
                             </CardHeader>
                             <CardContent>
                                 <p className='text-sm text-gray-600 mb-4'>
-                                    Select all topics that apply to your blog post:
+                                    Select all topics that apply to your blog
+                                    post:
                                 </p>
                                 <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3'>
-                                    {CONTENT_TOPICS.map(topic => (
-                                        <label key={topic} className='flex items-center space-x-2 cursor-pointer'>
+                                    {CONTENT_TOPICS.map((topic) => (
+                                        <label
+                                            key={topic}
+                                            className='flex items-center space-x-2 cursor-pointer'
+                                        >
                                             <input
                                                 type='checkbox'
-                                                checked={selectedContentTopics.includes(topic)}
-                                                onChange={() => toggleContentTopic(topic)}
+                                                checked={selectedContentTopics.includes(
+                                                    topic
+                                                )}
+                                                onChange={() =>
+                                                    toggleContentTopic(topic)
+                                                }
                                                 className='rounded border-gray-300'
                                             />
-                                            <span className='text-sm'>{topic}</span>
+                                            <span className='text-sm'>
+                                                {topic}
+                                            </span>
                                         </label>
                                     ))}
                                 </div>
@@ -382,18 +442,31 @@ export default function BlogUploadPage() {
                                 <div className='flex space-x-2'>
                                     <Input
                                         value={newTag}
-                                        onChange={(e) => setNewTag(e.target.value)}
+                                        onChange={(e) =>
+                                            setNewTag(e.target.value)
+                                        }
                                         placeholder='Add a tag'
-                                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                                        onKeyPress={(e) =>
+                                            e.key === 'Enter' &&
+                                            (e.preventDefault(), addTag())
+                                        }
                                     />
-                                    <Button type='button' onClick={addTag} variant='outline'>
+                                    <Button
+                                        type='button'
+                                        onClick={addTag}
+                                        variant='outline'
+                                    >
                                         <Plus className='h-4 w-4' />
                                     </Button>
                                 </div>
-                                
+
                                 <div className='flex flex-wrap gap-2'>
-                                    {formData.tags.map(tag => (
-                                        <Badge key={tag} variant='secondary' className='flex items-center space-x-1'>
+                                    {formData.tags.map((tag) => (
+                                        <Badge
+                                            key={tag}
+                                            variant='secondary'
+                                            className='flex items-center space-x-1'
+                                        >
                                             <span>{tag}</span>
                                             <button
                                                 type='button'
@@ -442,7 +515,7 @@ export default function BlogUploadPage() {
                                             <ImageIcon className='h-8 w-8 text-gray-400' />
                                         </div>
                                     )}
-                                    
+
                                     <div>
                                         <input
                                             type='file'
@@ -452,7 +525,11 @@ export default function BlogUploadPage() {
                                             id='featured-image-upload'
                                         />
                                         <label htmlFor='featured-image-upload'>
-                                            <Button type='button' variant='outline' asChild>
+                                            <Button
+                                                type='button'
+                                                variant='outline'
+                                                asChild
+                                            >
                                                 <span className='cursor-pointer'>
                                                     <Upload className='h-4 w-4 mr-2' />
                                                     Upload Featured Image
@@ -460,7 +537,8 @@ export default function BlogUploadPage() {
                                             </Button>
                                         </label>
                                         <p className='text-xs text-gray-500 mt-2'>
-                                            Recommended: 16:9 aspect ratio, under 5MB
+                                            Recommended: 16:9 aspect ratio,
+                                            under 5MB
                                         </p>
                                     </div>
                                 </div>
@@ -488,19 +566,23 @@ export default function BlogUploadPage() {
                                             </>
                                         )}
                                     </Button>
-                                    
+
                                     <Button
                                         type='button'
                                         variant='outline'
-                                        onClick={() => router.push('/creator/dashboard')}
+                                        onClick={() =>
+                                            router.push('/creator/dashboard')
+                                        }
                                         disabled={isLoading}
                                     >
                                         Cancel
                                     </Button>
                                 </div>
-                                
+
                                 <p className='text-sm text-gray-500 mt-3 text-center'>
-                                    Your blog will be saved as a draft and submitted to admins for review before publication.
+                                    Your blog will be saved as a draft and
+                                    submitted to admins for review before
+                                    publication.
                                 </p>
                             </CardContent>
                         </Card>

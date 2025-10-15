@@ -29,38 +29,66 @@ export async function PUT(request: NextRequest) {
             isActive,
         } = body;
 
-        // Find the user's creator profile
+        // Find the user's creator profile or create one for SUPER_ADMIN
         const user = await prisma.user.findUnique({
             where: { id: session.user.id },
             include: { creator: true },
         });
 
-        if (!user || !user.creator) {
+        if (!user) {
             return NextResponse.json(
-                { error: 'Creator profile not found' },
+                { error: 'User not found' },
                 { status: 404 }
             );
         }
 
+        // Allow both CREATOR role users and SUPER_ADMIN users
+        if (user.role !== 'CREATOR' && user.role !== 'SUPER_ADMIN') {
+            return NextResponse.json(
+                { error: 'Insufficient permissions' },
+                { status: 403 }
+            );
+        }
+
+        // For SUPER_ADMINs without creator profiles, create one
+        let creatorProfile = user.creator;
+        if (!user.creator) {
+            creatorProfile = await prisma.creator.create({
+                data: {
+                    userId: user.id,
+                    displayName:
+                        displayName ||
+                        user.name ||
+                        user.email?.split('@')[0] ||
+                        'Admin',
+                    bio: bio || 'H3 Network Admin and Content Creator',
+                    isActive: true,
+                    profileComplete: false,
+                },
+            });
+        }
+
         // Update the creator profile
         const updatedCreator = await prisma.creator.update({
-            where: { id: user.creator.id },
+            where: { id: creatorProfile!.id },
             data: {
-                displayName: displayName || user.creator.displayName,
-                bio: bio || user.creator.bio,
-                showName: showName || user.creator.showName,
-                funnyFact: funnyFact || user.creator.funnyFact,
-                linkedinUrl: linkedinUrl || user.creator.linkedinUrl,
-                instagramUrl: instagramUrl || user.creator.instagramUrl,
-                tiktokUrl: tiktokUrl || user.creator.tiktokUrl,
-                websiteUrl: websiteUrl || user.creator.websiteUrl,
-                avatarUrl: avatarUrl || user.creator.avatarUrl,
+                displayName: displayName || creatorProfile!.displayName,
+                bio: bio || creatorProfile!.bio,
+                showName: showName || creatorProfile!.showName,
+                funnyFact: funnyFact || creatorProfile!.funnyFact,
+                linkedinUrl: linkedinUrl || creatorProfile!.linkedinUrl,
+                instagramUrl: instagramUrl || creatorProfile!.instagramUrl,
+                tiktokUrl: tiktokUrl || creatorProfile!.tiktokUrl,
+                websiteUrl: websiteUrl || creatorProfile!.websiteUrl,
+                avatarUrl: avatarUrl || creatorProfile!.avatarUrl,
                 profileComplete:
                     profileComplete !== undefined
                         ? profileComplete
-                        : user.creator.profileComplete,
+                        : creatorProfile!.profileComplete,
                 isActive:
-                    isActive !== undefined ? isActive : user.creator.isActive,
+                    isActive !== undefined
+                        ? isActive
+                        : creatorProfile!.isActive,
                 updatedAt: new Date(),
             },
         });
@@ -102,27 +130,30 @@ export async function GET() {
             );
         }
 
-        // If user is SUPER_ADMIN but doesn't have a creator profile, create a temporary one for dashboard access
+        // Allow both CREATOR role users and SUPER_ADMIN users
+        if (user.role !== 'CREATOR' && user.role !== 'SUPER_ADMIN') {
+            return NextResponse.json(
+                { error: 'Insufficient permissions' },
+                { status: 403 }
+            );
+        }
+
+        // If user is SUPER_ADMIN but doesn't have a creator profile, create one
         if (user.role === 'SUPER_ADMIN' && !user.creator) {
-            return NextResponse.json({
-                success: true,
-                creator: {
-                    id: 'temp-admin',
-                    displayName: user.name || 'Super Admin',
-                    bio: 'Platform Administrator - Full Access',
-                    showName: 'Admin Dashboard',
+            const newCreatorProfile = await prisma.creator.create({
+                data: {
+                    userId: user.id,
+                    displayName:
+                        user.name || user.email?.split('@')[0] || 'Admin',
+                    bio: 'H3 Network Admin and Content Creator',
                     isActive: true,
                     profileComplete: true,
-                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
-                    funnyFact: 'Has administrative superpowers! 🚀',
-                    linkedinUrl: '',
-                    instagramUrl: '',
-                    tiktokUrl: '',
-                    websiteUrl: '',
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    userId: user.id,
                 },
+            });
+
+            return NextResponse.json({
+                success: true,
+                creator: newCreatorProfile,
                 isAdminAccess: true,
             });
         }

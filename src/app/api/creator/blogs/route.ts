@@ -15,17 +15,40 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Check if user is a creator
+        // Check if user is a creator or super admin
         const user = await prisma.user.findUnique({
             where: { id: session.user.id },
             include: { creator: true },
         });
 
-        if (!user || !user.creator) {
+        if (!user) {
             return NextResponse.json(
-                { error: 'Creator profile not found' },
+                { error: 'User not found' },
                 { status: 404 }
             );
+        }
+
+        // Allow both CREATOR role users and SUPER_ADMIN users
+        if (user.role !== 'CREATOR' && user.role !== 'SUPER_ADMIN') {
+            return NextResponse.json(
+                { error: 'Insufficient permissions' },
+                { status: 403 }
+            );
+        }
+
+        // For SUPER_ADMINs without creator profiles, create a basic creator profile
+        let creatorProfile = user.creator;
+        if (user.role === 'SUPER_ADMIN' && !user.creator) {
+            creatorProfile = await prisma.creator.create({
+                data: {
+                    userId: user.id,
+                    displayName:
+                        user.name || user.email?.split('@')[0] || 'Admin',
+                    bio: 'H3 Network Admin and Content Creator',
+                    isActive: true,
+                    profileComplete: true,
+                },
+            });
         }
 
         const body = await request.json();
@@ -56,7 +79,8 @@ export async function POST(request: NextRequest) {
         }
 
         // Generate excerpt if not provided
-        const finalExcerpt = excerpt?.trim() || content.substring(0, 200) + '...';
+        const finalExcerpt =
+            excerpt?.trim() || content.substring(0, 200) + '...';
 
         // Create blog
         const blog = await prisma.blog.create({
@@ -66,14 +90,14 @@ export async function POST(request: NextRequest) {
                 excerpt: finalExcerpt,
                 status: ContentStatus.DRAFT, // Always DRAFT for approval workflow
                 topic: (topic as ContentTopic) || ContentTopic.GENERAL,
-                creatorId: user.creator.id,
-                
+                creatorId: creatorProfile!.id,
+
                 // Content metadata
                 tags: tags || [],
                 contentTopics: contentTopics || [],
                 readTime: readTime || 5,
                 featuredImage: featuredImage || null,
-                
+
                 // Default values
                 viewCount: 0,
             },
@@ -94,7 +118,6 @@ export async function POST(request: NextRequest) {
             blog,
             message: 'Blog created successfully and submitted for approval',
         });
-
     } catch (error) {
         console.error('Blog creation error:', error);
         return NextResponse.json(
@@ -115,23 +138,39 @@ export async function GET() {
             );
         }
 
-        // Check if user is a creator
+        // Check if user is a creator or super admin
         const user = await prisma.user.findUnique({
             where: { id: session.user.id },
             include: { creator: true },
         });
 
-        if (!user || !user.creator) {
+        if (!user) {
             return NextResponse.json(
-                { error: 'Creator profile not found' },
+                { error: 'User not found' },
                 { status: 404 }
             );
+        }
+
+        // Allow both CREATOR role users and SUPER_ADMIN users
+        if (user.role !== 'CREATOR' && user.role !== 'SUPER_ADMIN') {
+            return NextResponse.json(
+                { error: 'Insufficient permissions' },
+                { status: 403 }
+            );
+        }
+
+        // If SUPER_ADMIN doesn't have a creator profile, return empty array
+        if (user.role === 'SUPER_ADMIN' && !user.creator) {
+            return NextResponse.json({
+                success: true,
+                blogs: [],
+            });
         }
 
         // Get all blogs for this creator
         const blogs = await prisma.blog.findMany({
             where: {
-                creatorId: user.creator.id,
+                creatorId: user.creator!.id,
             },
             orderBy: { createdAt: 'desc' },
             include: {
@@ -147,7 +186,6 @@ export async function GET() {
             success: true,
             blogs,
         });
-
     } catch (error) {
         console.error('Blogs fetch error:', error);
         return NextResponse.json(
