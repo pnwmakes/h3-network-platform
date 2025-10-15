@@ -244,7 +244,7 @@ export default function AdminDashboard() {
                                     variant='outline'
                                     className='border-orange-300 text-orange-700 hover:bg-orange-100'
                                     onClick={() =>
-                                        router.push('/admin/content-approval')
+                                        router.push('/admin/content')
                                     }
                                 >
                                     Review Content
@@ -288,9 +288,7 @@ export default function AdminDashboard() {
 
                             <Card
                                 className='hover:shadow-md transition-shadow cursor-pointer'
-                                onClick={() =>
-                                    router.push('/admin/content-approval')
-                                }
+                                onClick={() => router.push('/admin/content')}
                             >
                                 <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
                                     <CardTitle className='text-sm font-medium'>
@@ -402,7 +400,7 @@ export default function AdminDashboard() {
                                 </p>
                                 <Button
                                     onClick={() =>
-                                        router.push('/admin/content-approval')
+                                        router.push('/admin/content')
                                     }
                                 >
                                     Review Content
