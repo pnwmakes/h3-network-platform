@@ -303,7 +303,9 @@ export default function ContentModerationPage() {
                                     onReject={(id) =>
                                         handleApproval(id, 'reject')
                                     }
-                                    onDelete={(id, type) => handleDelete(id, type)}
+                                    onDelete={(id, type) =>
+                                        handleDelete(id, type)
+                                    }
                                     processing={processingId === item.id}
                                     feedback={feedback[item.id] || ''}
                                     onFeedbackChange={(value) =>
@@ -330,7 +332,9 @@ export default function ContentModerationPage() {
                                     onReject={(id) =>
                                         handleApproval(id, 'reject')
                                     }
-                                    onDelete={(id, type) => handleDelete(id, type)}
+                                    onDelete={(id, type) =>
+                                        handleDelete(id, type)
+                                    }
                                     processing={processingId === item.id}
                                     feedback={feedback[item.id] || ''}
                                     onFeedbackChange={(value) =>
@@ -357,7 +361,9 @@ export default function ContentModerationPage() {
                                     onReject={(id) =>
                                         handleApproval(id, 'reject')
                                     }
-                                    onDelete={(id, type) => handleDelete(id, type)}
+                                    onDelete={(id, type) =>
+                                        handleDelete(id, type)
+                                    }
                                     processing={processingId === item.id}
                                     feedback={feedback[item.id] || ''}
                                     onFeedbackChange={(value) =>
