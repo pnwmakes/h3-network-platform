@@ -15,10 +15,10 @@ import {
     Plus,
     Eye,
     TrendingUp,
-    Upload,
 } from 'lucide-react';
 // Components will be imported as they're created
 // import { CreatorStats } from './CreatorStats';
+import { ContentManager } from './ContentManager';
 import { ContentTemplates } from './ContentTemplates';
 import { ScheduleCalendar } from './ScheduleCalendar';
 import { ProfileSettings } from './ProfileSettings';
@@ -81,6 +81,14 @@ export function CreatorDashboard() {
             console.error('Profile fetch error:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleCreateContent = (type: 'video' | 'blog') => {
+        if (type === 'video') {
+            router.push('/creator/upload/video');
+        } else {
+            router.push('/creator/upload/blog');
         }
     };
 
@@ -264,111 +272,7 @@ export function CreatorDashboard() {
                     </TabsContent>
 
                     <TabsContent value='content' className='mt-6'>
-                        <div className='space-y-6'>
-                            {/* Content Actions */}
-                            <div className='flex justify-between items-center'>
-                                <h2 className='text-xl font-semibold'>
-                                    Your Content
-                                </h2>
-                                <div className='flex space-x-2'>
-                                    <Button variant='outline'>
-                                        <Upload className='h-4 w-4 mr-2' />
-                                        Bulk Upload
-                                    </Button>
-                                    <div className='flex space-x-2'>
-                                        <Button
-                                            onClick={() =>
-                                                router.push(
-                                                    '/creator/upload/video'
-                                                )
-                                            }
-                                        >
-                                            <Video className='h-4 w-4 mr-2' />
-                                            Upload Video
-                                        </Button>
-                                        <Button
-                                            variant='outline'
-                                            onClick={() =>
-                                                router.push(
-                                                    '/creator/upload/blog'
-                                                )
-                                            }
-                                        >
-                                            <FileText className='h-4 w-4 mr-2' />
-                                            Write Blog
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Content List */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Recent Content</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className='space-y-4'>
-                                        <div className='flex items-center justify-between p-4 border rounded-lg'>
-                                            <div className='flex items-center space-x-3'>
-                                                <div className='h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center'>
-                                                    <Video className='h-6 w-6 text-blue-500' />
-                                                </div>
-                                                <div>
-                                                    <h3 className='font-medium'>
-                                                        Building Community
-                                                        Through Stories
-                                                    </h3>
-                                                    <p className='text-sm text-gray-600'>
-                                                        Episode 1 • Published 2
-                                                        days ago
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className='flex items-center space-x-2'>
-                                                <span className='text-sm text-gray-600'>
-                                                    1,234 views
-                                                </span>
-                                                <Button
-                                                    variant='outline'
-                                                    size='sm'
-                                                >
-                                                    Edit
-                                                </Button>
-                                            </div>
-                                        </div>
-
-                                        <div className='flex items-center justify-between p-4 border rounded-lg'>
-                                            <div className='flex items-center space-x-3'>
-                                                <div className='h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center'>
-                                                    <FileText className='h-6 w-6 text-green-500' />
-                                                </div>
-                                                <div>
-                                                    <h3 className='font-medium'>
-                                                        Finding Your Voice in
-                                                        Advocacy
-                                                    </h3>
-                                                    <p className='text-sm text-gray-600'>
-                                                        Blog Post • Published 5
-                                                        days ago
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <div className='flex items-center space-x-2'>
-                                                <span className='text-sm text-gray-600'>
-                                                    856 views
-                                                </span>
-                                                <Button
-                                                    variant='outline'
-                                                    size='sm'
-                                                >
-                                                    Edit
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
+                        <ContentManager onCreateNew={handleCreateContent} />
                     </TabsContent>
 
                     <TabsContent value='schedule' className='mt-6'>

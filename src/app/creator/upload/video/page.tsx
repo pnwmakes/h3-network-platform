@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -76,6 +76,9 @@ const VIDEO_TOPICS = [
 
 export default function VideoUploadPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const editId = searchParams.get('edit');
+    const isEditing = Boolean(editId);
 
     const [formData, setFormData] = useState<VideoFormData>({
         title: '',
@@ -105,6 +108,50 @@ export default function VideoUploadPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    // Load existing video data for editing
+    useEffect(() => {
+        if (isEditing && editId) {
+            loadVideoForEditing(editId);
+        }
+    }, [isEditing, editId]);
+
+    const loadVideoForEditing = async (videoId: string) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`/api/creator/videos/${videoId}`);
+            const data = await response.json();
+
+            if (data.success) {
+                const video = data.video;
+                setFormData({
+                    title: video.title,
+                    description: video.description,
+                    youtubeUrl: video.youtubeUrl,
+                    youtubeId: video.youtubeId,
+                    topic: video.topic,
+                    showName: video.showName || '',
+                    seasonNumber: video.seasonNumber || 1,
+                    episodeNumber: video.episodeNumber || 1,
+                    tags: video.tags,
+                    contentTopics: video.contentTopics,
+                    guestNames: video.guestNames,
+                    guestBios: video.guestBios,
+                    sponsorNames: video.sponsorNames,
+                    sponsorMessages: video.sponsorMessages,
+                });
+                setSelectedContentTopics(video.contentTopics);
+                setThumbnailPreview(video.thumbnailUrl);
+            } else {
+                setError('Failed to load video for editing');
+            }
+        } catch (error) {
+            console.error('Error loading video:', error);
+            setError('Failed to load video for editing');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     // Extract YouTube ID from URL - improved version
     const extractYouTubeId = (url: string): string => {
@@ -260,8 +307,8 @@ export default function VideoUploadPage() {
                 throw new Error('Invalid YouTube URL');
             }
 
-            // Upload thumbnail if selected
-            let thumbnailUrl = '';
+            // Upload thumbnail if selected (new file)
+            let thumbnailUrl = thumbnailPreview; // Keep existing thumbnail if editing
             if (thumbnailFile) {
                 const formDataUpload = new FormData();
                 formDataUpload.append('file', thumbnailFile);
@@ -280,9 +327,14 @@ export default function VideoUploadPage() {
                 thumbnailUrl = uploadData.url;
             }
 
-            // Create video
-            const response = await fetch('/api/creator/videos', {
-                method: 'POST',
+            // Create or update video
+            const url = isEditing 
+                ? `/api/creator/videos/${editId}` 
+                : '/api/creator/videos';
+            const method = isEditing ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...formData,
@@ -295,14 +347,14 @@ export default function VideoUploadPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Failed to create video');
+                throw new Error(data.error || `Failed to ${isEditing ? 'update' : 'create'} video`);
             }
 
             setSuccess(
-                `Video ${
+                `Video ${isEditing ? 'updated' : 'created'} ${
                     asDraft
-                        ? 'saved as draft and submitted for approval'
-                        : 'published'
+                        ? 'and submitted for approval'
+                        : 'successfully'
                 } successfully!`
             );
 
@@ -339,10 +391,13 @@ export default function VideoUploadPage() {
                         </div>
                         <div>
                             <h1 className='text-3xl font-bold text-gray-900'>
-                                Upload Video
+                                {isEditing ? 'Edit Video' : 'Upload Video'}
                             </h1>
                             <p className='text-gray-600'>
-                                Share your story with the H3 Network community
+                                {isEditing 
+                                    ? 'Update your video content and settings'
+                                    : 'Share your story with the H3 Network community'
+                                }
                             </p>
                         </div>
                     </div>
@@ -885,12 +940,12 @@ export default function VideoUploadPage() {
                                         {isLoading ? (
                                             <>
                                                 <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
-                                                Submitting...
+                                                {isEditing ? 'Updating...' : 'Submitting...'}
                                             </>
                                         ) : (
                                             <>
                                                 <Save className='h-4 w-4 mr-2' />
-                                                Submit for Approval
+                                                {isEditing ? 'Update Video' : 'Submit for Approval'}
                                             </>
                                         )}
                                     </Button>
@@ -908,9 +963,10 @@ export default function VideoUploadPage() {
                                 </div>
 
                                 <p className='text-sm text-gray-500 mt-3 text-center'>
-                                    Your video will be saved as a draft and
-                                    submitted to admins for review before
-                                    publication.
+                                    {isEditing 
+                                        ? 'Your changes will be saved and may require re-approval if the video was previously published.'
+                                        : 'Your video will be saved as a draft and submitted to admins for review before publication.'
+                                    }
                                 </p>
                             </CardContent>
                         </Card>
