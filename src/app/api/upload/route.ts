@@ -52,41 +52,60 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Create upload directory
-        const uploadDir = join(
-            process.cwd(),
-            'public',
-            'uploads',
-            type || 'misc'
-        );
-        console.log('Upload directory:', uploadDir);
-        
-        if (!existsSync(uploadDir)) {
-            console.log('Creating upload directory');
-            await mkdir(uploadDir, { recursive: true });
-        }
-
-        // Generate unique filename
-        const fileExtension = file.name.split('.').pop();
-        const filename = `${session.user.id}-${Date.now()}.${fileExtension}`;
-        const filepath = join(uploadDir, filename);
-        
-        console.log('Saving file to:', filepath);
-
-        // Convert file to buffer and save
+        // Convert to buffer for processing
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        await writeFile(filepath, buffer);
 
-        // Return the URL
-        const url = `/uploads/${type || 'misc'}/${filename}`;
-        console.log('Upload successful, URL:', url);
+        // Check if we're in a serverless environment (like Netlify)
+        const isServerless = process.env.NETLIFY || process.env.VERCEL || !process.env.NODE_ENV || process.env.NODE_ENV === 'production';
+        
+        if (isServerless) {
+            // For serverless environments, use base64 data URL
+            const base64 = buffer.toString('base64');
+            const dataUrl = `data:${file.type};base64,${base64}`;
+            
+            console.log('Upload successful (serverless), converted to data URL');
+            
+            return NextResponse.json({
+                success: true,
+                url: dataUrl,
+                filename: file.name,
+                type: 'data-url'
+            });
+        } else {
+            // For local development, save to filesystem
+            const uploadDir = join(
+                process.cwd(),
+                'public',
+                'uploads',
+                type || 'misc'
+            );
+            console.log('Upload directory:', uploadDir);
+            
+            if (!existsSync(uploadDir)) {
+                console.log('Creating upload directory');
+                await mkdir(uploadDir, { recursive: true });
+            }
 
-        return NextResponse.json({
-            success: true,
-            url,
-            filename,
-        });
+            // Generate unique filename
+            const fileExtension = file.name.split('.').pop();
+            const filename = `${session.user.id}-${Date.now()}.${fileExtension}`;
+            const filepath = join(uploadDir, filename);
+            
+            console.log('Saving file to:', filepath);
+            await writeFile(filepath, buffer);
+
+            // Return the URL
+            const url = `/uploads/${type || 'misc'}/${filename}`;
+            console.log('Upload successful (local), URL:', url);
+
+            return NextResponse.json({
+                success: true,
+                url,
+                filename,
+                type: 'file'
+            });
+        }
     } catch (error) {
         console.error('Upload error:', error);
         return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
