@@ -15,14 +15,14 @@ export async function GET() {
                 featuredImage: true,
                 creator: {
                     select: {
-                        displayName: true
-                    }
-                }
+                        displayName: true,
+                    },
+                },
             },
             orderBy: {
-                createdAt: 'desc'
+                createdAt: 'desc',
             },
-            take: 15
+            take: 15,
         });
 
         // Get published blogs (what should show on blogs page)
@@ -30,8 +30,8 @@ export async function GET() {
             where: {
                 status: 'PUBLISHED',
                 publishedAt: {
-                    lte: new Date()
-                }
+                    lte: new Date(),
+                },
             },
             select: {
                 id: true,
@@ -40,20 +40,20 @@ export async function GET() {
                 featuredImage: true,
                 creator: {
                     select: {
-                        displayName: true
-                    }
-                }
+                        displayName: true,
+                    },
+                },
             },
             orderBy: {
-                publishedAt: 'desc'
+                publishedAt: 'desc',
             },
-            take: 10
+            take: 10,
         });
 
         return NextResponse.json({
-            message: "Blog status debug information",
+            message: 'Blog status debug information',
             timestamp: new Date().toISOString(),
-            allRecentBlogs: allBlogs.map(blog => ({
+            allRecentBlogs: allBlogs.map((blog) => ({
                 id: blog.id,
                 title: blog.title,
                 status: blog.status,
@@ -62,22 +62,30 @@ export async function GET() {
                 createdAt: blog.createdAt,
                 updatedAt: blog.updatedAt,
                 hasFeaturedImage: !!blog.featuredImage,
-                imageType: blog.featuredImage?.startsWith('data:') ? 'data-url' : 
-                          blog.featuredImage?.startsWith('/uploads') ? 'file' : 
-                          blog.featuredImage ? 'external' : 'none'
+                imageType: blog.featuredImage?.startsWith('data:')
+                    ? 'data-url'
+                    : blog.featuredImage?.startsWith('/uploads')
+                    ? 'file'
+                    : blog.featuredImage
+                    ? 'external'
+                    : 'none',
             })),
-            publishedBlogsForListing: publishedBlogs.map(blog => ({
+            publishedBlogsForListing: publishedBlogs.map((blog) => ({
                 id: blog.id,
                 title: blog.title,
                 creator: blog.creator.displayName,
                 publishedAt: blog.publishedAt,
-                hasFeaturedImage: !!blog.featuredImage
-            }))
+                hasFeaturedImage: !!blog.featuredImage,
+            })),
         });
     } catch (error) {
         console.error('Debug blogs error:', error);
         return NextResponse.json(
-            { error: 'Failed to fetch debug info', details: error instanceof Error ? error.message : 'Unknown error' },
+            {
+                error: 'Failed to fetch debug info',
+                details:
+                    error instanceof Error ? error.message : 'Unknown error',
+            },
             { status: 500 }
         );
     }

@@ -4,6 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PreviewNotice } from '@/components/preview-notice';
 
+// Force dynamic rendering to get latest blogs
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getBlogs() {
     try {
         return await prisma.blog.findMany({
