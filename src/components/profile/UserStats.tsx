@@ -1,13 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-    Play,
-    Clock,
-    CheckCircle,
-    TrendingUp,
-    Calendar,
-} from 'lucide-react';
+import { Play, Clock, CheckCircle, TrendingUp, Calendar } from 'lucide-react';
 
 interface UserStatsProps {
     userId: string;

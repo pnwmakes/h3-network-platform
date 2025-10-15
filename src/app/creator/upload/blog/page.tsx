@@ -175,8 +175,11 @@ export default function BlogUploadPage() {
             // Upload featured image if selected
             let featuredImage = '';
             if (featuredImageFile) {
-                console.log('Uploading featured image:', featuredImageFile.name);
-                
+                console.log(
+                    'Uploading featured image:',
+                    featuredImageFile.name
+                );
+
                 const formDataUpload = new FormData();
                 formDataUpload.append('file', featuredImageFile);
                 formDataUpload.append('type', 'blog-featured');
@@ -187,11 +190,13 @@ export default function BlogUploadPage() {
                 });
 
                 console.log('Upload response status:', uploadResponse.status);
-                
+
                 if (!uploadResponse.ok) {
                     const errorData = await uploadResponse.json();
                     console.error('Upload error:', errorData);
-                    throw new Error(errorData.error || 'Failed to upload featured image');
+                    throw new Error(
+                        errorData.error || 'Failed to upload featured image'
+                    );
                 }
 
                 const uploadData = await uploadResponse.json();

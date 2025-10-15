@@ -8,9 +8,14 @@ import { existsSync } from 'fs';
 export async function POST(request: NextRequest) {
     try {
         console.log('Upload API called');
-        
+
         const session = await getServerSession(authOptions);
-        console.log('Session:', session?.user ? { id: session.user.id, email: session.user.email } : 'No session');
+        console.log(
+            'Session:',
+            session?.user
+                ? { id: session.user.id, email: session.user.email }
+                : 'No session'
+        );
 
         if (!session?.user?.id) {
             console.log('No valid session found');
@@ -24,7 +29,12 @@ export async function POST(request: NextRequest) {
         const file = formData.get('file') as File;
         const type = formData.get('type') as string;
 
-        console.log('File received:', file ? { name: file.name, size: file.size, type: file.type } : 'No file');
+        console.log(
+            'File received:',
+            file
+                ? { name: file.name, size: file.size, type: file.type }
+                : 'No file'
+        );
         console.log('Upload type:', type);
 
         if (!file) {
@@ -57,20 +67,26 @@ export async function POST(request: NextRequest) {
         const buffer = Buffer.from(bytes);
 
         // Check if we're in a serverless environment (like Netlify)
-        const isServerless = process.env.NETLIFY || process.env.VERCEL || !process.env.NODE_ENV || process.env.NODE_ENV === 'production';
-        
+        const isServerless =
+            process.env.NETLIFY ||
+            process.env.VERCEL ||
+            !process.env.NODE_ENV ||
+            process.env.NODE_ENV === 'production';
+
         if (isServerless) {
             // For serverless environments, use base64 data URL
             const base64 = buffer.toString('base64');
             const dataUrl = `data:${file.type};base64,${base64}`;
-            
-            console.log('Upload successful (serverless), converted to data URL');
-            
+
+            console.log(
+                'Upload successful (serverless), converted to data URL'
+            );
+
             return NextResponse.json({
                 success: true,
                 url: dataUrl,
                 filename: file.name,
-                type: 'data-url'
+                type: 'data-url',
             });
         } else {
             // For local development, save to filesystem
@@ -81,7 +97,7 @@ export async function POST(request: NextRequest) {
                 type || 'misc'
             );
             console.log('Upload directory:', uploadDir);
-            
+
             if (!existsSync(uploadDir)) {
                 console.log('Creating upload directory');
                 await mkdir(uploadDir, { recursive: true });
@@ -89,9 +105,11 @@ export async function POST(request: NextRequest) {
 
             // Generate unique filename
             const fileExtension = file.name.split('.').pop();
-            const filename = `${session.user.id}-${Date.now()}.${fileExtension}`;
+            const filename = `${
+                session.user.id
+            }-${Date.now()}.${fileExtension}`;
             const filepath = join(uploadDir, filename);
-            
+
             console.log('Saving file to:', filepath);
             await writeFile(filepath, buffer);
 
@@ -103,7 +121,7 @@ export async function POST(request: NextRequest) {
                 success: true,
                 url,
                 filename,
-                type: 'file'
+                type: 'file',
             });
         }
     } catch (error) {
