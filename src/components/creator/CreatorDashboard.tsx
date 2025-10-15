@@ -275,10 +275,21 @@ export function CreatorDashboard() {
                                         <Upload className='h-4 w-4 mr-2' />
                                         Bulk Upload
                                     </Button>
-                                    <Button>
-                                        <Plus className='h-4 w-4 mr-2' />
-                                        New Content
-                                    </Button>
+                                    <div className='flex space-x-2'>
+                                        <Button
+                                            onClick={() => router.push('/creator/upload/video')}
+                                        >
+                                            <Video className='h-4 w-4 mr-2' />
+                                            Upload Video
+                                        </Button>
+                                        <Button
+                                            variant='outline'
+                                            onClick={() => router.push('/creator/upload/blog')}
+                                        >
+                                            <FileText className='h-4 w-4 mr-2' />
+                                            Write Blog
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
 
