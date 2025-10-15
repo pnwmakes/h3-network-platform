@@ -69,6 +69,9 @@ const BLOG_TOPICS = [
 
 function BlogUploadPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const editId = searchParams.get('edit');
+    const isEditing = Boolean(editId);
 
     const [formData, setFormData] = useState<BlogFormData>({
         title: '',
@@ -92,6 +95,45 @@ function BlogUploadPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    // Load existing blog data for editing
+    useEffect(() => {
+        if (isEditing && editId) {
+            loadBlogForEditing(editId);
+        }
+    }, [isEditing, editId]);
+
+    const loadBlogForEditing = async (blogId: string) => {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`/api/creator/blogs/${blogId}`);
+            const data = await response.json();
+
+            if (data.success) {
+                const blog = data.blog;
+                setFormData({
+                    title: blog.title,
+                    content: blog.content,
+                    excerpt: blog.excerpt,
+                    topic: blog.topic,
+                    tags: blog.tags,
+                    contentTopics: blog.contentTopics,
+                    readTime: blog.readTime || 5,
+                });
+                setSelectedContentTopics(blog.contentTopics);
+                if (blog.featuredImage) {
+                    setFeaturedImagePreview(blog.featuredImage);
+                }
+            } else {
+                setError('Failed to load blog for editing');
+            }
+        } catch (error) {
+            console.error('Error loading blog:', error);
+            setError('Failed to load blog for editing');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const handleInputChange = (
         field: keyof BlogFormData,
@@ -172,8 +214,8 @@ function BlogUploadPage() {
                 throw new Error('Content is required');
             }
 
-            // Upload featured image if selected
-            let featuredImage = '';
+            // Upload featured image if new file selected
+            let featuredImage = featuredImagePreview; // Keep existing image if editing
             if (featuredImageFile) {
                 console.log(
                     'Uploading featured image:',
@@ -209,9 +251,14 @@ function BlogUploadPage() {
                 formData.excerpt.trim() ||
                 formData.content.substring(0, 200) + '...';
 
-            // Create blog
-            const response = await fetch('/api/creator/blogs', {
-                method: 'POST',
+            // Create or update blog
+            const url = isEditing 
+                ? `/api/creator/blogs/${editId}` 
+                : '/api/creator/blogs';
+            const method = isEditing ? 'PUT' : 'POST';
+
+            const response = await fetch(url, {
+                method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     title: formData.title,
@@ -228,11 +275,13 @@ function BlogUploadPage() {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Failed to create blog');
+                throw new Error(data.error || `Failed to ${isEditing ? 'update' : 'create'} blog`);
             }
 
             setSuccess(
-                'Blog saved as draft and submitted for approval successfully!'
+                isEditing 
+                    ? 'Blog updated and submitted for approval successfully!'
+                    : 'Blog saved as draft and submitted for approval successfully!'
             );
 
             // Redirect to creator dashboard after a delay
@@ -268,10 +317,13 @@ function BlogUploadPage() {
                         </div>
                         <div>
                             <h1 className='text-3xl font-bold text-gray-900'>
-                                Write Blog Post
+                                {isEditing ? 'Edit Blog Post' : 'Write Blog Post'}
                             </h1>
                             <p className='text-gray-600'>
-                                Share your insights and experiences
+                                {isEditing 
+                                    ? 'Update your blog content and settings'
+                                    : 'Share your insights and experiences'
+                                }
                             </p>
                         </div>
                     </div>
@@ -569,12 +621,12 @@ function BlogUploadPage() {
                                         {isLoading ? (
                                             <>
                                                 <div className='animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2'></div>
-                                                Submitting...
+                                                {isEditing ? 'Updating...' : 'Submitting...'}
                                             </>
                                         ) : (
                                             <>
                                                 <Save className='h-4 w-4 mr-2' />
-                                                Submit for Approval
+                                                {isEditing ? 'Update Blog' : 'Submit for Approval'}
                                             </>
                                         )}
                                     </Button>
@@ -592,9 +644,10 @@ function BlogUploadPage() {
                                 </div>
 
                                 <p className='text-sm text-gray-500 mt-3 text-center'>
-                                    Your blog will be saved as a draft and
-                                    submitted to admins for review before
-                                    publication.
+                                    {isEditing 
+                                        ? 'Your changes will be saved and may require re-approval if the blog was previously published.'
+                                        : 'Your blog will be saved as a draft and submitted to admins for review before publication.'
+                                    }
                                 </p>
                             </CardContent>
                         </Card>
@@ -607,11 +660,13 @@ function BlogUploadPage() {
 
 export default function BlogUploadPageWrapper() {
     return (
-        <Suspense fallback={
-            <div className='flex items-center justify-center min-h-screen'>
-                <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500'></div>
-            </div>
-        }>
+        <Suspense
+            fallback={
+                <div className='flex items-center justify-center min-h-screen'>
+                    <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500'></div>
+                </div>
+            }
+        >
             <BlogUploadPage />
         </Suspense>
     );
