@@ -36,17 +36,14 @@ export async function POST(request: NextRequest) {
         }
 
         const body = await request.json();
-        const {
-            contentType,
-            contentId,
-            publishAt,
-            notes,
-        } = body;
+        const { contentType, contentId, publishAt, notes } = body;
 
         // Validation
         if (!contentType || !contentId || !publishAt) {
             return NextResponse.json(
-                { error: 'Content type, content ID, and publish date are required' },
+                {
+                    error: 'Content type, content ID, and publish date are required',
+                },
                 { status: 400 }
             );
         }
@@ -88,7 +85,10 @@ export async function POST(request: NextRequest) {
         const existingSchedule = await prisma.scheduledContent.findFirst({
             where: {
                 OR: [
-                    { videoId: contentType === 'VIDEO' ? contentId : undefined },
+                    {
+                        videoId:
+                            contentType === 'VIDEO' ? contentId : undefined,
+                    },
                     { blogId: contentType === 'BLOG' ? contentId : undefined },
                 ],
             },
@@ -113,18 +113,24 @@ export async function POST(request: NextRequest) {
                 status: ScheduleStatus.PENDING,
             },
             include: {
-                video: contentType === 'VIDEO' ? {
-                    select: {
-                        title: true,
-                        thumbnailUrl: true,
-                    },
-                } : undefined,
-                blog: contentType === 'BLOG' ? {
-                    select: {
-                        title: true,
-                        featuredImage: true,
-                    },
-                } : undefined,
+                video:
+                    contentType === 'VIDEO'
+                        ? {
+                              select: {
+                                  title: true,
+                                  thumbnailUrl: true,
+                              },
+                          }
+                        : undefined,
+                blog:
+                    contentType === 'BLOG'
+                        ? {
+                              select: {
+                                  title: true,
+                                  featuredImage: true,
+                              },
+                          }
+                        : undefined,
             },
         });
 
@@ -227,12 +233,15 @@ export async function GET() {
             success: true,
             scheduledContent,
         });
-        
+
         // Prevent caching to ensure fresh data
-        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+        response.headers.set(
+            'Cache-Control',
+            'no-store, no-cache, must-revalidate, proxy-revalidate'
+        );
         response.headers.set('Pragma', 'no-cache');
         response.headers.set('Expires', '0');
-        
+
         return response;
     } catch (error) {
         console.error('Scheduled content fetch error:', error);

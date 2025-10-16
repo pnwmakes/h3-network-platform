@@ -20,8 +20,40 @@ import {
 // import { CreatorStats } from './CreatorStats';
 import { ContentManager } from './ContentManager';
 import { ContentTemplates } from './ContentTemplates';
-import { ScheduleCalendar } from './ScheduleCalendar';
+import ScheduleCalendar from './ScheduleCalendar';
+import { ScheduleContentModal } from './ScheduleContentModal';
+import { AutoPublishMonitor } from './AutoPublishMonitor';
 import { ProfileSettings } from './ProfileSettings';
+
+interface RawScheduledContent {
+    id: string;
+    publishAt: string;
+    status: string;
+    contentType: string;
+    video?: {
+        id: string;
+        title: string;
+        thumbnailUrl?: string;
+        status: string;
+    };
+    blog?: {
+        id: string;
+        title: string;
+        featuredImage?: string;
+        status: string;
+    };
+}
+
+interface ScheduledContent {
+    id: string;
+    publishAt: string;
+    status: string;
+    contentType: 'video' | 'blog';
+    content: {
+        id: string;
+        title: string;
+    };
+}
 
 interface CreatorProfile {
     id: string;
@@ -46,6 +78,56 @@ export function CreatorDashboard() {
     const [profile, setProfile] = useState<CreatorProfile | null>(null);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('overview');
+    const [showScheduleModal, setShowScheduleModal] = useState(false);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [scheduledContent, setScheduledContent] = useState<
+        ScheduledContent[]
+    >([]);
+
+    const fetchScheduledContent = async () => {
+        try {
+            const response = await fetch('/api/creator/schedule', {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                // Extract scheduledContent from the response and transform it
+                const rawContent = data.scheduledContent || [];
+                const transformedContent = Array.isArray(rawContent)
+                    ? rawContent.map((item: RawScheduledContent) => {
+                          const contentType = item.contentType.toLowerCase() as
+                              | 'video'
+                              | 'blog';
+                          const contentData = item.video || item.blog;
+                          return {
+                              id: item.id,
+                              publishAt: item.publishAt,
+                              status: item.status,
+                              contentType,
+                              content: {
+                                  id: contentData?.id || '',
+                                  title: contentData?.title || 'Untitled',
+                                  thumbnailUrl:
+                                      item.video?.thumbnailUrl ||
+                                      item.blog?.featuredImage,
+                              },
+                          };
+                      })
+                    : [];
+                setScheduledContent(transformedContent);
+            } else {
+                console.error(
+                    'Failed to fetch scheduled content:',
+                    response.status
+                );
+                setScheduledContent([]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch scheduled content:', error);
+        }
+    };
 
     useEffect(() => {
         if (status === 'loading') return;
@@ -65,6 +147,7 @@ export function CreatorDashboard() {
         }
 
         fetchProfile();
+        fetchScheduledContent();
     }, [session, status, router]);
 
     const fetchProfile = async () => {
@@ -195,7 +278,6 @@ export function CreatorDashboard() {
                             Settings
                         </TabsTrigger>
                     </TabsList>
-
                     <TabsContent value='overview' className='mt-6'>
                         <div className='grid gap-6'>
                             {/* Quick Stats */}
@@ -279,19 +361,28 @@ export function CreatorDashboard() {
                             </Card>
                         </div>
                     </TabsContent>
-
                     <TabsContent value='content' className='mt-6'>
                         <ContentManager onCreateNew={handleCreateContent} />
                     </TabsContent>
-
                     <TabsContent value='schedule' className='mt-6'>
-                        <ScheduleCalendar />
-                    </TabsContent>
-
+                        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+                            <div className='lg:col-span-2'>
+                                <ScheduleCalendar
+                                    onScheduleClick={(date) => {
+                                        setSelectedDate(date);
+                                        setShowScheduleModal(true);
+                                    }}
+                                    scheduledContent={scheduledContent}
+                                />
+                            </div>
+                            <div className='lg:col-span-1'>
+                                <AutoPublishMonitor />
+                            </div>
+                        </div>
+                    </TabsContent>{' '}
                     <TabsContent value='templates' className='mt-6'>
                         <ContentTemplates />
                     </TabsContent>
-
                     <TabsContent value='settings' className='mt-6'>
                         <ProfileSettings
                             profile={{
@@ -306,6 +397,47 @@ export function CreatorDashboard() {
                     </TabsContent>
                 </Tabs>
             </div>
+
+            {/* Schedule Content Modal */}
+            <ScheduleContentModal
+                isOpen={showScheduleModal}
+                selectedDate={selectedDate || undefined}
+                onClose={() => {
+                    setShowScheduleModal(false);
+                    setSelectedDate(null);
+                }}
+                onSchedule={async (
+                    contentId,
+                    contentType,
+                    publishAt,
+                    notes
+                ) => {
+                    try {
+                        const response = await fetch('/api/creator/schedule', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                contentId,
+                                contentType,
+                                publishAt: publishAt.toISOString(),
+                                notes,
+                            }),
+                        });
+
+                        if (response.ok) {
+                            setShowScheduleModal(false);
+                            setSelectedDate(null);
+                            fetchScheduledContent();
+                        } else {
+                            console.error('Failed to schedule content');
+                        }
+                    } catch (error) {
+                        console.error('Error scheduling content:', error);
+                    }
+                }}
+            />
         </div>
     );
 }
