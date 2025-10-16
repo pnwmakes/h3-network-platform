@@ -334,30 +334,29 @@ export function ScheduleCalendar() {
                     </div>
                 </CardContent>
             </Card>
-        </div>
 
-        {/* Schedule Content Modal */}
-        {showScheduleModal && (
-            <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-                <div className='bg-white rounded-lg p-6 w-full max-w-md mx-4'>
-                    <h3 className='text-lg font-semibold mb-4'>Schedule Content</h3>
-                    <p className='text-gray-600 mb-4'>
-                        Content scheduling functionality will be available soon.
-                    </p>
-                    <div className='flex justify-end space-x-3'>
-                        <Button 
-                            variant='outline' 
-                            onClick={() => setShowScheduleModal(false)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button onClick={() => setShowScheduleModal(false)}>
-                            Coming Soon
-                        </Button>
+            {/* Schedule Content Modal */}
+            {showScheduleModal && (
+                <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
+                    <div className='bg-white rounded-lg p-6 w-full max-w-md mx-4'>
+                        <h3 className='text-lg font-semibold mb-4'>Schedule Content</h3>
+                        <p className='text-gray-600 mb-4'>
+                            Content scheduling functionality will be available soon.
+                        </p>
+                        <div className='flex justify-end space-x-3'>
+                            <Button 
+                                variant='outline' 
+                                onClick={() => setShowScheduleModal(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button onClick={() => setShowScheduleModal(false)}>
+                                Coming Soon
+                            </Button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        )}
-    </div>
-);
+            )}
+        </div>
+    );
 }
