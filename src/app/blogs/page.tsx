@@ -36,7 +36,12 @@ export default function BlogsPage() {
             // Use multiple cache-busting parameters
             const cacheBuster = Date.now();
             const randomId = Math.random().toString(36).substring(7);
-            console.log('Fetching blogs with cache buster:', cacheBuster, 'random:', randomId);
+            console.log(
+                'Fetching blogs with cache buster:',
+                cacheBuster,
+                'random:',
+                randomId
+            );
 
             const response = await fetch(
                 `/api/content?type=blog&limit=100&_=${cacheBuster}&r=${randomId}&t=${new Date().getTime()}`,
@@ -44,11 +49,12 @@ export default function BlogsPage() {
                     method: 'GET',
                     cache: 'no-store',
                     headers: {
-                        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
-                        'Pragma': 'no-cache',
-                        'Expires': '0',
+                        'Cache-Control':
+                            'no-cache, no-store, must-revalidate, max-age=0',
+                        Pragma: 'no-cache',
+                        Expires: '0',
                         'If-None-Match': '*',
-                        'X-Requested-With': 'XMLHttpRequest'
+                        'X-Requested-With': 'XMLHttpRequest',
                     },
                 }
             );
@@ -72,7 +78,7 @@ export default function BlogsPage() {
 
     useEffect(() => {
         fetchBlogs();
-        
+
         // Auto-refresh when page becomes visible
         const handleVisibilityChange = () => {
             if (!document.hidden) {
@@ -80,18 +86,14 @@ export default function BlogsPage() {
                 fetchBlogs();
             }
         };
-        
+
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        
-        // Also refresh every 30 seconds for testing
-        const interval = setInterval(() => {
-            console.log('Auto-refresh blogs...');
-            fetchBlogs();
-        }, 30000);
-        
+
         return () => {
-            document.removeEventListener('visibilitychange', handleVisibilityChange);
-            clearInterval(interval);
+            document.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange
+            );
         };
     }, []);
 

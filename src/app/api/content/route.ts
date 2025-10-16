@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
 
         console.log('Content API query conditions:', {
             ...whereConditions,
-            publishedAt: { lte: whereConditions.publishedAt.lte.toISOString() }
+            publishedAt: { lte: whereConditions.publishedAt.lte.toISOString() },
         });
 
         // Force fresh database queries
