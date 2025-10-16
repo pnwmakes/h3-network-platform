@@ -32,29 +32,39 @@ export default function BlogsPage() {
         try {
             setLoading(true);
             setError(null);
-            
-            // Use cache-busting timestamp
+
+            // Use multiple cache-busting parameters
             const cacheBuster = Date.now();
-            console.log('Fetching blogs with cache buster:', cacheBuster);
-            
-            const response = await fetch(`/api/content?type=blog&limit=100&_=${cacheBuster}`, {
-                cache: 'no-store',
-                headers: {
-                    'Cache-Control': 'no-cache, no-store, must-revalidate',
-                    'Pragma': 'no-cache'
+            const randomId = Math.random().toString(36).substring(7);
+            console.log('Fetching blogs with cache buster:', cacheBuster, 'random:', randomId);
+
+            const response = await fetch(
+                `/api/content?type=blog&limit=100&_=${cacheBuster}&r=${randomId}&t=${new Date().getTime()}`,
+                {
+                    method: 'GET',
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0',
+                        'Pragma': 'no-cache',
+                        'Expires': '0',
+                        'If-None-Match': '*',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
                 }
-            });
-            
+            );
+
             if (!response.ok) {
                 throw new Error('Failed to fetch blogs');
             }
-            
+
             const data = await response.json();
             console.log('Received blogs:', data.content.length, 'items');
             setBlogs(data.content);
         } catch (err) {
             console.error('Error fetching blogs:', err);
-            setError(err instanceof Error ? err.message : 'Failed to load blogs');
+            setError(
+                err instanceof Error ? err.message : 'Failed to load blogs'
+            );
         } finally {
             setLoading(false);
         }
@@ -62,6 +72,27 @@ export default function BlogsPage() {
 
     useEffect(() => {
         fetchBlogs();
+        
+        // Auto-refresh when page becomes visible
+        const handleVisibilityChange = () => {
+            if (!document.hidden) {
+                console.log('Page became visible, refreshing blogs...');
+                fetchBlogs();
+            }
+        };
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // Also refresh every 30 seconds for testing
+        const interval = setInterval(() => {
+            console.log('Auto-refresh blogs...');
+            fetchBlogs();
+        }, 30000);
+        
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            clearInterval(interval);
+        };
     }, []);
 
     const formatViewCount = (count: number) => {
@@ -88,7 +119,10 @@ export default function BlogsPage() {
                     </div>
                     <div className='grid gap-8 md:grid-cols-2 lg:grid-cols-3'>
                         {Array.from({ length: 6 }, (_, i) => (
-                            <div key={i} className='bg-white dark:bg-gray-900 rounded-lg shadow-md animate-pulse'>
+                            <div
+                                key={i}
+                                className='bg-white dark:bg-gray-900 rounded-lg shadow-md animate-pulse'
+                            >
                                 <div className='aspect-video bg-gray-200 dark:bg-gray-700 rounded-t-lg'></div>
                                 <div className='p-6'>
                                     <div className='h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2'></div>

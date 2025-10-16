@@ -88,11 +88,16 @@ export async function PUT(
                 : ContentStatus.ARCHIVED;
         const publishedAt = action === 'approve' ? new Date() : null;
 
-        console.log(`${action === 'approve' ? 'Approving' : 'Rejecting'} ${contentType}:`, {
-            contentId,
-            newStatus,
-            publishedAt: publishedAt?.toISOString()
-        });
+        console.log(
+            `${
+                action === 'approve' ? 'Approving' : 'Rejecting'
+            } ${contentType}:`,
+            {
+                contentId,
+                newStatus,
+                publishedAt: publishedAt?.toISOString(),
+            }
+        );
 
         if (contentType === 'video') {
             const updatedVideo = await prisma.video.update({
@@ -102,7 +107,11 @@ export async function PUT(
                     publishedAt: publishedAt,
                 },
             });
-            console.log('Updated video:', { id: updatedVideo.id, status: updatedVideo.status, publishedAt: updatedVideo.publishedAt?.toISOString() });
+            console.log('Updated video:', {
+                id: updatedVideo.id,
+                status: updatedVideo.status,
+                publishedAt: updatedVideo.publishedAt?.toISOString(),
+            });
         } else {
             const updatedBlog = await prisma.blog.update({
                 where: { id: contentId },
@@ -111,7 +120,11 @@ export async function PUT(
                     publishedAt: publishedAt,
                 },
             });
-            console.log('Updated blog:', { id: updatedBlog.id, status: updatedBlog.status, publishedAt: updatedBlog.publishedAt?.toISOString() });
+            console.log('Updated blog:', {
+                id: updatedBlog.id,
+                status: updatedBlog.status,
+                publishedAt: updatedBlog.publishedAt?.toISOString(),
+            });
         }
 
         // TODO: In the future, we can add email notifications here

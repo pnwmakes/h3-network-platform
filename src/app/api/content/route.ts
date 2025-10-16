@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     try {
         // Force fresh database connection
         await prisma.$connect();
-        
+
         const { searchParams } = new URL(request.url);
         const type = searchParams.get('type'); // 'video', 'blog', or undefined for all
         const category = searchParams.get('category');
@@ -19,7 +19,12 @@ export async function GET(request: NextRequest) {
         const search = searchParams.get('search');
         const cacheBuster = searchParams.get('_'); // Cache busting parameter
 
-        console.log('Content API called with cache buster:', cacheBuster, 'at', new Date().toISOString());
+        console.log(
+            'Content API called with cache buster:',
+            cacheBuster,
+            'at',
+            new Date().toISOString()
+        );
 
         const skip = (page - 1) * limit;
 
@@ -56,6 +61,10 @@ export async function GET(request: NextRequest) {
             ...whereConditions,
             publishedAt: { lte: whereConditions.publishedAt.lte.toISOString() }
         });
+
+        // Force fresh database queries
+        await prisma.$disconnect();
+        await prisma.$connect();
 
         const [videos, blogs] = await Promise.all([
             // Get videos if type is 'video' or undefined
@@ -98,8 +107,14 @@ export async function GET(request: NextRequest) {
         console.log('Query results:', {
             videosFound: videos.length,
             blogsFound: blogs.length,
-            videoIds: videos.map(v => v.id),
-            blogIds: blogs.map(b => ({ id: b.id, status: b.status, publishedAt: b.publishedAt?.toISOString() }))
+            videoIds: videos.map((v) => v.id),
+            blogDetails: blogs.map((b) => ({
+                id: b.id,
+                title: b.title,
+                status: b.status,
+                publishedAt: b.publishedAt?.toISOString(),
+                updatedAt: b.updatedAt?.toISOString(),
+            })),
         });
 
         // Combine and sort if getting both types
