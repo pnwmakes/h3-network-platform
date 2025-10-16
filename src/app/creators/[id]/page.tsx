@@ -4,7 +4,7 @@ import { BackButton } from '@/components/back-button';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { Users, Video, FileText, Eye, Calendar } from 'lucide-react';
+import { Users, Video, FileText, Eye, Calendar, Linkedin, Instagram, Globe, ExternalLink } from 'lucide-react';
 
 interface CreatorPageProps {
     params: Promise<{
@@ -47,6 +47,9 @@ async function getCreator(id: string) {
         return null;
     }
 }
+
+// Force revalidation to ensure fresh data
+export const revalidate = 0;
 
 function formatDuration(seconds: number): string {
     const minutes = Math.floor(seconds / 60);
@@ -138,6 +141,77 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
                                 <p className='text-gray-700 leading-relaxed'>
                                     {creator.bio}
                                 </p>
+                            </div>
+                        )}
+
+                        {/* Fun Fact */}
+                        {creator.funnyFact && (
+                            <div className='mb-6'>
+                                <h3 className='text-lg font-semibold text-gray-900 mb-3'>
+                                    Fun Fact
+                                </h3>
+                                <p className='text-gray-700 leading-relaxed italic'>
+                                    {creator.funnyFact}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Social Media Links */}
+                        {(creator.linkedinUrl || creator.instagramUrl || creator.tiktokUrl || creator.websiteUrl) && (
+                            <div className='mb-6'>
+                                <h3 className='text-lg font-semibold text-gray-900 mb-3'>
+                                    Connect with {creator.displayName}
+                                </h3>
+                                <div className='flex flex-wrap gap-3'>
+                                    {creator.linkedinUrl && (
+                                        <a
+                                            href={creator.linkedinUrl}
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            className='flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors'
+                                        >
+                                            <Linkedin className='h-4 w-4' />
+                                            LinkedIn
+                                            <ExternalLink className='h-3 w-3' />
+                                        </a>
+                                    )}
+                                    {creator.instagramUrl && (
+                                        <a
+                                            href={creator.instagramUrl}
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            className='flex items-center gap-2 px-4 py-2 bg-pink-100 text-pink-700 rounded-lg hover:bg-pink-200 transition-colors'
+                                        >
+                                            <Instagram className='h-4 w-4' />
+                                            Instagram
+                                            <ExternalLink className='h-3 w-3' />
+                                        </a>
+                                    )}
+                                    {creator.tiktokUrl && (
+                                        <a
+                                            href={creator.tiktokUrl}
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            className='flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors'
+                                        >
+                                            <Video className='h-4 w-4' />
+                                            TikTok
+                                            <ExternalLink className='h-3 w-3' />
+                                        </a>
+                                    )}
+                                    {creator.websiteUrl && (
+                                        <a
+                                            href={creator.websiteUrl}
+                                            target='_blank'
+                                            rel='noopener noreferrer'
+                                            className='flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors'
+                                        >
+                                            <Globe className='h-4 w-4' />
+                                            Website
+                                            <ExternalLink className='h-3 w-3' />
+                                        </a>
+                                    )}
+                                </div>
                             </div>
                         )}
 
