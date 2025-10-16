@@ -27,6 +27,7 @@ export default function BlogsPage() {
     const [blogs, setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [lastFetch, setLastFetch] = useState<string>('');
 
     const fetchBlogs = async () => {
         try {
@@ -40,7 +41,7 @@ export default function BlogsPage() {
             const response = await fetch(
                 `/api/content?type=blog&limit=100&_=${cacheBuster}`,
                 {
-                    cache: 'no-store'
+                    cache: 'no-store',
                 }
             );
 
@@ -51,6 +52,7 @@ export default function BlogsPage() {
             const data = await response.json();
             console.log('Received blogs:', data.content.length, 'items');
             setBlogs(data.content);
+            setLastFetch(new Date().toLocaleTimeString());
         } catch (err) {
             console.error('Error fetching blogs:', err);
             setError(
@@ -166,10 +168,15 @@ export default function BlogsPage() {
                         <button
                             onClick={fetchBlogs}
                             disabled={loading}
-                            className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 text-sm'
+                            className='px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors disabled:opacity-50 text-sm mr-4'
                         >
                             {loading ? 'Refreshing...' : '🔄 Refresh Blogs'}
                         </button>
+                        {lastFetch && (
+                            <span className='text-sm text-gray-500 dark:text-gray-400'>
+                                Last updated: {lastFetch}
+                            </span>
+                        )}
                     </div>
                 </div>
 
