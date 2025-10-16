@@ -11,7 +11,7 @@ export const revalidate = 0;
 async function getBlogs() {
     try {
         console.log('🔍 [BLOG PAGE] Fetching published blogs...');
-        
+
         const blogs = await prisma.blog.findMany({
             where: {
                 status: 'PUBLISHED',
@@ -34,18 +34,20 @@ async function getBlogs() {
                 publishedAt: 'desc',
             },
         });
-        
+
         console.log(`✅ [BLOG PAGE] Found ${blogs.length} published blogs`);
-        blogs.forEach(blog => {
-            console.log(`   - ${blog.title} (${blog.id.slice(0, 8)}) | Published: ${blog.publishedAt?.toISOString()}`);
+        blogs.forEach((blog) => {
+            console.log(
+                `   - ${blog.title} (${blog.id.slice(
+                    0,
+                    8
+                )}) | Published: ${blog.publishedAt?.toISOString()}`
+            );
         });
-        
+
         return blogs;
     } catch (error) {
-        console.error(
-            '❌ [BLOG PAGE] Database error:',
-            error
-        );
+        console.error('❌ [BLOG PAGE] Database error:', error);
         return [];
     }
 }
