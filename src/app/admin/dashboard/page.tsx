@@ -85,7 +85,7 @@ export default function AdminDashboard() {
                         <h2 className='text-xl font-semibold mb-4'>
                             Unable to Load Dashboard
                         </h2>
-                        <p className='text-gray-600 mb-4'>
+                        <p className='text-gray-600 dark:text-gray-300 mb-4'>
                             There was an issue loading the admin dashboard.
                         </p>
                         <Button onClick={() => window.location.reload()}>
@@ -98,18 +98,18 @@ export default function AdminDashboard() {
     }
 
     return (
-        <div className='min-h-screen bg-gray-50'>
+        <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
             {/* Header */}
-            <div className='bg-white shadow-sm border-b'>
+            <div className='bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700'>
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                     <div className='flex justify-between items-center py-4'>
                         <div className='flex items-center space-x-4'>
                             <Shield className='h-8 w-8 text-blue-600' />
                             <div>
-                                <h1 className='text-2xl font-bold text-gray-900'>
+                                <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>
                                     Admin Dashboard
                                 </h1>
-                                <p className='text-sm text-gray-500'>
+                                <p className='text-sm text-gray-500 dark:text-gray-400'>
                                     H3 Network Platform Management
                                 </p>
                             </div>
@@ -122,10 +122,10 @@ export default function AdminDashboard() {
                                 Super Admin
                             </Badge>
                             <div className='text-right'>
-                                <p className='text-sm font-medium text-gray-900'>
+                                <p className='text-sm font-medium text-gray-900 dark:text-white'>
                                     {session?.user?.name}
                                 </p>
-                                <p className='text-xs text-gray-500'>
+                                <p className='text-xs text-gray-500 dark:text-gray-400'>
                                     {session?.user?.email}
                                 </p>
                             </div>
@@ -141,10 +141,10 @@ export default function AdminDashboard() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>
+                                    <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>
                                         Total Users
                                     </p>
-                                    <p className='text-3xl font-bold text-gray-900'>
+                                    <p className='text-3xl font-bold text-gray-900 dark:text-white'>
                                         {stats.totalUsers}
                                     </p>
                                 </div>
@@ -162,10 +162,10 @@ export default function AdminDashboard() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>
+                                    <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>
                                         Active Creators
                                     </p>
-                                    <p className='text-3xl font-bold text-gray-900'>
+                                    <p className='text-3xl font-bold text-gray-900 dark:text-white'>
                                         {stats.activeCreators}
                                     </p>
                                 </div>
@@ -183,10 +183,10 @@ export default function AdminDashboard() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>
+                                    <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>
                                         Total Content
                                     </p>
-                                    <p className='text-3xl font-bold text-gray-900'>
+                                    <p className='text-3xl font-bold text-gray-900 dark:text-white'>
                                         {stats.totalVideos + stats.totalBlogs}
                                     </p>
                                 </div>
@@ -207,10 +207,10 @@ export default function AdminDashboard() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>
+                                    <p className='text-sm font-medium text-gray-600 dark:text-gray-400'>
                                         Monthly Views
                                     </p>
-                                    <p className='text-3xl font-bold text-gray-900'>
+                                    <p className='text-3xl font-bold text-gray-900 dark:text-white'>
                                         {stats.monthlyViews.toLocaleString()}
                                     </p>
                                 </div>
@@ -232,10 +232,10 @@ export default function AdminDashboard() {
                             <div className='flex items-center space-x-3'>
                                 <AlertTriangle className='h-6 w-6 text-orange-600' />
                                 <div className='flex-1'>
-                                    <h3 className='text-lg font-medium text-orange-900'>
+                                    <h3 className='text-lg font-medium text-orange-900 dark:text-orange-100'>
                                         Content Awaiting Review
                                     </h3>
-                                    <p className='text-orange-700'>
+                                    <p className='text-orange-700 dark:text-orange-200'>
                                         {stats.pendingContent} pieces of content
                                         are waiting for approval.
                                     </p>
@@ -376,7 +376,7 @@ export default function AdminDashboard() {
                                 <CardTitle>User Management</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className='text-gray-600 mb-4'>
+                                <p className='text-gray-600 dark:text-gray-300 mb-4'>
                                     This section will contain user management
                                     tools.
                                 </p>
@@ -395,7 +395,7 @@ export default function AdminDashboard() {
                                 <CardTitle>Content Management</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className='text-gray-600 mb-4'>
+                                <p className='text-gray-600 dark:text-gray-300 mb-4'>
                                     Review and manage all platform content.
                                 </p>
                                 <Button
@@ -415,7 +415,7 @@ export default function AdminDashboard() {
                                 <CardTitle>Creator Management</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className='text-gray-600 mb-4'>
+                                <p className='text-gray-600 dark:text-gray-300 mb-4'>
                                     Manage creator applications and profiles.
                                 </p>
                                 <Button
@@ -435,7 +435,7 @@ export default function AdminDashboard() {
                                 <CardTitle>Platform Analytics</CardTitle>
                             </CardHeader>
                             <CardContent>
-                                <p className='text-gray-600 mb-4'>
+                                <p className='text-gray-600 dark:text-gray-300 mb-4'>
                                     View detailed platform performance metrics.
                                 </p>
                                 <Button

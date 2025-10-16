@@ -191,7 +191,7 @@ export function CreatorDashboard() {
                         <h2 className='text-xl font-semibold mb-4'>
                             Profile Not Found
                         </h2>
-                        <p className='text-gray-600 mb-4'>
+                        <p className='text-gray-600 dark:text-gray-300 mb-4'>
                             There was an issue loading your creator profile.
                         </p>
                         <Button
@@ -206,9 +206,9 @@ export function CreatorDashboard() {
     }
 
     return (
-        <div className='min-h-screen bg-gray-50'>
+        <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
             {/* Header */}
-            <div className='bg-white shadow-sm border-b'>
+            <div className='bg-white dark:bg-gray-800 shadow-sm border-b dark:border-gray-700'>
                 <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
                     <div className='flex justify-between items-center py-4'>
                         <div className='flex items-center space-x-4'>
@@ -216,10 +216,10 @@ export function CreatorDashboard() {
                                 {profile.displayName.charAt(0).toUpperCase()}
                             </div>
                             <div>
-                                <h1 className='text-2xl font-bold text-gray-900'>
+                                <h1 className='text-2xl font-bold text-gray-900 dark:text-white'>
                                     Welcome back, {profile.displayName}!
                                 </h1>
-                                <p className='text-gray-600'>
+                                <p className='text-gray-600 dark:text-gray-300'>
                                     {profile.showName &&
                                         `${profile.showName} • `}
                                     H3 Network Creator
