@@ -18,9 +18,15 @@ export default withAuth(
 
         // Add cache control headers for dynamic content pages
         const response = NextResponse.next();
-        
-        if (pathname.startsWith('/blogs') || pathname.startsWith('/api/content')) {
-            response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+
+        if (
+            pathname.startsWith('/blogs') ||
+            pathname.startsWith('/api/content')
+        ) {
+            response.headers.set(
+                'Cache-Control',
+                'no-store, no-cache, must-revalidate, proxy-revalidate'
+            );
             response.headers.set('Pragma', 'no-cache');
             response.headers.set('Expires', '0');
             response.headers.set('CDN-Cache-Control', 'no-store');
