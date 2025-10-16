@@ -44,23 +44,31 @@ export default function ContentGrid({
                 setLoading(true);
                 // Add cache-busting timestamp to ensure fresh data
                 const cacheBuster = Date.now();
-                console.log('ContentGrid: Fetching content with cache buster:', cacheBuster);
+                console.log(
+                    'ContentGrid: Fetching content with cache buster:',
+                    cacheBuster
+                );
                 const response = await fetch(
                     `/api/content?limit=${limit}&_=${cacheBuster}`,
                     {
                         cache: 'no-store',
                         headers: {
-                            'Cache-Control': 'no-cache, no-store, must-revalidate',
-                            'Pragma': 'no-cache',
-                            'Expires': '0'
-                        }
+                            'Cache-Control':
+                                'no-cache, no-store, must-revalidate',
+                            Pragma: 'no-cache',
+                            Expires: '0',
+                        },
                     }
                 );
                 if (!response.ok) {
                     throw new Error('Failed to fetch content');
                 }
                 const data = await response.json();
-                console.log('ContentGrid: Received content:', data.content.length, 'items');
+                console.log(
+                    'ContentGrid: Received content:',
+                    data.content.length,
+                    'items'
+                );
                 setContent(data.content);
             } catch (err) {
                 setError(
@@ -80,23 +88,30 @@ export default function ContentGrid({
         try {
             setLoading(true);
             const cacheBuster = Date.now();
-            console.log('ContentGrid: Manual refresh with cache buster:', cacheBuster);
+            console.log(
+                'ContentGrid: Manual refresh with cache buster:',
+                cacheBuster
+            );
             const response = await fetch(
                 `/api/content?limit=${limit}&_=${cacheBuster}`,
                 {
                     cache: 'no-store',
                     headers: {
                         'Cache-Control': 'no-cache, no-store, must-revalidate',
-                        'Pragma': 'no-cache',
-                        'Expires': '0'
-                    }
+                        Pragma: 'no-cache',
+                        Expires: '0',
+                    },
                 }
             );
             if (!response.ok) {
                 throw new Error('Failed to fetch content');
             }
             const data = await response.json();
-            console.log('ContentGrid: Manual refresh received:', data.content.length, 'items');
+            console.log(
+                'ContentGrid: Manual refresh received:',
+                data.content.length,
+                'items'
+            );
             setContent(data.content);
         } catch (err) {
             setError(
@@ -236,8 +251,8 @@ export default function ContentGrid({
                         Latest Content
                     </h2>
                     <p className='text-lg text-gray-600 max-w-2xl mx-auto mb-4'>
-                        Discover the latest videos and blogs from our H3
-                        Network creators
+                        Discover the latest videos and blogs from our H3 Network
+                        creators
                     </p>
                     {/* Debug refresh button - remove in production */}
                     <button

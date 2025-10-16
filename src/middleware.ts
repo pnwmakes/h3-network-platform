@@ -16,6 +16,17 @@ export default withAuth(
         const token = req.nextauth.token;
         const { pathname } = req.nextUrl;
 
+        // Add cache control headers for dynamic content pages
+        const response = NextResponse.next();
+        
+        if (pathname.startsWith('/blogs') || pathname.startsWith('/api/content')) {
+            response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+            response.headers.set('Pragma', 'no-cache');
+            response.headers.set('Expires', '0');
+            response.headers.set('CDN-Cache-Control', 'no-store');
+            response.headers.set('Netlify-CDN-Cache-Control', 'no-store');
+        }
+
         // Check role-based access
         for (const [route, allowedRoles] of Object.entries(
             roleProtectedRoutes
@@ -29,7 +40,7 @@ export default withAuth(
             }
         }
 
-        return NextResponse.next();
+        return response;
     },
     {
         callbacks: {
@@ -52,6 +63,8 @@ export default withAuth(
 
 export const config = {
     matcher: [
+        '/blogs/:path*',
+        '/api/content/:path*',
         '/profile/:path*',
         '/creator/:path*',
         '/admin/:path*',

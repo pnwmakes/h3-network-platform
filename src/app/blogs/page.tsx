@@ -10,7 +10,10 @@ export const revalidate = 0;
 
 async function getBlogs() {
     try {
-        return await prisma.blog.findMany({
+        // Add a timestamp to ensure fresh database queries
+        console.log('Fetching blogs at:', new Date().toISOString());
+        
+        const blogs = await prisma.blog.findMany({
             where: {
                 status: 'PUBLISHED',
                 publishedAt: {
@@ -24,6 +27,9 @@ async function getBlogs() {
                 publishedAt: 'desc',
             },
         });
+        
+        console.log('Found blogs:', blogs.length, 'IDs:', blogs.map(b => b.id));
+        return blogs;
     } catch (error) {
         console.warn(
             'Database not available, returning empty blogs list:',

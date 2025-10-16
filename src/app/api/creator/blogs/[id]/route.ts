@@ -164,7 +164,8 @@ export async function PUT(
 
         // For published content that gets edited, revert to DRAFT for re-approval
         // For DRAFT content, keep as DRAFT
-        const newStatus = existingBlog.status === 'PUBLISHED' ? 'DRAFT' : existingBlog.status;
+        const newStatus =
+            existingBlog.status === 'PUBLISHED' ? 'DRAFT' : existingBlog.status;
 
         // Keep the existing status when updating (don't revert published content to draft)
         const updatedBlog = await prisma.blog.update({

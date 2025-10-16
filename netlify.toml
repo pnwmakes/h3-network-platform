@@ -6,3 +6,18 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# Disable caching for dynamic content
+[[headers]]
+  for = "/blogs/*"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
+
+[[headers]]
+  for = "/api/content*"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
