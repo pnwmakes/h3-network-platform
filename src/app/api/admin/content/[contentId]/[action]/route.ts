@@ -10,9 +10,14 @@ export async function PUT(
 ) {
     try {
         console.log('🔍 [ADMIN APPROVAL] Starting approval process...');
-        
+
         const session = await getServerSession(authOptions);
-        console.log('🔍 [ADMIN APPROVAL] Session:', session?.user?.email, 'Role:', session?.user?.role);
+        console.log(
+            '🔍 [ADMIN APPROVAL] Session:',
+            session?.user?.email,
+            'Role:',
+            session?.user?.role
+        );
 
         if (!session?.user?.id) {
             console.log('❌ [ADMIN APPROVAL] No session found');
@@ -24,7 +29,10 @@ export async function PUT(
 
         // Check if user is super admin
         if (session.user.role !== 'SUPER_ADMIN') {
-            console.log('❌ [ADMIN APPROVAL] User not SUPER_ADMIN:', session.user.role);
+            console.log(
+                '❌ [ADMIN APPROVAL] User not SUPER_ADMIN:',
+                session.user.role
+            );
             return NextResponse.json(
                 { error: 'Insufficient permissions' },
                 { status: 403 }
@@ -34,8 +42,12 @@ export async function PUT(
         const { contentId, action } = await params;
         const body = await request.json();
         const { feedback } = body;
-        
-        console.log('🔍 [ADMIN APPROVAL] Processing:', { contentId, action, feedback });
+
+        console.log('🔍 [ADMIN APPROVAL] Processing:', {
+            contentId,
+            action,
+            feedback,
+        });
 
         if (!['approve', 'reject'].includes(action)) {
             return NextResponse.json(
@@ -80,10 +92,17 @@ export async function PUT(
 
         const content = video || blog;
         const contentType = video ? 'video' : 'blog';
-        console.log('🔍 [ADMIN APPROVAL] Found content:', { contentType, contentId, currentStatus: content?.status });
+        console.log('🔍 [ADMIN APPROVAL] Found content:', {
+            contentType,
+            contentId,
+            currentStatus: content?.status,
+        });
 
         if (!content || content.status !== 'DRAFT') {
-            console.log('❌ [ADMIN APPROVAL] Content not pending approval:', { found: !!content, status: content?.status });
+            console.log('❌ [ADMIN APPROVAL] Content not pending approval:', {
+                found: !!content,
+                status: content?.status,
+            });
             return NextResponse.json(
                 { error: 'Content is not pending approval' },
                 { status: 400 }
@@ -162,7 +181,10 @@ export async function PUT(
             creatorName: content.creator.user.name,
         });
     } catch (error) {
-        console.error('❌ [ADMIN APPROVAL] Content moderation action error:', error);
+        console.error(
+            '❌ [ADMIN APPROVAL] Content moderation action error:',
+            error
+        );
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }

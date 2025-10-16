@@ -4,11 +4,21 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, Eye, User, Clock, Tag } from 'lucide-react';
 
+// Force dynamic rendering to prevent hydration mismatches
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 async function getBlogs() {
     try {
-        return await prisma.blog.findMany({
+        console.log('🔍 [BLOG PAGE] Fetching published blogs...');
+        
+        const blogs = await prisma.blog.findMany({
             where: {
                 status: 'PUBLISHED',
+                publishedAt: {
+                    not: null,
+                    lte: new Date(), // Only show blogs published in the past
+                },
             },
             include: {
                 creator: {
@@ -24,9 +34,16 @@ async function getBlogs() {
                 publishedAt: 'desc',
             },
         });
+        
+        console.log(`✅ [BLOG PAGE] Found ${blogs.length} published blogs`);
+        blogs.forEach(blog => {
+            console.log(`   - ${blog.title} (${blog.id.slice(0, 8)}) | Published: ${blog.publishedAt?.toISOString()}`);
+        });
+        
+        return blogs;
     } catch (error) {
-        console.warn(
-            'Database not available, returning empty blogs list:',
+        console.error(
+            '❌ [BLOG PAGE] Database error:',
             error
         );
         return [];
