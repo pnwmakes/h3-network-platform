@@ -8,9 +8,6 @@ export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
     try {
-        // Force fresh database connection
-        await prisma.$connect();
-
         const { searchParams } = new URL(request.url);
         const type = searchParams.get('type'); // 'video', 'blog', or undefined for all
         const category = searchParams.get('category');
@@ -59,12 +56,8 @@ export async function GET(request: NextRequest) {
 
         console.log('Content API query conditions:', {
             ...whereConditions,
-            publishedAt: { lte: whereConditions.publishedAt.lte.toISOString() },
+            publishedAt: { lte: whereConditions.publishedAt.lte.toISOString() }
         });
-
-        // Force fresh database queries
-        await prisma.$disconnect();
-        await prisma.$connect();
 
         const [videos, blogs] = await Promise.all([
             // Get videos if type is 'video' or undefined

@@ -131,9 +131,9 @@ model Video {
 model Blog {
   id                String         @id @default(cuid())
   title             String
-  content           String         @db.Text
+  content           String
   excerpt           String?
-  featuredImage     String?        @db.Text
+  featuredImage     String?
   viewCount         Int            @default(0)
   tags              String[]
   topic             ContentTopic?
@@ -142,10 +142,10 @@ model Blog {
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
   creatorId         String
-  horizontalImage   String?        @db.Text
+  horizontalImage   String?
   hostLinks         String[]       @default([])
   scheduledAt       DateTime?
-  sponsorLogo       String?        @db.Text
+  sponsorLogo       String?
   sponsorUrl        String?
   squareImages      String[]       @default([])
   contentTopics     String[]       @default([])

@@ -33,29 +33,14 @@ export default function BlogsPage() {
             setLoading(true);
             setError(null);
 
-            // Use multiple cache-busting parameters
+            // Simple cache-busting timestamp
             const cacheBuster = Date.now();
-            const randomId = Math.random().toString(36).substring(7);
-            console.log(
-                'Fetching blogs with cache buster:',
-                cacheBuster,
-                'random:',
-                randomId
-            );
+            console.log('Fetching blogs with cache buster:', cacheBuster);
 
             const response = await fetch(
-                `/api/content?type=blog&limit=100&_=${cacheBuster}&r=${randomId}&t=${new Date().getTime()}`,
+                `/api/content?type=blog&limit=100&_=${cacheBuster}`,
                 {
-                    method: 'GET',
-                    cache: 'no-store',
-                    headers: {
-                        'Cache-Control':
-                            'no-cache, no-store, must-revalidate, max-age=0',
-                        Pragma: 'no-cache',
-                        Expires: '0',
-                        'If-None-Match': '*',
-                        'X-Requested-With': 'XMLHttpRequest',
-                    },
+                    cache: 'no-store'
                 }
             );
 
