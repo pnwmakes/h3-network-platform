@@ -46,6 +46,11 @@ export async function GET(request: NextRequest) {
             }),
         };
 
+        console.log('Content API query conditions:', {
+            ...whereConditions,
+            publishedAt: { lte: whereConditions.publishedAt.lte.toISOString() }
+        });
+
         const [videos, blogs] = await Promise.all([
             // Get videos if type is 'video' or undefined
             !type || type === 'video'
@@ -83,6 +88,13 @@ export async function GET(request: NextRequest) {
                   })
                 : [],
         ]);
+
+        console.log('Query results:', {
+            videosFound: videos.length,
+            blogsFound: blogs.length,
+            videoIds: videos.map(v => v.id),
+            blogIds: blogs.map(b => ({ id: b.id, status: b.status, publishedAt: b.publishedAt?.toISOString() }))
+        });
 
         // Combine and sort if getting both types
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
