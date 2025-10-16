@@ -4,7 +4,17 @@ import { BackButton } from '@/components/back-button';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
-import { Users, Video, FileText, Eye, Calendar, Linkedin, Instagram, Globe, ExternalLink } from 'lucide-react';
+import {
+    Users,
+    Video,
+    FileText,
+    Eye,
+    Calendar,
+    Linkedin,
+    Instagram,
+    Globe,
+    ExternalLink,
+} from 'lucide-react';
 
 interface CreatorPageProps {
     params: Promise<{
@@ -157,7 +167,10 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
                         )}
 
                         {/* Social Media Links */}
-                        {(creator.linkedinUrl || creator.instagramUrl || creator.tiktokUrl || creator.websiteUrl) && (
+                        {(creator.linkedinUrl ||
+                            creator.instagramUrl ||
+                            creator.tiktokUrl ||
+                            creator.websiteUrl) && (
                             <div className='mb-6'>
                                 <h3 className='text-lg font-semibold text-gray-900 mb-3'>
                                     Connect with {creator.displayName}

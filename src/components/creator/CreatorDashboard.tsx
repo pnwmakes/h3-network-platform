@@ -144,15 +144,17 @@ export function CreatorDashboard() {
                             </div>
                         </div>
                         <div className='flex items-center space-x-3'>
-                            <Button 
-                                variant='outline' 
+                            <Button
+                                variant='outline'
                                 size='sm'
-                                onClick={() => router.push(`/creators/${profile.id}`)}
+                                onClick={() =>
+                                    router.push(`/creators/${profile.id}`)
+                                }
                             >
                                 <Eye className='h-4 w-4 mr-2' />
                                 Preview Profile
                             </Button>
-                            <Button 
+                            <Button
                                 size='sm'
                                 onClick={() => setActiveTab('content')}
                             >

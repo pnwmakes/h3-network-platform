@@ -77,6 +77,7 @@ model Creator {
   blogs           Blog[]
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   videos          Video[]
+  scheduledContent ScheduledContent[]
 }
 
 model Show {
@@ -126,6 +127,7 @@ model Video {
   videoProgress   UserProgress[] @relation("VideoProgress")
   creator         Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   show            Show?          @relation(fields: [showId], references: [id])
+  scheduledContent ScheduledContent?
 }
 
 model Blog {
@@ -157,6 +159,7 @@ model Blog {
   creator           Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   savedBy           SavedContent[] @relation("SavedBlogs")
   blogProgress      UserProgress[] @relation("BlogProgress")
+  scheduledContent  ScheduledContent?
 }
 
 model UserProgress {
@@ -196,6 +199,34 @@ model SavedContent {
 
   @@unique([userId, videoId])
   @@unique([userId, blogId])
+}
+
+model ScheduledContent {
+  id            String        @id @default(cuid())
+  contentType   ContentType
+  videoId       String?
+  blogId        String?
+  publishAt     DateTime
+  status        ScheduleStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  creatorId     String
+  notes         String?
+  
+  // Relations
+  creator       Creator       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  video         Video?        @relation(fields: [videoId], references: [id], onDelete: Cascade)
+  blog          Blog?         @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  
+  @@unique([videoId])
+  @@unique([blogId])
+}
+
+enum ScheduleStatus {
+  PENDING
+  PUBLISHED
+  FAILED
+  CANCELLED
 }
 
 enum UserRole {

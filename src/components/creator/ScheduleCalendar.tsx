@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -12,49 +12,125 @@ import {
     Video,
     FileText,
     Clock,
+    Edit,
+    Trash2,
+    RefreshCw,
 } from 'lucide-react';
+import { ScheduleContentModal } from './ScheduleContentModal';
 
 interface ScheduledContent {
     id: string;
-    title: string;
-    type: 'VIDEO' | 'BLOG';
-    date: Date;
-    time: string;
-    status: 'SCHEDULED' | 'PUBLISHED' | 'DRAFT';
+    contentType: 'VIDEO' | 'BLOG';
+    publishAt: string;
+    status: 'PENDING' | 'PUBLISHED' | 'FAILED' | 'CANCELLED';
+    notes?: string;
+    video?: {
+        id: string;
+        title: string;
+        thumbnailUrl?: string;
+        status: string;
+    };
+    blog?: {
+        id: string;
+        title: string;
+        featuredImage?: string;
+        status: string;
+    };
 }
 
 export function ScheduleCalendar() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [showScheduleModal, setShowScheduleModal] = useState(false);
+    const [scheduledContent, setScheduledContent] = useState<ScheduledContent[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
 
-    // Mock scheduled content data
-    const scheduledContent: ScheduledContent[] = [
-        {
-            id: '1',
-            title: 'Building Community Through Stories',
-            type: 'VIDEO',
-            date: new Date(2025, 9, 16), // October 16, 2025
-            time: '10:00 AM',
-            status: 'SCHEDULED',
-        },
-        {
-            id: '2',
-            title: 'Finding Your Voice in Advocacy',
-            type: 'BLOG',
-            date: new Date(2025, 9, 18), // October 18, 2025
-            time: '2:00 PM',
-            status: 'SCHEDULED',
-        },
-        {
-            id: '3',
-            title: 'Overcoming Shame: A Conversation About Healing',
-            type: 'VIDEO',
-            date: new Date(2025, 9, 20), // October 20, 2025
-            time: '11:00 AM',
-            status: 'DRAFT',
-        },
-    ];
+    useEffect(() => {
+        fetchScheduledContent();
+    }, []);
+
+    const fetchScheduledContent = async (isManualRefresh = false) => {
+        try {
+            if (isManualRefresh) {
+                setRefreshing(true);
+            } else {
+                setLoading(true);
+            }
+
+            const response = await fetch('/api/creator/schedule', {
+                cache: 'no-store',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                },
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                setScheduledContent(data.scheduledContent);
+            }
+        } catch (error) {
+            console.error('Error fetching scheduled content:', error);
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    };
+
+    const handleScheduleContent = async (
+        contentId: string,
+        contentType: 'VIDEO' | 'BLOG',
+        publishAt: Date,
+        notes?: string
+    ) => {
+        try {
+            const response = await fetch('/api/creator/schedule', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    contentId,
+                    contentType,
+                    publishAt: publishAt.toISOString(),
+                    notes,
+                }),
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                // Refresh the scheduled content list
+                fetchScheduledContent();
+            } else {
+                alert(data.error || 'Failed to schedule content');
+            }
+        } catch (error) {
+            console.error('Error scheduling content:', error);
+            alert('Failed to schedule content');
+        }
+    };
+
+    const handleDeleteSchedule = async (scheduleId: string) => {
+        if (!confirm('Are you sure you want to cancel this scheduled content?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/creator/schedule/${scheduleId}`, {
+                method: 'DELETE',
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                fetchScheduledContent();
+            } else {
+                alert(data.error || 'Failed to cancel schedule');
+            }
+        } catch (error) {
+            console.error('Error deleting schedule:', error);
+            alert('Failed to cancel schedule');
+        }
+    };
 
     const getDaysInMonth = (date: Date) => {
         return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -77,9 +153,23 @@ export function ScheduleCalendar() {
     };
 
     const getContentForDate = (date: Date) => {
-        return scheduledContent.filter(
-            (content) => content.date.toDateString() === date.toDateString()
-        );
+        return scheduledContent.filter((content) => {
+            const publishDate = new Date(content.publishAt);
+            return publishDate.toDateString() === date.toDateString();
+        });
+    };
+
+    const getContentTitle = (content: ScheduledContent) => {
+        return content.video?.title || content.blog?.title || 'Untitled';
+    };
+
+    const getContentTime = (content: ScheduledContent) => {
+        const publishDate = new Date(content.publishAt);
+        return publishDate.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+        });
     };
 
     const renderCalendarDays = () => {
@@ -124,12 +214,12 @@ export function ScheduleCalendar() {
                             <div
                                 key={item.id}
                                 className={`text-xs p-1 rounded truncate ${
-                                    item.type === 'VIDEO'
+                                    item.contentType === 'VIDEO'
                                         ? 'bg-blue-100 text-blue-800'
                                         : 'bg-green-100 text-green-800'
                                 }`}
                             >
-                                {item.title}
+                                {getContentTitle(item)}
                             </div>
                         ))}
                         {content.length > 2 && (
@@ -151,13 +241,29 @@ export function ScheduleCalendar() {
         <div className='space-y-6'>
             <div className='flex justify-between items-center'>
                 <h2 className='text-xl font-semibold'>Content Calendar</h2>
-                <Button onClick={() => setShowScheduleModal(true)}>
-                    <Plus className='h-4 w-4 mr-2' />
-                    Schedule Content
-                </Button>
+                <div className='flex items-center space-x-2'>
+                    <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => fetchScheduledContent(true)}
+                        disabled={refreshing}
+                    >
+                        <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                        {refreshing ? 'Refreshing...' : 'Refresh'}
+                    </Button>
+                    <Button onClick={() => setShowScheduleModal(true)}>
+                        <Plus className='h-4 w-4 mr-2' />
+                        Schedule Content
+                    </Button>
+                </div>
             </div>
 
-            <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
+            {loading ? (
+                <div className='flex items-center justify-center py-12'>
+                    <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500'></div>
+                </div>
+            ) : (
+                <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
                 {/* Calendar */}
                 <Card className='lg:col-span-2'>
                     <CardHeader>
@@ -234,32 +340,46 @@ export function ScheduleCalendar() {
                                     >
                                         <div className='flex items-start justify-between mb-2'>
                                             <div className='flex items-center'>
-                                                {item.type === 'VIDEO' ? (
+                                                {item.contentType === 'VIDEO' ? (
                                                     <Video className='h-4 w-4 text-blue-500 mr-2' />
                                                 ) : (
                                                     <FileText className='h-4 w-4 text-green-500 mr-2' />
                                                 )}
                                                 <span className='text-sm font-medium'>
-                                                    {item.type}
+                                                    {item.contentType}
                                                 </span>
                                             </div>
-                                            <Badge
-                                                variant={
-                                                    item.status === 'PUBLISHED'
-                                                        ? 'default'
-                                                        : 'secondary'
-                                                }
-                                            >
-                                                {item.status}
-                                            </Badge>
+                                            <div className='flex items-center space-x-2'>
+                                                <Badge
+                                                    variant={
+                                                        item.status === 'PUBLISHED'
+                                                            ? 'default'
+                                                            : 'secondary'
+                                                    }
+                                                >
+                                                    {item.status}
+                                                </Badge>
+                                                <Button
+                                                    variant='ghost'
+                                                    size='sm'
+                                                    onClick={() => handleDeleteSchedule(item.id)}
+                                                >
+                                                    <Trash2 className='h-3 w-3' />
+                                                </Button>
+                                            </div>
                                         </div>
                                         <h4 className='font-medium text-sm mb-1'>
-                                            {item.title}
+                                            {getContentTitle(item)}
                                         </h4>
                                         <div className='flex items-center text-xs text-gray-500'>
                                             <Clock className='h-3 w-3 mr-1' />
-                                            {item.time}
+                                            {getContentTime(item)}
                                         </div>
+                                        {item.notes && (
+                                            <p className='text-xs text-gray-600 mt-2'>
+                                                {item.notes}
+                                            </p>
+                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -291,8 +411,8 @@ export function ScheduleCalendar() {
                 <CardContent>
                     <div className='space-y-3'>
                         {scheduledContent
-                            .filter((item) => item.date >= new Date())
-                            .sort((a, b) => a.date.getTime() - b.date.getTime())
+                            .filter((item) => new Date(item.publishAt) >= new Date())
+                            .sort((a, b) => new Date(a.publishAt).getTime() - new Date(b.publishAt).getTime())
                             .slice(0, 5)
                             .map((item) => (
                                 <div
@@ -300,18 +420,18 @@ export function ScheduleCalendar() {
                                     className='flex items-center justify-between p-3 border rounded-lg'
                                 >
                                     <div className='flex items-center space-x-3'>
-                                        {item.type === 'VIDEO' ? (
+                                        {item.contentType === 'VIDEO' ? (
                                             <Video className='h-5 w-5 text-blue-500' />
                                         ) : (
                                             <FileText className='h-5 w-5 text-green-500' />
                                         )}
                                         <div>
                                             <h4 className='font-medium text-sm'>
-                                                {item.title}
+                                                {getContentTitle(item)}
                                             </h4>
                                             <p className='text-xs text-gray-500'>
-                                                {item.date.toLocaleDateString()}{' '}
-                                                at {item.time}
+                                                {new Date(item.publishAt).toLocaleDateString()}{' '}
+                                                at {getContentTime(item)}
                                             </p>
                                         </div>
                                     </div>
@@ -325,8 +445,12 @@ export function ScheduleCalendar() {
                                         >
                                             {item.status}
                                         </Badge>
-                                        <Button variant='outline' size='sm'>
-                                            Edit
+                                        <Button 
+                                            variant='outline' 
+                                            size='sm'
+                                            onClick={() => handleDeleteSchedule(item.id)}
+                                        >
+                                            <Trash2 className='h-3 w-3' />
                                         </Button>
                                     </div>
                                 </div>
@@ -334,29 +458,16 @@ export function ScheduleCalendar() {
                     </div>
                 </CardContent>
             </Card>
-
-            {/* Schedule Content Modal */}
-            {showScheduleModal && (
-                <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50'>
-                    <div className='bg-white rounded-lg p-6 w-full max-w-md mx-4'>
-                        <h3 className='text-lg font-semibold mb-4'>Schedule Content</h3>
-                        <p className='text-gray-600 mb-4'>
-                            Content scheduling functionality will be available soon.
-                        </p>
-                        <div className='flex justify-end space-x-3'>
-                            <Button 
-                                variant='outline' 
-                                onClick={() => setShowScheduleModal(false)}
-                            >
-                                Cancel
-                            </Button>
-                            <Button onClick={() => setShowScheduleModal(false)}>
-                                Coming Soon
-                            </Button>
-                        </div>
-                    </div>
                 </div>
             )}
+
+            {/* Schedule Content Modal */}
+            <ScheduleContentModal
+                isOpen={showScheduleModal}
+                onClose={() => setShowScheduleModal(false)}
+                onSchedule={handleScheduleContent}
+                selectedDate={selectedDate}
+            />
         </div>
     );
 }
