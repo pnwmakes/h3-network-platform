@@ -147,7 +147,7 @@ export function CreatorDashboard() {
                             <Button 
                                 variant='outline' 
                                 size='sm'
-                                onClick={() => router.push(`/creator/${profile.id}`)}
+                                onClick={() => router.push(`/creators/${profile.id}`)}
                             >
                                 <Eye className='h-4 w-4 mr-2' />
                                 Preview Profile
