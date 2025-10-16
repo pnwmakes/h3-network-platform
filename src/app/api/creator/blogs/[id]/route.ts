@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { ContentStatus, ContentTopic } from '@prisma/client';
+import { ContentTopic } from '@prisma/client';
 
 export async function GET(
     request: NextRequest,
@@ -162,10 +162,7 @@ export async function PUT(
         const finalExcerpt =
             excerpt?.trim() || content.substring(0, 200) + '...';
 
-        // Update blog - if published content is edited, it goes back to DRAFT for re-approval
-        const newStatus =
-            existingBlog.status === 'PUBLISHED' ? 'DRAFT' : existingBlog.status;
-
+        // Keep the existing status when updating (don't revert published content to draft)
         const updatedBlog = await prisma.blog.update({
             where: { id },
             data: {
@@ -173,7 +170,8 @@ export async function PUT(
                 content: content.trim(),
                 excerpt: finalExcerpt,
                 topic: (topic as ContentTopic) || ContentTopic.GENERAL,
-                status: newStatus as ContentStatus,
+                // Keep existing status (don't revert published to draft)
+                // status: existingBlog.status,
 
                 // Content metadata
                 tags: tags || [],

@@ -50,7 +50,7 @@ export async function POST() {
                         displayName: 'Noah',
                         bio: 'Co-founder of H3 Network. Sharing stories of hope and transformation through lived experience with the criminal justice system.',
                         showName: 'Noah & Rita Show',
-                        avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                        avatarUrl: '/logos/H3 Logo.png',
                         funnyFact:
                             'Once accidentally ordered 50 pizzas instead of 5 during a community event!',
                         linkedinUrl: 'https://linkedin.com/in/noah-h3network',
@@ -76,7 +76,7 @@ export async function POST() {
                         displayName: 'Rita',
                         bio: 'Co-founder of H3 Network. Passionate advocate for criminal justice reform and reentry support through education and community.',
                         showName: 'Noah & Rita Show',
-                        avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                        avatarUrl: '/logos/H3 Logo.png',
                         funnyFact:
                             'Has a secret talent for beatboxing that surprises everyone!',
                         instagramUrl: 'https://instagram.com/rita_h3network',
@@ -96,7 +96,7 @@ export async function POST() {
                 name: 'Noah & Rita Show',
                 description:
                     'The flagship show featuring honest conversations about reentry, addiction recovery, and criminal justice reform.',
-                thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
+                thumbnailUrl: '/logos/H3 Logo.png',
                 isActive: true,
             },
         });
@@ -108,7 +108,7 @@ export async function POST() {
                 name: 'Fresh Out Life',
                 description:
                     'Real stories from people navigating life after incarceration.',
-                thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
+                thumbnailUrl: '/logos/H3 Logo.png',
                 isActive: true,
             },
         });

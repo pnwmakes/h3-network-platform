@@ -43,7 +43,7 @@ async function main() {
                     displayName: 'Noah',
                     bio: 'Co-founder of H3 Network. Sharing stories of hope and transformation through lived experience with the criminal justice system. Passionate about reentry support and second chances.',
                     showName: 'Noah & Rita Show',
-                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                    avatarUrl: '/logos/H3 Logo.png',
                     isActive: true,
                 },
             },
@@ -66,7 +66,7 @@ async function main() {
                     displayName: 'Rita',
                     bio: 'Co-founder of H3 Network. Passionate advocate for criminal justice reform and reentry support through education and community building. Expert in addiction recovery programs.',
                     showName: 'Noah & Rita Show',
-                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                    avatarUrl: '/logos/H3 Logo.png',
                     isActive: true,
                 },
             },
@@ -89,7 +89,7 @@ async function main() {
                     displayName: 'Marcus Johnson',
                     bio: 'Former federal inmate turned advocate. Sharing the realities of reentry and building bridges between formerly incarcerated individuals and their communities.',
                     showName: 'Fresh Out Life',
-                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                    avatarUrl: '/logos/H3 Logo.png',
                     isActive: true,
                 },
             },
@@ -112,7 +112,7 @@ async function main() {
                     displayName: 'Sarah Williams',
                     bio: 'Recovery advocate and counselor. 8 years in recovery, now helping others find hope and healing through evidence-based treatment and peer support.',
                     showName: 'Recovery Journeys',
-                    avatarUrl: '/h3-logos/h3-network-logo-badge.png',
+                    avatarUrl: '/logos/H3 Logo.png',
                     isActive: true,
                 },
             },
@@ -130,7 +130,7 @@ async function main() {
             name: 'Noah & Rita Show',
             description:
                 'The flagship show featuring honest conversations about reentry, addiction recovery, and criminal justice reform with Hope, Help, and Humor.',
-            thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
+            thumbnailUrl: '/logos/H3 Logo.png',
             isActive: true,
         },
     });
@@ -142,7 +142,7 @@ async function main() {
             name: 'Fresh Out Life',
             description:
                 'Real stories from people navigating life after incarceration, sharing practical advice and authentic experiences.',
-            thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
+            thumbnailUrl: '/logos/H3 Logo.png',
             isActive: true,
         },
     });
@@ -154,7 +154,7 @@ async function main() {
             name: 'Recovery Journeys',
             description:
                 'Personal stories of addiction recovery and healing, featuring expert guidance and peer support.',
-            thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
+            thumbnailUrl: '/logos/H3 Logo.png',
             isActive: true,
         },
     });
@@ -166,7 +166,7 @@ async function main() {
             name: 'Justice Talks',
             description:
                 'Conversations about criminal justice reform and policy change with advocates and experts.',
-            thumbnailUrl: '/h3-logos/h3-network-logo-main.png',
+            thumbnailUrl: '/logos/H3 Logo.png',
             isActive: true,
         },
     });
