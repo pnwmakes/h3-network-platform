@@ -44,16 +44,23 @@ export default function ContentGrid({
                 setLoading(true);
                 // Add cache-busting timestamp to ensure fresh data
                 const cacheBuster = Date.now();
+                console.log('ContentGrid: Fetching content with cache buster:', cacheBuster);
                 const response = await fetch(
                     `/api/content?limit=${limit}&_=${cacheBuster}`,
                     {
                         cache: 'no-store',
+                        headers: {
+                            'Cache-Control': 'no-cache, no-store, must-revalidate',
+                            'Pragma': 'no-cache',
+                            'Expires': '0'
+                        }
                     }
                 );
                 if (!response.ok) {
                     throw new Error('Failed to fetch content');
                 }
                 const data = await response.json();
+                console.log('ContentGrid: Received content:', data.content.length, 'items');
                 setContent(data.content);
             } catch (err) {
                 setError(
@@ -72,11 +79,24 @@ export default function ContentGrid({
     const refetchContent = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`/api/content?limit=${limit}`);
+            const cacheBuster = Date.now();
+            console.log('ContentGrid: Manual refresh with cache buster:', cacheBuster);
+            const response = await fetch(
+                `/api/content?limit=${limit}&_=${cacheBuster}`,
+                {
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache, no-store, must-revalidate',
+                        'Pragma': 'no-cache',
+                        'Expires': '0'
+                    }
+                }
+            );
             if (!response.ok) {
                 throw new Error('Failed to fetch content');
             }
             const data = await response.json();
+            console.log('ContentGrid: Manual refresh received:', data.content.length, 'items');
             setContent(data.content);
         } catch (err) {
             setError(
@@ -215,10 +235,18 @@ export default function ContentGrid({
                     <h2 className='text-4xl font-bold text-gray-900 mb-4'>
                         Latest Content
                     </h2>
-                    <p className='text-lg text-gray-600 max-w-2xl mx-auto'>
-                        Discover the latest videos and blogs from our H3 Network
-                        creators
+                    <p className='text-lg text-gray-600 max-w-2xl mx-auto mb-4'>
+                        Discover the latest videos and blogs from our H3
+                        Network creators
                     </p>
+                    {/* Debug refresh button - remove in production */}
+                    <button
+                        onClick={refetchContent}
+                        disabled={loading}
+                        className='px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 text-sm'
+                    >
+                        {loading ? 'Refreshing...' : '🔄 Refresh Content'}
+                    </button>
                 </div>
             )}
 
