@@ -21,6 +21,7 @@ import {
     AlertCircle,
     Calendar,
     TrendingUp,
+    RefreshCw,
 } from 'lucide-react';
 
 interface ContentItem {
@@ -59,20 +60,58 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
     const [videos, setVideos] = useState<ContentItem[]>([]);
     const [blogs, setBlogs] = useState<ContentItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
 
     useEffect(() => {
         fetchContent();
+
+        // Auto-refresh when window gains focus (user switches back to tab)
+        const handleFocus = () => {
+            if (!document.hidden) {
+                fetchContent();
+            }
+        };
+
+        // Auto-refresh every 30 seconds if tab is visible
+        const interval = setInterval(() => {
+            if (!document.hidden) {
+                fetchContent();
+            }
+        }, 30000);
+
+        window.addEventListener('focus', handleFocus);
+        document.addEventListener('visibilitychange', handleFocus);
+
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+            document.removeEventListener('visibilitychange', handleFocus);
+            clearInterval(interval);
+        };
     }, []);
 
-    const fetchContent = async () => {
+    const fetchContent = async (isManualRefresh = false) => {
         try {
-            setLoading(true);
+            if (isManualRefresh) {
+                setRefreshing(true);
+            } else {
+                setLoading(true);
+            }
 
             const [videosResponse, blogsResponse] = await Promise.all([
-                fetch('/api/creator/videos'),
-                fetch('/api/creator/blogs'),
+                fetch('/api/creator/videos', {
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    },
+                }),
+                fetch('/api/creator/blogs', {
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    },
+                }),
             ]);
 
             const videosData = await videosResponse.json();
@@ -89,6 +128,7 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
             console.error('Error fetching content:', error);
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     };
 
@@ -323,6 +363,15 @@ export function ContentManager({ onCreateNew }: ContentManagerProps) {
                 </div>
 
                 <div className='flex gap-2'>
+                    <Button
+                        variant='ghost'
+                        size='sm'
+                        onClick={() => fetchContent(true)}
+                        disabled={refreshing}
+                    >
+                        <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                        {refreshing ? 'Refreshing...' : 'Refresh'}
+                    </Button>
                     <Button
                         variant='outline'
                         onClick={() => onCreateNew('video')}
