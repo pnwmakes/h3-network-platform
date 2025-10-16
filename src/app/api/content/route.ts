@@ -8,12 +8,18 @@ export const revalidate = 0;
 
 export async function GET(request: NextRequest) {
     try {
+        // Force fresh database connection
+        await prisma.$connect();
+        
         const { searchParams } = new URL(request.url);
         const type = searchParams.get('type'); // 'video', 'blog', or undefined for all
         const category = searchParams.get('category');
         const limit = parseInt(searchParams.get('limit') || '12');
         const page = parseInt(searchParams.get('page') || '1');
         const search = searchParams.get('search');
+        const cacheBuster = searchParams.get('_'); // Cache busting parameter
+
+        console.log('Content API called with cache buster:', cacheBuster, 'at', new Date().toISOString());
 
         const skip = (page - 1) * limit;
 
@@ -161,10 +167,13 @@ export async function GET(request: NextRequest) {
         // Disable browser caching
         response.headers.set(
             'Cache-Control',
-            'no-store, no-cache, must-revalidate, proxy-revalidate'
+            'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
         );
         response.headers.set('Pragma', 'no-cache');
         response.headers.set('Expires', '0');
+        response.headers.set('Last-Modified', new Date().toUTCString());
+        response.headers.set('ETag', `"${Date.now()}"`);
+        response.headers.set('Vary', '*');
 
         return response;
     } catch (error) {

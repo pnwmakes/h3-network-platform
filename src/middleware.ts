@@ -21,16 +21,21 @@ export default withAuth(
 
         if (
             pathname.startsWith('/blogs') ||
-            pathname.startsWith('/api/content')
+            pathname.startsWith('/api/content') ||
+            pathname.includes('/blog') ||
+            pathname.startsWith('/api/creator/blogs') ||
+            pathname.startsWith('/api/admin/content')
         ) {
             response.headers.set(
                 'Cache-Control',
-                'no-store, no-cache, must-revalidate, proxy-revalidate'
+                'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0'
             );
             response.headers.set('Pragma', 'no-cache');
             response.headers.set('Expires', '0');
             response.headers.set('CDN-Cache-Control', 'no-store');
             response.headers.set('Netlify-CDN-Cache-Control', 'no-store');
+            response.headers.set('Last-Modified', new Date().toUTCString());
+            response.headers.set('ETag', `"${Date.now()}"`);
         }
 
         // Check role-based access
@@ -71,6 +76,8 @@ export const config = {
     matcher: [
         '/blogs/:path*',
         '/api/content/:path*',
+        '/api/creator/blogs/:path*',
+        '/api/admin/content/:path*',
         '/profile/:path*',
         '/creator/:path*',
         '/admin/:path*',
