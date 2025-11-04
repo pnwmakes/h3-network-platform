@@ -69,28 +69,6 @@ const nextConfig: NextConfig = {
     // Production optimizations
     output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
 
-    // Performance optimizations
-    swcMinify: true,
-
-    // Optimize bundle
-    webpack: (config, { dev }) => {
-        // Production optimizations
-        if (!dev) {
-            config.optimization.splitChunks = {
-                chunks: 'all',
-                cacheGroups: {
-                    vendor: {
-                        test: /[\\/]node_modules[\\/]/,
-                        chunks: 'all',
-                        priority: 1,
-                    },
-                },
-            };
-        }
-
-        return config;
-    },
-
     // Reduce bundle size
     modularizeImports: {
         'lucide-react': {
@@ -101,8 +79,10 @@ const nextConfig: NextConfig = {
     // Enable experimental features for better performance
     experimental: {
         optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
-        serverComponentsExternalPackages: ['@prisma/client'],
     },
+
+    // External packages for server components
+    serverExternalPackages: ['@prisma/client'],
 };
 
 export default nextConfig;
