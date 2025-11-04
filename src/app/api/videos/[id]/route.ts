@@ -23,7 +23,7 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const startTime = Date.now();
-    
+
     // Apply security checks manually since withApiSecurity doesn't support route params
     const rateLimitResponse = await applyRateLimit(request);
     if (rateLimitResponse) return rateLimitResponse;
@@ -35,7 +35,7 @@ export async function GET(
 
     let videoId = 'unknown';
     let cacheHit = false;
-    
+
     try {
         const { id } = await params;
         videoId = id;
@@ -45,7 +45,7 @@ export async function GET(
         // Try to get from cache first
         const cacheKey = CacheUtils.keys.video(videoId);
         let video = await cache.get(cacheKey);
-        
+
         if (video) {
             cacheHit = true;
             logger.debug('Video cache hit', { videoId });
@@ -76,19 +76,21 @@ export async function GET(
         }
 
         // Increment view count asynchronously (don't wait for it)
-        prisma.video.update({
-            where: { id: videoId },
-            data: {
-                viewCount: {
-                    increment: 1,
+        prisma.video
+            .update({
+                where: { id: videoId },
+                data: {
+                    viewCount: {
+                        increment: 1,
+                    },
                 },
-            },
-        }).catch((error) => {
-            logger.error('Failed to increment view count', {
-                error: error.message,
-                videoId,
+            })
+            .catch((error) => {
+                logger.error('Failed to increment view count', {
+                    error: error.message,
+                    videoId,
+                });
             });
-        });
 
         const executionTime = Date.now() - startTime;
         const response = createSuccessResponse(
@@ -99,7 +101,9 @@ export async function GET(
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 url: `/videos/${(video as any).id}`,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                embedUrl: `https://www.youtube.com/embed/${(video as any).youtubeId}`,
+                embedUrl: `https://www.youtube.com/embed/${
+                    (video as any).youtubeId
+                }`,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 viewCount: (video as any).viewCount + (cacheHit ? 0 : 1),
             },

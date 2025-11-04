@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server';
+import { withApiSecurity, createErrorResponse } from '@/lib/security';
 import {
-    withApiSecurity,
-    createErrorResponse,
-} from '@/lib/security';
-import { createSuccessResponse, withPerformanceHeaders } from '@/lib/api-response';
+    createSuccessResponse,
+    withPerformanceHeaders,
+} from '@/lib/api-response';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
 import { env } from '@/lib/env';
@@ -91,7 +91,9 @@ async function handler(req: NextRequest) {
             arch: process.arch,
             memory: {
                 used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
-                total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+                total: Math.round(
+                    process.memoryUsage().heapTotal / 1024 / 1024
+                ),
                 rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
             },
         }),
@@ -108,11 +110,11 @@ async function handler(req: NextRequest) {
     if (!allChecksOk) {
         return createErrorResponse('Service unhealthy', 503);
     }
-    
-    const response = createSuccessResponse(healthData, undefined, { 
-        executionTime: totalResponseTime 
+
+    const response = createSuccessResponse(healthData, undefined, {
+        executionTime: totalResponseTime,
     });
-    
+
     return withPerformanceHeaders(response, totalResponseTime, false);
 }
 
