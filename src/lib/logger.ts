@@ -1,4 +1,5 @@
 import { env, isProd } from './env';
+import * as Sentry from '@sentry/nextjs';
 
 // Log levels
 type LogLevel = 'error' | 'warn' | 'info' | 'debug';
@@ -68,6 +69,25 @@ class Logger {
 
     error(message: string, context?: LogContext): void {
         this.log('error', message, context);
+        
+        // Send errors to Sentry in production
+        if (env.SENTRY_DSN) {
+            Sentry.withScope((scope) => {
+                if (context) {
+                    // Add context as tags and extra data
+                    Object.entries(context).forEach(([key, value]) => {
+                        if (typeof value === 'string' || typeof value === 'number') {
+                            scope.setTag(key, value);
+                        } else {
+                            scope.setExtra(key, value);
+                        }
+                    });
+                }
+                
+                scope.setLevel('error');
+                Sentry.captureMessage(message);
+            });
+        }
     }
 
     warn(message: string, context?: LogContext): void {
@@ -157,6 +177,35 @@ class Logger {
         );
     }
 
+    // Exception logging with Sentry integration
+    exception(error: Error, context?: LogContext): void {
+        const errorMessage = `Exception: ${error.message}`;
+        this.log('error', errorMessage, {
+            ...context,
+            stack: error.stack,
+            errorName: error.name,
+        });
+        
+        // Send exceptions to Sentry
+        if (env.SENTRY_DSN) {
+            Sentry.withScope((scope) => {
+                if (context) {
+                    Object.entries(context).forEach(([key, value]) => {
+                        if (typeof value === 'string' || typeof value === 'number') {
+                            scope.setTag(key, value);
+                        } else {
+                            scope.setExtra(key, value);
+                        }
+                    });
+                }
+                
+                scope.setLevel('error');
+                Sentry.captureException(error);
+            });
+        }
+    }
+
+    // Security event logging
     securityEvent(
         event: string,
         severity: 'low' | 'medium' | 'high',

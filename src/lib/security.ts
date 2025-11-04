@@ -59,8 +59,8 @@ async function getRedisClient() {
             await redisClient.connect();
             logger.info('Redis client connected for rate limiting');
         } catch (error) {
-            logger.error('Failed to connect to Redis', { 
-                error: error instanceof Error ? error.message : String(error)
+            logger.error('Failed to connect to Redis', {
+                error: error instanceof Error ? error.message : String(error),
             });
             redisClient = null;
         }
@@ -70,7 +70,10 @@ async function getRedisClient() {
 }
 
 // In-memory fallback store for development
-const memoryRateLimitStore = new Map<string, { count: number; resetTime: number }>();
+const memoryRateLimitStore = new Map<
+    string,
+    { count: number; resetTime: number }
+>();
 
 function getClientId(req: NextRequest): string {
     // In production, consider using a more sophisticated client identification
@@ -89,7 +92,9 @@ function getRateLimitConfig(pathname: string): RateLimitConfig {
     return defaultRateLimit;
 }
 
-export async function applyRateLimit(req: NextRequest): Promise<NextResponse | null> {
+export async function applyRateLimit(
+    req: NextRequest
+): Promise<NextResponse | null> {
     const clientId = getClientId(req);
     const pathname = req.nextUrl.pathname;
     const config = getRateLimitConfig(pathname);
@@ -100,9 +105,16 @@ export async function applyRateLimit(req: NextRequest): Promise<NextResponse | n
     try {
         // Try to use Redis in production
         const redis = await getRedisClient();
-        
+
         if (redis) {
-            return await applyRedisRateLimit(redis, key, config, clientId, pathname, now);
+            return await applyRedisRateLimit(
+                redis,
+                key,
+                config,
+                clientId,
+                pathname,
+                now
+            );
         } else {
             return applyMemoryRateLimit(key, config, clientId, pathname, now);
         }
@@ -110,7 +122,7 @@ export async function applyRateLimit(req: NextRequest): Promise<NextResponse | n
         logger.warn('Rate limiting error, allowing request', {
             error: error instanceof Error ? error.message : String(error),
             clientId,
-            pathname
+            pathname,
         });
         return null; // Allow request on error
     }
@@ -143,21 +155,18 @@ async function applyRedisRateLimit(
         });
 
         const resetTime = await redis.ttl(key);
-        
-        return new NextResponse(
-            JSON.stringify({ error: config.message }),
-            {
-                status: 429,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Retry-After': Math.max(resetTime, 1).toString(),
-                    'X-RateLimit-Limit': config.max.toString(),
-                    'X-RateLimit-Remaining': '0',
-                    'X-RateLimit-Reset': (now + (resetTime * 1000)).toString(),
-                    ...getSecureHeaders(),
-                },
-            }
-        );
+
+        return new NextResponse(JSON.stringify({ error: config.message }), {
+            status: 429,
+            headers: {
+                'Content-Type': 'application/json',
+                'Retry-After': Math.max(resetTime, 1).toString(),
+                'X-RateLimit-Limit': config.max.toString(),
+                'X-RateLimit-Remaining': '0',
+                'X-RateLimit-Reset': (now + resetTime * 1000).toString(),
+                ...getSecureHeaders(),
+            },
+        });
     }
 
     // Add current request
@@ -211,20 +220,19 @@ function applyMemoryRateLimit(
             max: config.max,
         });
 
-        return new NextResponse(
-            JSON.stringify({ error: config.message }),
-            {
-                status: 429,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Retry-After': Math.ceil((current.resetTime - now) / 1000).toString(),
-                    'X-RateLimit-Limit': config.max.toString(),
-                    'X-RateLimit-Remaining': '0',
-                    'X-RateLimit-Reset': current.resetTime.toString(),
-                    ...getSecureHeaders(),
-                },
-            }
-        );
+        return new NextResponse(JSON.stringify({ error: config.message }), {
+            status: 429,
+            headers: {
+                'Content-Type': 'application/json',
+                'Retry-After': Math.ceil(
+                    (current.resetTime - now) / 1000
+                ).toString(),
+                'X-RateLimit-Limit': config.max.toString(),
+                'X-RateLimit-Remaining': '0',
+                'X-RateLimit-Reset': current.resetTime.toString(),
+                ...getSecureHeaders(),
+            },
+        });
     }
 
     // Increment count

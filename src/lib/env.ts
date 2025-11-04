@@ -33,10 +33,7 @@ const envSchema = z.object({
         .default('require'),
 
     // Redis Configuration (Optional for production rate limiting)
-    REDIS_URL: z
-        .string()
-        .url('REDIS_URL must be a valid URL')
-        .optional(),
+    REDIS_URL: z.string().url('REDIS_URL must be a valid URL').optional(),
 
     // NextAuth
     NEXTAUTH_SECRET: z
@@ -50,6 +47,12 @@ const envSchema = z.object({
 
     // YouTube API (optional)
     YOUTUBE_API_KEY: z.string().optional(),
+
+    // Sentry (optional for error tracking)
+    SENTRY_DSN: z.string().url('SENTRY_DSN must be a valid URL').optional(),
+    SENTRY_ORG: z.string().optional(),
+    SENTRY_PROJECT: z.string().optional(),
+    SENTRY_AUTH_TOKEN: z.string().optional(),
 
     // App Configuration
     NODE_ENV: z
