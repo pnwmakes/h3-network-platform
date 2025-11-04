@@ -1,5 +1,6 @@
 import { withAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/logger';
 
 // Routes that require authentication
 const protectedRoutes = ['/profile', '/creator', '/admin'];
@@ -16,9 +17,13 @@ export default withAuth(
         const token = req.nextauth.token;
         const { pathname } = req.nextUrl;
 
-        // Add cache control headers for dynamic content pages
+        // Create response with security headers
         const response = NextResponse.next();
 
+        // Add security headers to all responses
+        response.headers.set('X-Request-ID', `req_${Date.now()}`);
+
+        // Add cache control headers for dynamic content pages
         if (
             pathname.startsWith('/blogs') ||
             pathname.startsWith('/api/content') ||
@@ -38,12 +43,33 @@ export default withAuth(
             response.headers.set('ETag', `"${Date.now()}"`);
         }
 
+        // Log security events for protected routes
+        if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+            if (!token) {
+                logger.securityEvent('Unauthorized access attempt', 'medium', {
+                    pathname,
+                    userAgent: req.headers.get('user-agent') || undefined,
+                    ip:
+                        req.headers.get('x-forwarded-for') ||
+                        req.headers.get('x-real-ip') ||
+                        'unknown',
+                });
+            }
+        }
+
         // Check role-based access
         for (const [route, allowedRoles] of Object.entries(
             roleProtectedRoutes
         )) {
             if (pathname.startsWith(route)) {
                 if (!token || !allowedRoles.includes(token.role)) {
+                    logger.securityEvent('Insufficient permissions', 'medium', {
+                        pathname,
+                        userRole: token?.role || 'none',
+                        requiredRoles: allowedRoles.join(', '),
+                        userId: token?.sub,
+                    });
+
                     return NextResponse.redirect(
                         new URL('/auth/signin', req.url)
                     );

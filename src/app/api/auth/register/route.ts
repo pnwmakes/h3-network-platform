@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
+import { withApiSecurity, createErrorResponse } from '@/lib/security';
+import { logger } from '@/lib/logger';
 import { UserRole } from '@prisma/client';
 import { z } from 'zod';
 
@@ -12,20 +14,30 @@ const registerSchema = z.object({
     role: z.enum(['USER', 'CREATOR']).optional().default('USER'),
 });
 
-export async function POST(request: NextRequest) {
+export const POST = withApiSecurity(async (request: NextRequest) => {
     try {
         const body = await request.json();
 
         // Validate input
         const result = registerSchema.safeParse(body);
         if (!result.success) {
-            return NextResponse.json(
-                { error: 'Invalid input', details: result.error.issues },
-                { status: 400 }
+            logger.warn('Registration validation failed', {
+                errorCount: result.error.issues.length,
+            });
+            return createErrorResponse(
+                'Invalid input',
+                400,
+                result.error.issues
             );
         }
 
         const { name, email, password, role } = result.data;
+
+        logger.info('User registration attempt', {
+            email,
+            name,
+            role,
+        });
 
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({
@@ -76,6 +88,12 @@ export async function POST(request: NextRequest) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password: _, ...userWithoutPassword } = user;
 
+        logger.info('User registration successful', {
+            userId: user.id,
+            email: user.email || undefined,
+            role: user.role,
+        });
+
         return NextResponse.json(
             {
                 success: true,
@@ -85,10 +103,10 @@ export async function POST(request: NextRequest) {
             { status: 201 }
         );
     } catch (error) {
-        console.error('Registration error:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+        logger.error('Registration error', {
+            error: error instanceof Error ? error.message : String(error),
+            endpoint: '/api/auth/register',
+        });
+        return createErrorResponse('Internal server error', 500);
     }
-}
+});

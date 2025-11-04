@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { withApiSecurity, createErrorResponse } from '@/lib/security';
+import { logger } from '@/lib/logger';
 import { z } from 'zod';
 
 const searchSchema = z.object({
@@ -27,13 +29,24 @@ const searchSchema = z.object({
     limit: z.coerce.number().min(1).max(50).optional().default(20),
 });
 
-export async function GET(request: NextRequest) {
+export const GET = withApiSecurity(async (request: NextRequest) => {
     try {
         const { searchParams } = new URL(request.url);
         const params = Object.fromEntries(searchParams.entries());
 
         const { q, type, topic, creator, tags, sortBy, page, limit } =
             searchSchema.parse(params);
+
+        logger.info('Search API called', {
+            query: q,
+            type,
+            topic: topic || undefined,
+            creator: creator || undefined,
+            tags: tags || undefined,
+            sortBy,
+            page,
+            limit,
+        });
 
         const skip = (page - 1) * limit;
         const searchTerms = q
@@ -261,15 +274,19 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json(response);
     } catch (error) {
-        console.error('Search error:', error);
+        logger.error('Search error', {
+            error: error instanceof Error ? error.message : String(error),
+            endpoint: '/api/search',
+        });
 
         if (error instanceof z.ZodError) {
-            return NextResponse.json(
-                { error: 'Invalid search parameters', details: error.issues },
-                { status: 400 }
+            return createErrorResponse(
+                'Invalid search parameters',
+                400,
+                error.issues
             );
         }
 
-        return NextResponse.json({ error: 'Search failed' }, { status: 500 });
+        return createErrorResponse('Search failed', 500);
     }
-}
+});

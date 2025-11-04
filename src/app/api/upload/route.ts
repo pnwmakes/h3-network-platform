@@ -1,41 +1,40 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { withApiSecurity, createErrorResponse } from '@/lib/security';
+import { logger } from '@/lib/logger';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 
-export async function POST(request: NextRequest) {
+export const POST = withApiSecurity(async (request: NextRequest) => {
     try {
-        console.log('Upload API called');
+        logger.info('Upload API called');
 
         const session = await getServerSession(authOptions);
-        console.log(
-            'Session:',
-            session?.user
-                ? { id: session.user.id, email: session.user.email }
-                : 'No session'
-        );
 
         if (!session?.user?.id) {
-            console.log('No valid session found');
-            return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 401 }
-            );
+            logger.securityEvent('Unauthorized upload attempt', 'medium', {
+                endpoint: '/api/upload',
+            });
+            return createErrorResponse('Unauthorized', 401);
         }
+
+        logger.info('File upload attempt', {
+            userId: session.user.id,
+            userEmail: session.user.email || undefined,
+        });
 
         const formData = await request.formData();
         const file = formData.get('file') as File;
         const type = formData.get('type') as string;
 
-        console.log(
-            'File received:',
-            file
-                ? { name: file.name, size: file.size, type: file.type }
-                : 'No file'
-        );
-        console.log('Upload type:', type);
+        logger.info('File upload details', {
+            fileName: file.name,
+            fileSize: file.size,
+            fileType: file.type,
+            uploadType: type,
+        });
 
         if (!file) {
             return NextResponse.json(
@@ -46,11 +45,11 @@ export async function POST(request: NextRequest) {
 
         // Validate file type
         if (!file.type.startsWith('image/')) {
-            console.log('Invalid file type:', file.type);
-            return NextResponse.json(
-                { error: 'Only image files are allowed' },
-                { status: 400 }
-            );
+            logger.warn('Invalid file type upload attempt', {
+                fileType: file.type,
+                userId: session.user.id,
+            });
+            return createErrorResponse('Only image files are allowed', 400);
         }
 
         // Validate file size (5MB limit)
@@ -125,7 +124,10 @@ export async function POST(request: NextRequest) {
             });
         }
     } catch (error) {
-        console.error('Upload error:', error);
-        return NextResponse.json({ error: 'Upload failed' }, { status: 500 });
+        logger.error('Upload error', {
+            error: error instanceof Error ? error.message : String(error),
+            endpoint: '/api/upload',
+        });
+        return createErrorResponse('Upload failed', 500);
     }
-}
+});

@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { withApiSecurity, createErrorResponse } from '@/lib/security';
+import { logger } from '@/lib/logger';
 import { ContentTopic } from '@prisma/client';
 
 // Disable caching for this route
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-export async function GET(request: NextRequest) {
+export const GET = withApiSecurity(async (request: NextRequest) => {
     try {
         const { searchParams } = new URL(request.url);
         const type = searchParams.get('type'); // 'video', 'blog', or undefined for all
@@ -16,13 +18,15 @@ export async function GET(request: NextRequest) {
         const search = searchParams.get('search');
         const cacheBuster = searchParams.get('_'); // Cache busting parameter
 
-        console.log(
-            'Content API called with cache buster:',
-            cacheBuster,
-            'at',
-            new Date().toISOString()
-        );
-
+        logger.info('Content API called', {
+            cacheBuster: cacheBuster || undefined,
+            type: type || undefined,
+            category: category || undefined,
+            limit,
+            page,
+            search: search || undefined,
+            timestamp: new Date().toISOString(),
+        });
         const skip = (page - 1) * limit;
 
         // Build where conditions
@@ -54,9 +58,12 @@ export async function GET(request: NextRequest) {
             }),
         };
 
-        console.log('Content API query conditions:', {
-            ...whereConditions,
-            publishedAt: { lte: whereConditions.publishedAt.lte.toISOString() },
+        logger.debug('Content API query conditions', {
+            type: type || undefined,
+            category: category || undefined,
+            search: search || undefined,
+            limit,
+            page,
         });
 
         const [videos, blogs] = await Promise.all([
@@ -97,17 +104,10 @@ export async function GET(request: NextRequest) {
                 : [],
         ]);
 
-        console.log('Query results:', {
+        logger.debug('Query results', {
             videosFound: videos.length,
             blogsFound: blogs.length,
-            videoIds: videos.map((v) => v.id),
-            blogDetails: blogs.map((b) => ({
-                id: b.id,
-                title: b.title,
-                status: b.status,
-                publishedAt: b.publishedAt?.toISOString(),
-                updatedAt: b.updatedAt?.toISOString(),
-            })),
+            totalContent: videos.length + blogs.length,
         });
 
         // Combine and sort if getting both types
@@ -185,10 +185,10 @@ export async function GET(request: NextRequest) {
 
         return response;
     } catch (error) {
-        console.error('Error fetching content:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch content' },
-            { status: 500 }
-        );
+        logger.error('Error fetching content', {
+            error: error instanceof Error ? error.message : String(error),
+            endpoint: '/api/content',
+        });
+        return createErrorResponse('Failed to fetch content', 500);
     }
-}
+});

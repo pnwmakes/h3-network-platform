@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { withApiSecurity, createErrorResponse } from '@/lib/security';
+import { logger } from '@/lib/logger';
 import { headers } from 'next/headers';
 
 const GUEST_VIEW_LIMIT = 2;
 
-export async function POST(request: NextRequest) {
+function generateSessionId(): string {
+    return 'guest_' + Math.random().toString(36).substring(2, 9) + Date.now();
+}
+
+export const POST = withApiSecurity(async (request: NextRequest) => {
     try {
         // We don't need the content details for basic tracking
         await request.json(); // Just consume the body
@@ -15,6 +21,12 @@ export async function POST(request: NextRequest) {
             headersList.get('x-session-id') ||
             request.cookies.get('session-id')?.value ||
             generateSessionId();
+
+        logger.info('Guest tracking request', {
+            sessionId,
+            hasSessionIdHeader: !!headersList.get('x-session-id'),
+            hasSessionIdCookie: !!request.cookies.get('session-id')?.value,
+        });
 
         // Check current guest view count
         let guestLimit = await prisma.guestViewingLimit.findUnique({
@@ -65,14 +77,10 @@ export async function POST(request: NextRequest) {
 
         return response;
     } catch (error) {
-        console.error('Guest tracking error:', error);
-        return NextResponse.json(
-            { success: false, error: 'Failed to track guest viewing' },
-            { status: 500 }
-        );
+        logger.error('Guest tracking error', {
+            error: error instanceof Error ? error.message : String(error),
+            endpoint: '/api/guest-tracking',
+        });
+        return createErrorResponse('Failed to track guest viewing', 500);
     }
-}
-
-function generateSessionId(): string {
-    return 'guest_' + Math.random().toString(36).substr(2, 9) + Date.now();
-}
+});

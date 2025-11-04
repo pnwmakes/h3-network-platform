@@ -17,6 +17,58 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+    // Security headers
+    async headers() {
+        return [
+            {
+                source: '/(.*)',
+                headers: [
+                    {
+                        key: 'X-Frame-Options',
+                        value: 'DENY',
+                    },
+                    {
+                        key: 'X-Content-Type-Options',
+                        value: 'nosniff',
+                    },
+                    {
+                        key: 'X-XSS-Protection',
+                        value: '1; mode=block',
+                    },
+                    {
+                        key: 'Referrer-Policy',
+                        value: 'strict-origin-when-cross-origin',
+                    },
+                    {
+                        key: 'Permissions-Policy',
+                        value: 'camera=(), microphone=(), geolocation=()',
+                    },
+                ],
+            },
+            {
+                // API routes get additional security headers
+                source: '/api/(.*)',
+                headers: [
+                    {
+                        key: 'X-Robots-Tag',
+                        value: 'noindex',
+                    },
+                    {
+                        key: 'Cache-Control',
+                        value: 'no-store, must-revalidate',
+                    },
+                ],
+            },
+        ];
+    },
+    // Environment variable validation
+    env: {
+        CUSTOM_KEY: process.env.CUSTOM_KEY,
+    },
+    // Enable experimental features for better performance
+    experimental: {
+        optimizePackageImports: ['lucide-react'],
+    },
 };
 
 export default nextConfig;

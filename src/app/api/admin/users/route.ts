@@ -2,21 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { withApiSecurity, createErrorResponse } from '@/lib/security';
+import { logger } from '@/lib/logger';
 import { UserRole, Prisma } from '@prisma/client';
 
-export async function GET(request: NextRequest) {
+export const GET = withApiSecurity(async (request: NextRequest) => {
     try {
         const session = await getServerSession(authOptions);
 
         if (!session || session.user.role !== 'SUPER_ADMIN') {
-            return NextResponse.json(
-                {
-                    success: false,
-                    error: 'Unauthorized',
-                },
-                { status: 401 }
-            );
+            logger.securityEvent('Unauthorized admin access attempt', 'high', {
+                userId: session?.user?.id,
+                userRole: session?.user?.role,
+                endpoint: '/api/admin/users',
+            });
+            return createErrorResponse('Unauthorized', 401);
         }
+
+        logger.info('Admin users access', {
+            userId: session.user.id,
+            userRole: session.user.role,
+        });
 
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get('page') || '1');
@@ -88,13 +94,10 @@ export async function GET(request: NextRequest) {
             },
         });
     } catch (error) {
-        console.error('Admin users fetch error:', error);
-        return NextResponse.json(
-            {
-                success: false,
-                error: 'Failed to fetch users',
-            },
-            { status: 500 }
-        );
+        logger.error('Admin users fetch error', {
+            error: error instanceof Error ? error.message : String(error),
+            endpoint: '/api/admin/users',
+        });
+        return createErrorResponse('Failed to fetch users', 500);
     }
-}
+});

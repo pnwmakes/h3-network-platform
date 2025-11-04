@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { withApiSecurity, createErrorResponse } from '@/lib/security';
+import { logger } from '@/lib/logger';
 import { z } from 'zod';
 
 // Validation schema for progress updates
@@ -12,26 +14,26 @@ const progressSchema = z.object({
 });
 
 // GET - Retrieve user's progress for a specific video
-export async function GET(request: NextRequest) {
+export const GET = withApiSecurity(async (request: NextRequest) => {
     try {
         const session = await getServerSession(authOptions);
 
         if (!session?.user?.id) {
-            return NextResponse.json(
-                { error: 'Authentication required' },
-                { status: 401 }
-            );
+            logger.warn('Unauthenticated progress access attempt');
+            return createErrorResponse('Authentication required', 401);
         }
 
         const { searchParams } = new URL(request.url);
         const videoId = searchParams.get('videoId');
 
         if (!videoId) {
-            return NextResponse.json(
-                { error: 'Video ID is required' },
-                { status: 400 }
-            );
+            return createErrorResponse('Video ID is required', 400);
         }
+
+        logger.debug('Progress retrieval', {
+            userId: session.user.id,
+            videoId,
+        });
 
         // Get user's progress for this video
         const progress = await prisma.userProgress.findUnique({
@@ -67,24 +69,22 @@ export async function GET(request: NextRequest) {
             video: progress.video,
         });
     } catch (error) {
-        console.error('Error retrieving progress:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+        logger.error('Error retrieving progress', {
+            error: error instanceof Error ? error.message : String(error),
+            endpoint: '/api/progress',
+        });
+        return createErrorResponse('Internal server error', 500);
     }
-}
+});
 
 // POST - Update user's progress for a video
-export async function POST(request: NextRequest) {
+export const POST = withApiSecurity(async (request: NextRequest) => {
     try {
         const session = await getServerSession(authOptions);
 
         if (!session?.user?.id) {
-            return NextResponse.json(
-                { error: 'Authentication required' },
-                { status: 401 }
-            );
+            logger.warn('Unauthenticated progress update attempt');
+            return createErrorResponse('Authentication required', 401);
         }
 
         const body = await request.json();
@@ -163,10 +163,10 @@ export async function POST(request: NextRequest) {
             },
         });
     } catch (error) {
-        console.error('Error updating progress:', error);
-        return NextResponse.json(
-            { error: 'Internal server error' },
-            { status: 500 }
-        );
+        logger.error('Error updating progress', {
+            error: error instanceof Error ? error.message : String(error),
+            endpoint: '/api/progress',
+        });
+        return createErrorResponse('Internal server error', 500);
     }
-}
+});

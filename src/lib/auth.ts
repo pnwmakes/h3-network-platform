@@ -3,6 +3,8 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
+import { env } from '@/lib/env';
+import { logger } from '@/lib/logger';
 import type { UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
@@ -33,8 +35,8 @@ export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
     providers: [
         GoogleProvider({
-            clientId: process.env.GOOGLE_CLIENT_ID!,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            clientId: env.GOOGLE_CLIENT_ID,
+            clientSecret: env.GOOGLE_CLIENT_SECRET,
         }),
         CredentialsProvider({
             name: 'credentials',
@@ -80,7 +82,13 @@ export const authOptions: NextAuthOptions = {
                         role: user.role,
                     };
                 } catch (error) {
-                    console.error('Error during authentication:', error);
+                    logger.error('Error during authentication:', {
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : String(error),
+                        email: credentials.email,
+                    });
                     return null;
                 }
             },
@@ -116,7 +124,25 @@ export const authOptions: NextAuthOptions = {
     events: {
         async createUser({ user }) {
             // New user created - could send welcome email here
-            console.log(`New user created: ${user.email}`);
+            logger.info('New user created', {
+                userId: user.id,
+                email: user.email || undefined,
+                name: user.name || undefined,
+            });
+        },
+        async signIn({ user, account }) {
+            logger.info('User signed in', {
+                userId: user.id,
+                email: user.email || undefined,
+                provider: account?.provider,
+                type: account?.type,
+            });
+        },
+        async signOut({ session }) {
+            logger.info('User signed out', {
+                userId: session?.user?.id,
+                email: session?.user?.email,
+            });
         },
     },
 };
