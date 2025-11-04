@@ -65,9 +65,43 @@ const nextConfig: NextConfig = {
     env: {
         CUSTOM_KEY: process.env.CUSTOM_KEY,
     },
+
+    // Production optimizations
+    output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
+
+    // Performance optimizations
+    swcMinify: true,
+
+    // Optimize bundle
+    webpack: (config, { dev }) => {
+        // Production optimizations
+        if (!dev) {
+            config.optimization.splitChunks = {
+                chunks: 'all',
+                cacheGroups: {
+                    vendor: {
+                        test: /[\\/]node_modules[\\/]/,
+                        chunks: 'all',
+                        priority: 1,
+                    },
+                },
+            };
+        }
+
+        return config;
+    },
+
+    // Reduce bundle size
+    modularizeImports: {
+        'lucide-react': {
+            transform: 'lucide-react/dist/esm/icons/{{member}}',
+        },
+    },
+
     // Enable experimental features for better performance
     experimental: {
-        optimizePackageImports: ['lucide-react'],
+        optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+        serverComponentsExternalPackages: ['@prisma/client'],
     },
 };
 

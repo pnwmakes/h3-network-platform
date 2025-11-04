@@ -5,6 +5,39 @@ const envSchema = z.object({
     // Database
     DATABASE_URL: z.string().url('DATABASE_URL must be a valid URL'),
 
+    // Production Database Configuration
+    DATABASE_POOL_SIZE: z
+        .string()
+        .optional()
+        .default('10')
+        .transform((val) => parseInt(val, 10))
+        .pipe(z.number().min(1).max(50)),
+
+    DATABASE_CONNECTION_LIMIT: z
+        .string()
+        .optional()
+        .default('20')
+        .transform((val) => parseInt(val, 10))
+        .pipe(z.number().min(1).max(100)),
+
+    DATABASE_TIMEOUT: z
+        .string()
+        .optional()
+        .default('10000')
+        .transform((val) => parseInt(val, 10))
+        .pipe(z.number().min(1000).max(60000)),
+
+    DATABASE_SSL_MODE: z
+        .enum(['require', 'prefer', 'disable'])
+        .optional()
+        .default('require'),
+
+    // Redis Configuration (Optional for production rate limiting)
+    REDIS_URL: z
+        .string()
+        .url('REDIS_URL must be a valid URL')
+        .optional(),
+
     // NextAuth
     NEXTAUTH_SECRET: z
         .string()
@@ -36,7 +69,12 @@ function validateEnv() {
             error.issues.forEach((issue) => {
                 console.error(`  - ${issue.path.join('.')}: ${issue.message}`);
             });
-            process.exit(1);
+            // Don't exit in Edge Runtime - just throw the error
+            throw new Error(
+                `Environment validation failed: ${error.issues
+                    .map((i) => i.message)
+                    .join(', ')}`
+            );
         }
         throw error;
     }
@@ -71,3 +109,42 @@ export const rateLimitConfig = {
     standardHeaders: true,
     legacyHeaders: false,
 };
+
+// Database configuration helpers
+export function getDatabaseConfig() {
+    return {
+        url: env.DATABASE_URL,
+        ssl: isProd ? { rejectUnauthorized: false } : false,
+        connectionLimit: env.DATABASE_CONNECTION_LIMIT,
+        timeout: env.DATABASE_TIMEOUT,
+        pool: {
+            min: 0,
+            max: env.DATABASE_POOL_SIZE,
+            idleTimeoutMillis: 30000,
+            connectionTimeoutMillis: env.DATABASE_TIMEOUT,
+        },
+    };
+}
+
+// Prisma configuration for production
+export function getPrismaConfig() {
+    const baseConfig = {
+        datasources: {
+            db: {
+                url: env.DATABASE_URL,
+            },
+        },
+        log: isDev ? ['query', 'info', 'warn', 'error'] : ['error'],
+    };
+
+    if (isProd) {
+        return {
+            ...baseConfig,
+            // Production optimizations
+            engineType: 'binary' as const,
+            binaryTargets: ['native', 'rhel-openssl-1.0.x'],
+        };
+    }
+
+    return baseConfig;
+}

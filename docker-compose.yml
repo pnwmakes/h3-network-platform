@@ -1,18 +1,92 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15
-    container_name: h3-network-postgres
-    environment:
-      POSTGRES_USER: h3user
-      POSTGRES_PASSWORD: h3password
-      POSTGRES_DB: h3_network
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    restart: unless-stopped
+    # PostgreSQL Database
+    postgres:
+        image: postgres:15-alpine
+        container_name: h3-network-postgres
+        environment:
+            POSTGRES_USER: h3user
+            POSTGRES_PASSWORD: h3password
+            POSTGRES_DB: h3_network
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - ./prisma/migrations:/docker-entrypoint-initdb.d
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U h3user -d h3_network']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        restart: unless-stopped
+
+    # Redis (Optional - for production rate limiting)
+    redis:
+        image: redis:7-alpine
+        container_name: h3-network-redis
+        ports:
+            - '6379:6379'
+        command: redis-server --appendonly yes
+        volumes:
+            - redis_data:/data
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        restart: unless-stopped
+
+    # H3 Network Application (Production Build)
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: h3-network-app
+        environment:
+            # Database
+            DATABASE_URL: 'postgresql://h3user:h3password@postgres:5432/h3_network?sslmode=disable'
+            DATABASE_POOL_SIZE: '10'
+            DATABASE_CONNECTION_LIMIT: '20'
+            DATABASE_TIMEOUT: '10000'
+            DATABASE_SSL_MODE: 'disable'
+
+            # Redis (Optional)
+            REDIS_URL: 'redis://redis:6379'
+
+            # App Configuration
+            NODE_ENV: 'production'
+            APP_NAME: 'H3 Network Media Platform'
+            APP_URL: 'http://localhost:3000'
+
+            # NextAuth (CHANGE THESE IN PRODUCTION!)
+            NEXTAUTH_SECRET: 'development-secret-change-in-production-generate-new-one'
+            NEXTAUTH_URL: 'http://localhost:3000'
+
+            # OAuth (ADD YOUR REAL CREDENTIALS)
+            GOOGLE_CLIENT_ID: 'your-google-client-id'
+            GOOGLE_CLIENT_SECRET: 'your-google-client-secret'
+
+            # Optional
+            YOUTUBE_API_KEY: 'your-youtube-api-key'
+        ports:
+            - '3000:3000'
+        depends_on:
+            postgres:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+            interval: 30s
+            timeout: 10s
+            retries: 3
+        restart: unless-stopped
 
 volumes:
-  postgres_data:
+    postgres_data:
+    redis_data:
+
+networks:
+    default:
+        name: h3-network

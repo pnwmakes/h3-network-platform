@@ -12,7 +12,7 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     // Apply security checks manually since withApiSecurity doesn't support route params
-    const rateLimitResponse = applyRateLimit(request);
+    const rateLimitResponse = await applyRateLimit(request);
     if (rateLimitResponse) return rateLimitResponse;
 
     const validation = validateApiRequest(request);
