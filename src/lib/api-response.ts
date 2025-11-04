@@ -72,12 +72,27 @@ export function createPaginatedResponse<T>(
     });
 }
 
+// Not found response
+export function createNotFoundResponse(
+    resource: string = 'Resource'
+): NextResponse<ApiResponse> {
+    return createErrorResponse(`${resource} not found`, 404);
+}
+
+// Unauthorized response
+export function createUnauthorizedResponse(
+    message: string = 'Unauthorized'
+): NextResponse<ApiResponse> {
+    return createErrorResponse(message, 401);
+}
+
 // Cache control headers
 export const CacheHeaders = {
     noCache: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
+        'Cache-Control':
+            'no-store, no-cache, must-revalidate, proxy-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0',
     },
     shortCache: {
         'Cache-Control': 'public, max-age=300, s-maxage=300', // 5 minutes
@@ -99,11 +114,11 @@ export function withCacheHeaders(
     cacheType: keyof typeof CacheHeaders
 ): NextResponse {
     const headers = CacheHeaders[cacheType];
-    
+
     Object.entries(headers).forEach(([key, value]) => {
         response.headers.set(key, value);
     });
-    
+
     return response;
 }
 
@@ -116,6 +131,6 @@ export function withPerformanceHeaders(
     response.headers.set('X-Response-Time', `${executionTime}ms`);
     response.headers.set('X-Cache-Status', cacheHit ? 'HIT' : 'MISS');
     response.headers.set('X-Powered-By', 'H3 Network Platform');
-    
+
     return response;
 }

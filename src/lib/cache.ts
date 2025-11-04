@@ -50,7 +50,7 @@ class MemoryCache {
 
     get<T>(key: string): T | null {
         const entry = this.cache.get(key);
-        
+
         if (!entry) {
             this.stats.misses++;
             return null;
@@ -98,15 +98,21 @@ class MemoryCache {
     // Cache key generators
     static keys = {
         video: (id: string) => `video:${id}`,
-        videoList: (page: number, limit: number, filters?: Record<string, unknown>) => {
+        videoList: (
+            page: number,
+            limit: number,
+            filters?: Record<string, unknown>
+        ) => {
             const filterStr = filters ? JSON.stringify(filters) : '';
             return `videos:${page}:${limit}:${filterStr}`;
         },
         creator: (id: string) => `creator:${id}`,
-        creatorVideos: (id: string, page: number) => `creator:${id}:videos:${page}`,
+        creatorVideos: (id: string, page: number) =>
+            `creator:${id}:videos:${page}`,
         blog: (id: string) => `blog:${id}`,
         blogList: (page: number, limit: number) => `blogs:${page}:${limit}`,
-        search: (query: string, type: string, page: number) => `search:${type}:${query}:${page}`,
+        search: (query: string, type: string, page: number) =>
+            `search:${type}:${query}:${page}`,
         user: (id: string) => `user:${id}`,
         userStats: (id: string) => `user:${id}:stats`,
     };
@@ -131,21 +137,28 @@ class RedisCache {
             this.redisClient = createClient({
                 url: env.REDIS_URL,
             });
-            
+
             await this.redisClient.connect();
         } catch (error) {
-            console.warn('Redis connection failed, falling back to memory cache:', error);
+            console.warn(
+                'Redis connection failed, falling back to memory cache:',
+                error
+            );
             this.redisClient = null;
         }
     }
 
     async set<T>(key: string, data: T, ttl?: number): Promise<void> {
         if (!this.redisClient) return;
-        
+
         try {
             const serialized = JSON.stringify(data);
             if (ttl) {
-                await this.redisClient.setEx(key, Math.floor(ttl / 1000), serialized);
+                await this.redisClient.setEx(
+                    key,
+                    Math.floor(ttl / 1000),
+                    serialized
+                );
             } else {
                 await this.redisClient.set(key, serialized);
             }
@@ -156,7 +169,7 @@ class RedisCache {
 
     async get<T>(key: string): Promise<T | null> {
         if (!this.redisClient) return null;
-        
+
         try {
             const data = await this.redisClient.get(key);
             return data ? JSON.parse(data) : null;
@@ -168,7 +181,7 @@ class RedisCache {
 
     async delete(key: string): Promise<boolean> {
         if (!this.redisClient) return false;
-        
+
         try {
             const result = await this.redisClient.del(key);
             return result > 0;
@@ -180,7 +193,7 @@ class RedisCache {
 
     async clear(): Promise<void> {
         if (!this.redisClient) return;
-        
+
         try {
             await this.redisClient.flushDb();
         } catch (error) {
@@ -202,7 +215,7 @@ class CacheManager {
     async set<T>(key: string, data: T, ttl?: number): Promise<void> {
         // Always set in memory cache for fast local access
         this.memoryCache.set(key, data, ttl);
-        
+
         // Set in Redis if available (for distributed caching)
         if (env.REDIS_URL) {
             await this.redisCache.set(key, data, ttl);
@@ -251,7 +264,9 @@ class CacheManager {
         // This is a simplified implementation - in production you might want
         // to use a more sophisticated pattern matching system
         const stats = this.memoryCache.getStats();
-        console.log(`Cache invalidation pattern: ${pattern}, current size: ${stats.size}`);
+        console.log(
+            `Cache invalidation pattern: ${pattern}, current size: ${stats.size}`
+        );
     }
 }
 
@@ -262,9 +277,9 @@ export const cache = new CacheManager();
 export const CacheUtils = {
     // TTL constants (in milliseconds)
     TTL: {
-        SHORT: 1 * 60 * 1000,      // 1 minute
-        MEDIUM: 5 * 60 * 1000,     // 5 minutes
-        LONG: 30 * 60 * 1000,      // 30 minutes
+        SHORT: 1 * 60 * 1000, // 1 minute
+        MEDIUM: 5 * 60 * 1000, // 5 minutes
+        LONG: 30 * 60 * 1000, // 30 minutes
         VERY_LONG: 2 * 60 * 60 * 1000, // 2 hours
     },
 

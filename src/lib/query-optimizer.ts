@@ -176,7 +176,7 @@ export class QueryOptimizer {
         const normalizedPage = Math.max(1, page);
         const normalizedLimit = Math.min(Math.max(1, limit), 100); // Cap at 100
         const skip = (normalizedPage - 1) * normalizedLimit;
-        
+
         return {
             skip,
             take: normalizedLimit,
@@ -224,16 +224,16 @@ export function withQueryMonitoring<T extends any[], R>(
 ) {
     return async (...args: T): Promise<R> => {
         const startTime = Date.now();
-        
+
         try {
             const result = await queryFn(...args);
             const duration = Date.now() - startTime;
-            
+
             logger.dbQuery(queryName, duration, {
                 args: JSON.stringify(args),
                 success: true,
             });
-            
+
             // Log slow queries
             if (duration > 1000) {
                 logger.warn(`Slow query detected: ${queryName}`, {
@@ -241,7 +241,7 @@ export function withQueryMonitoring<T extends any[], R>(
                     queryName,
                 });
             }
-            
+
             return result;
         } catch (error) {
             const duration = Date.now() - startTime;
@@ -257,7 +257,7 @@ export function withQueryMonitoring<T extends any[], R>(
 // Batch loading utilities
 export class BatchLoader {
     private static readonly BATCH_SIZE = 100;
-    
+
     static async loadVideosByIds(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         prisma: any,
@@ -266,11 +266,11 @@ export class BatchLoader {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<Map<string, any>> {
         const videoMap = new Map();
-        
+
         // Process in batches to avoid query size limits
         for (let i = 0; i < ids.length; i += this.BATCH_SIZE) {
             const batchIds = ids.slice(i, i + this.BATCH_SIZE);
-            
+
             const videos = await prisma.video.findMany({
                 where: {
                     id: { in: batchIds },
@@ -278,16 +278,16 @@ export class BatchLoader {
                 },
                 select: selectFields,
             });
-            
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             videos.forEach((video: any) => {
                 videoMap.set(video.id, video);
             });
         }
-        
+
         return videoMap;
     }
-    
+
     static async loadCreatorsByIds(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         prisma: any,
@@ -296,10 +296,10 @@ export class BatchLoader {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ): Promise<Map<string, any>> {
         const creatorMap = new Map();
-        
+
         for (let i = 0; i < ids.length; i += this.BATCH_SIZE) {
             const batchIds = ids.slice(i, i + this.BATCH_SIZE);
-            
+
             const creators = await prisma.creator.findMany({
                 where: {
                     id: { in: batchIds },
@@ -307,13 +307,13 @@ export class BatchLoader {
                 },
                 select: selectFields,
             });
-            
+
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             creators.forEach((creator: any) => {
                 creatorMap.set(creator.id, creator);
             });
         }
-        
+
         return creatorMap;
     }
 }
@@ -322,10 +322,10 @@ export class BatchLoader {
 export class ConnectionManager {
     private static queryCount = 0;
     private static readonly QUERY_THRESHOLD = 1000;
-    
+
     static trackQuery() {
         this.queryCount++;
-        
+
         // Log connection stats periodically
         if (this.queryCount % this.QUERY_THRESHOLD === 0) {
             logger.info('Database connection stats', {
@@ -333,7 +333,7 @@ export class ConnectionManager {
             });
         }
     }
-    
+
     static getStats() {
         return {
             queryCount: this.queryCount,
@@ -371,7 +371,7 @@ export class SearchOptimizer {
             },
         },
     };
-    
+
     // Build search query for PostgreSQL full-text search
     static buildSearchQuery(query: string): string {
         // Clean and normalize search query
@@ -380,21 +380,24 @@ export class SearchOptimizer {
             .replace(/[^\w\s]/g, ' ')
             .replace(/\s+/g, ' ')
             .split(' ')
-            .filter(word => word.length > 1)
-            .map(word => `${word}:*`)
+            .filter((word) => word.length > 1)
+            .map((word) => `${word}:*`)
             .join(' & ');
-            
+
         return cleanQuery || '';
     }
-    
+
     // Get search filters based on query
-    static getSearchFilters(searchQuery: string, type: 'video' | 'blog' | 'creator') {
+    static getSearchFilters(
+        searchQuery: string,
+        type: 'video' | 'blog' | 'creator'
+    ) {
         const tsQuery = this.buildSearchQuery(searchQuery);
-        
+
         if (!tsQuery) {
             return {};
         }
-        
+
         switch (type) {
             case 'video':
                 return {
@@ -464,8 +467,4 @@ export class SearchOptimizer {
 }
 
 // Export commonly used utilities
-export {
-    QueryOptimizer as QO,
-    CacheUtils,
-    cache,
-};
+export { QueryOptimizer as QO, CacheUtils, cache };

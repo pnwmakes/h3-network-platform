@@ -69,21 +69,24 @@ class Logger {
 
     error(message: string, context?: LogContext): void {
         this.log('error', message, context);
-        
+
         // Send errors to Sentry in production
         if (env.SENTRY_DSN) {
             Sentry.withScope((scope) => {
                 if (context) {
                     // Add context as tags and extra data
                     Object.entries(context).forEach(([key, value]) => {
-                        if (typeof value === 'string' || typeof value === 'number') {
+                        if (
+                            typeof value === 'string' ||
+                            typeof value === 'number'
+                        ) {
                             scope.setTag(key, value);
                         } else {
                             scope.setExtra(key, value);
                         }
                     });
                 }
-                
+
                 scope.setLevel('error');
                 Sentry.captureMessage(message);
             });
@@ -185,20 +188,23 @@ class Logger {
             stack: error.stack,
             errorName: error.name,
         });
-        
+
         // Send exceptions to Sentry
         if (env.SENTRY_DSN) {
             Sentry.withScope((scope) => {
                 if (context) {
                     Object.entries(context).forEach(([key, value]) => {
-                        if (typeof value === 'string' || typeof value === 'number') {
+                        if (
+                            typeof value === 'string' ||
+                            typeof value === 'number'
+                        ) {
                             scope.setTag(key, value);
                         } else {
                             scope.setExtra(key, value);
                         }
                     });
                 }
-                
+
                 scope.setLevel('error');
                 Sentry.captureException(error);
             });

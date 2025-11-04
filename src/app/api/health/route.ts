@@ -1,11 +1,13 @@
 import { NextRequest } from 'next/server';
 import {
     withApiSecurity,
-    createApiResponse,
     createErrorResponse,
 } from '@/lib/security';
+import { createSuccessResponse, withPerformanceHeaders } from '@/lib/api-response';
 import { logger } from '@/lib/logger';
 import { prisma } from '@/lib/prisma';
+import { env } from '@/lib/env';
+import { cache } from '@/lib/cache';
 
 async function handler(req: NextRequest) {
     if (req.method !== 'GET') {
@@ -76,15 +78,22 @@ async function handler(req: NextRequest) {
         status: overallStatus,
         timestamp: new Date().toISOString(),
         version: process.env.npm_package_version || '1.0.0',
-        environment: process.env.NODE_ENV || 'development',
+        environment: env.NODE_ENV,
         uptime: process.uptime(),
         responseTime: totalResponseTime,
         checks,
-        ...(process.env.NODE_ENV !== 'production' && {
+        cache: {
+            stats: cache.getStats(),
+        },
+        ...(env.NODE_ENV !== 'production' && {
             nodeVersion: process.version,
             platform: process.platform,
             arch: process.arch,
-            memory: process.memoryUsage(),
+            memory: {
+                used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
+                total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024),
+                rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
+            },
         }),
     };
 
@@ -95,9 +104,16 @@ async function handler(req: NextRequest) {
         checks: Object.keys(checks).length,
     });
 
-    // Return appropriate status code
-    const statusCode = allChecksOk ? 200 : 503;
-    return createApiResponse(healthData, statusCode);
+    // Return appropriate status code with enhanced response
+    if (!allChecksOk) {
+        return createErrorResponse('Service unhealthy', 503);
+    }
+    
+    const response = createSuccessResponse(healthData, undefined, { 
+        executionTime: totalResponseTime 
+    });
+    
+    return withPerformanceHeaders(response, totalResponseTime, false);
 }
 
 export const GET = withApiSecurity(handler);
