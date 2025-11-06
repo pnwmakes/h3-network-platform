@@ -1,13 +1,8 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { withApiSecurity, createErrorResponse } from '@/lib/security';
-import {
-    createSuccessResponse,
-    withPerformanceHeaders,
-} from '@/lib/api-response';
 import { logger } from '@/lib/logger';
-import { prisma } from '@/lib/prisma';
 import { env } from '@/lib/env';
-import { cache } from '@/lib/cache';
+import { HealthChecker, MonitoringUtils } from '@/lib/monitoring';
 
 async function handler(req: NextRequest) {
     if (req.method !== 'GET') {
@@ -15,32 +10,12 @@ async function handler(req: NextRequest) {
     }
 
     const startTime = Date.now();
-    const checks: Record<
-        string,
-        { status: 'ok' | 'error'; responseTime?: number; error?: string }
-    > = {};
 
-    // Check database connection
     try {
-        const dbStart = Date.now();
-        await prisma.$queryRaw`SELECT 1`;
-        checks.database = {
-            status: 'ok',
-            responseTime: Date.now() - dbStart,
-        };
-    } catch (error) {
-        checks.database = {
-            status: 'error',
-            error:
-                error instanceof Error
-                    ? error.message
-                    : 'Unknown database error',
-        };
-        logger.dbError('Health check', error as Error);
-    }
+        // Use new comprehensive health checker
+        const health = await HealthChecker.getSystemHealth();
 
-    // Check environment variables
-    try {
+        // Environment check
         const requiredEnvVars = [
             'DATABASE_URL',
             'NEXTAUTH_SECRET',
@@ -50,72 +25,99 @@ async function handler(req: NextRequest) {
             (varName) => !process.env[varName]
         );
 
-        if (missingVars.length > 0) {
-            checks.environment = {
-                status: 'error',
-                error: `Missing environment variables: ${missingVars.join(
-                    ', '
-                )}`,
-            };
-        } else {
-            checks.environment = { status: 'ok' };
-        }
-    } catch {
-        checks.environment = {
-            status: 'error',
-            error: 'Environment check failed',
-        };
-    }
+        // Determine overall health
+        const isHealthy =
+            health.database.connected &&
+            missingVars.length === 0 &&
+            health.api.errorRate < 0.1 &&
+            health.memory.percentage < 90;
 
-    // Overall health status
-    const allChecksOk = Object.values(checks).every(
-        (check) => check.status === 'ok'
-    );
-    const overallStatus = allChecksOk ? 'healthy' : 'unhealthy';
-    const totalResponseTime = Date.now() - startTime;
+        const overallStatus = isHealthy ? 'healthy' : 'unhealthy';
+        const totalResponseTime = Date.now() - startTime;
 
-    const healthData = {
-        status: overallStatus,
-        timestamp: new Date().toISOString(),
-        version: process.env.npm_package_version || '1.0.0',
-        environment: env.NODE_ENV,
-        uptime: process.uptime(),
-        responseTime: totalResponseTime,
-        checks,
-        cache: {
-            stats: cache.getStats(),
-        },
-        ...(env.NODE_ENV !== 'production' && {
-            nodeVersion: process.version,
-            platform: process.platform,
-            arch: process.arch,
-            memory: {
-                used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024),
-                total: Math.round(
-                    process.memoryUsage().heapTotal / 1024 / 1024
-                ),
-                rss: Math.round(process.memoryUsage().rss / 1024 / 1024),
+        const healthData = {
+            status: overallStatus,
+            timestamp: new Date().toISOString(),
+            version: process.env.npm_package_version || '1.0.0',
+            environment: env.NODE_ENV,
+            uptime: process.uptime(),
+            responseTime: totalResponseTime,
+            checks: {
+                database: {
+                    status: health.database.connected ? 'ok' : 'error',
+                    responseTime: health.database.responseTime,
+                    activeConnections: health.database.activeConnections,
+                    error: health.database.error,
+                },
+                environment: {
+                    status: missingVars.length === 0 ? 'ok' : 'error',
+                    error:
+                        missingVars.length > 0
+                            ? `Missing environment variables: ${missingVars.join(
+                                  ', '
+                              )}`
+                            : undefined,
+                },
+                api: {
+                    status: health.api.errorRate < 0.05 ? 'ok' : 'warning',
+                    averageResponseTime: health.api.averageResponseTime,
+                    errorRate: health.api.errorRate,
+                    requestsPerMinute: health.api.requestsPerMinute,
+                },
+                cache: {
+                    status: health.cache.hitRate > 0.5 ? 'ok' : 'warning',
+                    hitRate: health.cache.hitRate,
+                    size: health.cache.size,
+                    memoryUsage: health.cache.memoryUsage,
+                },
+                memory: {
+                    status: health.memory.percentage < 80 ? 'ok' : 'warning',
+                    used: health.memory.used,
+                    total: health.memory.total,
+                    percentage: health.memory.percentage,
+                },
             },
-        }),
-    };
+            ...(env.NODE_ENV !== 'production' && {
+                nodeVersion: process.version,
+                platform: process.platform,
+                arch: process.arch,
+                detailed: {
+                    fullHealthMetrics: health,
+                    performanceReport: await MonitoringUtils.getEndpointReport(
+                        '/api/videos'
+                    ),
+                },
+            }),
+        };
 
-    // Log health check
-    logger.info('Health check performed', {
-        status: overallStatus,
-        responseTime: totalResponseTime,
-        checks: Object.keys(checks).length,
-    });
+        // Log health check
+        logger.info('Health check performed', {
+            status: overallStatus,
+            responseTime: totalResponseTime,
+            dbConnected: health.database.connected,
+            memoryUsage: health.memory.percentage,
+            errorRate: health.api.errorRate,
+        });
 
-    // Return appropriate status code with enhanced response
-    if (!allChecksOk) {
-        return createErrorResponse('Service unhealthy', 503);
+        // Return appropriate status code
+        const statusCode = isHealthy ? 200 : 503;
+
+        return NextResponse.json(healthData, {
+            status: statusCode,
+            headers: {
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
+                'X-Health-Status': overallStatus,
+                'X-Response-Time': totalResponseTime.toString(),
+            },
+        });
+    } catch (error) {
+        logger.error('Health check failed', {
+            error: error instanceof Error ? error.message : String(error),
+            responseTime: Date.now() - startTime,
+        });
+
+        return createErrorResponse('Health check failed', 500);
     }
-
-    const response = createSuccessResponse(healthData, undefined, {
-        executionTime: totalResponseTime,
-    });
-
-    return withPerformanceHeaders(response, totalResponseTime, false);
 }
 
 export const GET = withApiSecurity(handler);
