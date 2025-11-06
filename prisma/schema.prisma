@@ -59,25 +59,25 @@ model VerificationToken {
 }
 
 model Creator {
-  id              String   @id @default(cuid())
-  userId          String   @unique
-  displayName     String
-  bio             String?
-  avatarUrl       String?
-  showName        String?
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  funnyFact       String?
-  instagramUrl    String?
-  linkedinUrl     String?
-  profileComplete Boolean  @default(false)
-  tiktokUrl       String?
-  websiteUrl      String?
-  blogs           Blog[]
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  videos          Video[]
+  id               String             @id @default(cuid())
+  userId           String             @unique
+  displayName      String
+  bio              String?
+  avatarUrl        String?
+  showName         String?
+  isActive         Boolean            @default(true)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  funnyFact        String?
+  instagramUrl     String?
+  linkedinUrl      String?
+  profileComplete  Boolean            @default(false)
+  tiktokUrl        String?
+  websiteUrl       String?
+  blogs            Blog[]
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   scheduledContent ScheduledContent[]
+  videos           Video[]
 }
 
 model Show {
@@ -92,74 +92,74 @@ model Show {
 }
 
 model Video {
-  id              String         @id @default(cuid())
-  title           String
-  description     String?
-  youtubeId       String         @unique
-  youtubeUrl      String
-  thumbnailUrl    String?
-  duration        Int?
-  viewCount       Int            @default(0)
-  tags            String[]
-  topic           ContentTopic?
-  status          ContentStatus  @default(DRAFT)
-  publishedAt     DateTime?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  creatorId       String
-  showId          String?
-  episodeNumber   Int?
-  guestLinks      String[]       @default([])
-  guestName       String?
-  hostLinks       String[]       @default([])
-  scheduledAt     DateTime?
-  seasonNumber    Int?
-  showNotes       String?
-  sponsorLogo     String?
-  sponsorUrl      String?
-  contentTopics   String[]       @default([])
-  guestBios       String[]       @default([])
-  guestNames      String[]       @default([])
-  showName        String?
-  sponsorMessages String[]       @default([])
-  sponsorNames    String[]       @default([])
-  savedBy         SavedContent[] @relation("SavedVideos")
-  videoProgress   UserProgress[] @relation("VideoProgress")
-  creator         Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  show            Show?          @relation(fields: [showId], references: [id])
+  id               String            @id @default(cuid())
+  title            String
+  description      String?
+  youtubeId        String            @unique
+  youtubeUrl       String
+  thumbnailUrl     String?
+  duration         Int?
+  viewCount        Int               @default(0)
+  tags             String[]
+  topic            ContentTopic?
+  status           ContentStatus     @default(DRAFT)
+  publishedAt      DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  creatorId        String
+  showId           String?
+  episodeNumber    Int?
+  guestLinks       String[]          @default([])
+  guestName        String?
+  hostLinks        String[]          @default([])
+  scheduledAt      DateTime?
+  seasonNumber     Int?
+  showNotes        String?
+  sponsorLogo      String?
+  sponsorUrl       String?
+  contentTopics    String[]          @default([])
+  guestBios        String[]          @default([])
+  guestNames       String[]          @default([])
+  showName         String?
+  sponsorMessages  String[]          @default([])
+  sponsorNames     String[]          @default([])
+  savedBy          SavedContent[]    @relation("SavedVideos")
   scheduledContent ScheduledContent?
+  videoProgress    UserProgress[]    @relation("VideoProgress")
+  creator          Creator           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  show             Show?             @relation(fields: [showId], references: [id])
 }
 
 model Blog {
-  id                String         @id @default(cuid())
+  id                String            @id @default(cuid())
   title             String
   content           String
   excerpt           String?
   featuredImage     String?
-  viewCount         Int            @default(0)
+  viewCount         Int               @default(0)
   tags              String[]
   topic             ContentTopic?
-  status            ContentStatus  @default(DRAFT)
+  status            ContentStatus     @default(DRAFT)
   publishedAt       DateTime?
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
   creatorId         String
   horizontalImage   String?
-  hostLinks         String[]       @default([])
+  hostLinks         String[]          @default([])
   scheduledAt       DateTime?
   sponsorLogo       String?
   sponsorUrl        String?
-  squareImages      String[]       @default([])
-  contentTopics     String[]       @default([])
-  guestBios         String[]       @default([])
-  guestContributors String[]       @default([])
+  squareImages      String[]          @default([])
+  contentTopics     String[]          @default([])
+  guestBios         String[]          @default([])
+  guestContributors String[]          @default([])
   readTime          Int?
-  sponsorMessages   String[]       @default([])
-  sponsorNames      String[]       @default([])
-  creator           Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  savedBy           SavedContent[] @relation("SavedBlogs")
-  blogProgress      UserProgress[] @relation("BlogProgress")
+  sponsorMessages   String[]          @default([])
+  sponsorNames      String[]          @default([])
+  creator           Creator           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  savedBy           SavedContent[]    @relation("SavedBlogs")
   scheduledContent  ScheduledContent?
+  blogProgress      UserProgress[]    @relation("BlogProgress")
 }
 
 model UserProgress {
@@ -202,24 +202,19 @@ model SavedContent {
 }
 
 model ScheduledContent {
-  id            String        @id @default(cuid())
-  contentType   ContentType
-  videoId       String?
-  blogId        String?
-  publishAt     DateTime
-  status        ScheduleStatus @default(PENDING)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  creatorId     String
-  notes         String?
-  
-  // Relations
-  creator       Creator       @relation(fields: [creatorId], references: [id], onDelete: Cascade)
-  video         Video?        @relation(fields: [videoId], references: [id], onDelete: Cascade)
-  blog          Blog?         @relation(fields: [blogId], references: [id], onDelete: Cascade)
-  
-  @@unique([videoId])
-  @@unique([blogId])
+  id          String         @id @default(cuid())
+  contentType ContentType
+  videoId     String?        @unique
+  blogId      String?        @unique
+  publishAt   DateTime
+  status      ScheduleStatus @default(PENDING)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  creatorId   String
+  notes       String?
+  blog        Blog?          @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  creator     Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  video       Video?         @relation(fields: [videoId], references: [id], onDelete: Cascade)
 }
 
 enum ScheduleStatus {

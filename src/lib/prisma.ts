@@ -8,8 +8,13 @@ const globalForPrisma = globalThis as unknown as {
 // Create Prisma client with production-optimized configuration
 function createPrismaClient() {
     const client = new PrismaClient({
-        log: isDev ? ['error', 'warn'] : ['error'],
+        log: isDev ? ['warn'] : ['error'], // Reduced logging to minimize noise
         errorFormat: isProd ? 'minimal' : 'pretty',
+        datasources: {
+            db: {
+                url: process.env.DATABASE_URL,
+            },
+        },
     });
 
     return client;
