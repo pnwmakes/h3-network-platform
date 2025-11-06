@@ -36,7 +36,9 @@ export default async function NewVideoPage() {
     // Verify creator profile exists and is complete
     if (!creator?.profileComplete) {
         redirect('/creator?setup=true');
-    }    return (
+    }
+
+    return (
         <div className="space-y-8">
             {/* Header */}
             <div className="border-b border-gray-200 pb-5">

@@ -70,13 +70,6 @@ const nextConfig: NextConfig = {
     // Production optimizations
     output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
 
-    // Reduce bundle size
-    modularizeImports: {
-        'lucide-react': {
-            transform: 'lucide-react/dist/esm/icons/{{member}}',
-        },
-    },
-
     // Enable experimental features for better performance
     experimental: {
         optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],

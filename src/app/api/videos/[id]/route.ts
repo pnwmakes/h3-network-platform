@@ -18,6 +18,31 @@ import {
     withPerformanceHeaders,
 } from '@/lib/api-response';
 
+type VideoDetail = {
+    id: string;
+    title: string;
+    description: string | null;
+    youtubeId: string;
+    thumbnailUrl: string | null;
+    duration: number | null;
+    publishedAt: Date | null;
+    viewCount: number;
+    likeCount: number;
+    status: string;
+    tags: string[];
+    creator: {
+        id: string;
+        displayName: string;
+        avatarUrl: string | null;
+        bio: string | null;
+    };
+    show: {
+        id: string;
+        name: string;
+        description: string | null;
+    } | null;
+};
+
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -44,7 +69,7 @@ export async function GET(
 
         // Try to get from cache first
         const cacheKey = CacheUtils.keys.video(videoId);
-        let video = await cache.get(cacheKey);
+        let video: VideoDetail | null = await cache.get(cacheKey);
 
         if (video) {
             cacheHit = true;
@@ -95,17 +120,11 @@ export async function GET(
         const executionTime = Date.now() - startTime;
         const response = createSuccessResponse(
             {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                ...(video as any),
+                ...video,
                 // Add computed fields
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                url: `/videos/${(video as any).id}`,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                embedUrl: `https://www.youtube.com/embed/${
-                    (video as any).youtubeId
-                }`,
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                viewCount: (video as any).viewCount + (cacheHit ? 0 : 1),
+                url: `/videos/${video.id}`,
+                embedUrl: `https://www.youtube.com/embed/${video.youtubeId}`,
+                viewCount: video.viewCount + (cacheHit ? 0 : 1),
             },
             undefined,
             { executionTime }

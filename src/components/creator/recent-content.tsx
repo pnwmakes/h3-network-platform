@@ -9,7 +9,13 @@ interface Video {
     viewCount: number;
     show?: {
         name: string;
-    };
+        description?: string | null;
+        id?: string;
+        createdAt?: Date;
+        updatedAt?: Date;
+        isActive?: boolean;
+        thumbnailUrl?: string | null;
+    } | null;
 }
 
 interface Blog {

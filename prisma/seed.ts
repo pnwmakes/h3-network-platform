@@ -175,7 +175,7 @@ async function main() {
         },
     });
 
-    const justiceTalks = await prisma.show.upsert({
+    await prisma.show.upsert({
         where: { name: 'Justice Talks' },
         update: {},
         create: {

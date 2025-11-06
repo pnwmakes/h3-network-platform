@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import {
@@ -23,7 +24,13 @@ interface Video {
     thumbnailUrl: string | null;
     show?: {
         name: string;
-    };
+        description?: string | null;
+        id?: string;
+        createdAt?: Date;
+        updatedAt?: Date;
+        isActive?: boolean;
+        thumbnailUrl?: string | null;
+    } | null;
 }
 
 interface VideosListProps {
@@ -45,14 +52,6 @@ export function VideosList({ videos }: VideosListProps) {
                 ? prev.filter((id) => id !== videoId)
                 : [...prev, videoId]
         );
-    };
-
-    const handleSelectAll = () => {
-        if (selectedVideos.length === filteredVideos.length) {
-            setSelectedVideos([]);
-        } else {
-            setSelectedVideos(filteredVideos.map((v) => v.id));
-        }
     };
 
     const getStatusBadge = (status: string) => {
@@ -191,13 +190,15 @@ export function VideosList({ videos }: VideosListProps) {
                             />
 
                             <div className='flex-shrink-0'>
-                                <img
+                                <Image
                                     className='h-16 w-24 rounded-lg object-cover'
                                     src={
                                         video.thumbnailUrl ||
                                         '/placeholder-video.jpg'
                                     }
                                     alt={video.title}
+                                    width={96}
+                                    height={64}
                                 />
                             </div>
 
