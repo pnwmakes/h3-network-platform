@@ -57,7 +57,9 @@ export function BlogForm({ blog }: BlogFormProps) {
         try {
             // Validate required fields
             if (!formData.title || !formData.content) {
-                alert('Please fill in all required fields (Title and Content).');
+                alert(
+                    'Please fill in all required fields (Title and Content).'
+                );
                 setIsSubmitting(false);
                 return;
             }
@@ -71,7 +73,9 @@ export function BlogForm({ blog }: BlogFormProps) {
             const blogData = {
                 title: formData.title.trim(),
                 content: formData.content.trim(),
-                excerpt: formData.excerpt.trim() || formData.content.slice(0, 200) + '...',
+                excerpt:
+                    formData.excerpt.trim() ||
+                    formData.content.slice(0, 200) + '...',
                 featuredImage: formData.featuredImage.trim(),
                 tags: formData.tags
                     .split(',')
@@ -79,11 +83,18 @@ export function BlogForm({ blog }: BlogFormProps) {
                     .filter(Boolean),
                 topic: formData.topic,
                 status: formData.status,
-                scheduledAt: formData.status === 'SCHEDULED' ? formData.scheduledAt : null,
-                readTime: Math.ceil(formData.content.trim().split(' ').length / 200), // Approximate reading time
+                scheduledAt:
+                    formData.status === 'SCHEDULED'
+                        ? formData.scheduledAt
+                        : null,
+                readTime: Math.ceil(
+                    formData.content.trim().split(' ').length / 200
+                ), // Approximate reading time
             };
 
-            const endpoint = blog ? `/api/creator/blogs/${blog.id}` : '/api/creator/blogs';
+            const endpoint = blog
+                ? `/api/creator/blogs/${blog.id}`
+                : '/api/creator/blogs';
             const method = blog ? 'PUT' : 'POST';
 
             const response = await fetch(endpoint, {
@@ -99,7 +110,9 @@ export function BlogForm({ blog }: BlogFormProps) {
                 router.refresh();
             } else {
                 const errorData = await response.json();
-                alert(`Error: ${errorData.error || 'Failed to save blog post'}`);
+                alert(
+                    `Error: ${errorData.error || 'Failed to save blog post'}`
+                );
             }
         } catch (error) {
             console.error('Error submitting blog:', error);
@@ -127,7 +140,10 @@ export function BlogForm({ blog }: BlogFormProps) {
                     <div className='lg:col-span-2 space-y-6'>
                         {/* Title */}
                         <div>
-                            <label htmlFor='title' className='block text-sm font-medium text-gray-700'>
+                            <label
+                                htmlFor='title'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Blog Title *
                             </label>
                             <input
@@ -148,7 +164,10 @@ export function BlogForm({ blog }: BlogFormProps) {
 
                         {/* Excerpt */}
                         <div>
-                            <label htmlFor='excerpt' className='block text-sm font-medium text-gray-700'>
+                            <label
+                                htmlFor='excerpt'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Excerpt
                             </label>
                             <textarea
@@ -168,7 +187,10 @@ export function BlogForm({ blog }: BlogFormProps) {
 
                         {/* Content */}
                         <div>
-                            <label htmlFor='content' className='block text-sm font-medium text-gray-700'>
+                            <label
+                                htmlFor='content'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Content *
                             </label>
                             <textarea
@@ -192,7 +214,10 @@ export function BlogForm({ blog }: BlogFormProps) {
                     <div className='space-y-6'>
                         {/* Featured Image */}
                         <div>
-                            <label htmlFor='featuredImage' className='block text-sm font-medium text-gray-700'>
+                            <label
+                                htmlFor='featuredImage'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Featured Image URL
                             </label>
                             <input
@@ -212,7 +237,10 @@ export function BlogForm({ blog }: BlogFormProps) {
 
                         {/* Topic */}
                         <div>
-                            <label htmlFor='topic' className='block text-sm font-medium text-gray-700'>
+                            <label
+                                htmlFor='topic'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Primary Topic
                             </label>
                             <select
@@ -227,7 +255,10 @@ export function BlogForm({ blog }: BlogFormProps) {
                                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'
                             >
                                 {blogTopics.map((topic) => (
-                                    <option key={topic.value} value={topic.value}>
+                                    <option
+                                        key={topic.value}
+                                        value={topic.value}
+                                    >
                                         {topic.label}
                                     </option>
                                 ))}
@@ -236,7 +267,10 @@ export function BlogForm({ blog }: BlogFormProps) {
 
                         {/* Tags */}
                         <div>
-                            <label htmlFor='tags' className='block text-sm font-medium text-gray-700'>
+                            <label
+                                htmlFor='tags'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Tags
                             </label>
                             <input
@@ -259,7 +293,10 @@ export function BlogForm({ blog }: BlogFormProps) {
 
                         {/* Publishing Options */}
                         <div>
-                            <label htmlFor='status' className='block text-sm font-medium text-gray-700'>
+                            <label
+                                htmlFor='status'
+                                className='block text-sm font-medium text-gray-700'
+                            >
                                 Publishing Status
                             </label>
                             <select
@@ -274,7 +311,10 @@ export function BlogForm({ blog }: BlogFormProps) {
                                 className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500'
                             >
                                 {statusOptions.map((status) => (
-                                    <option key={status.value} value={status.value}>
+                                    <option
+                                        key={status.value}
+                                        value={status.value}
+                                    >
                                         {status.label}
                                     </option>
                                 ))}
@@ -284,7 +324,10 @@ export function BlogForm({ blog }: BlogFormProps) {
                         {/* Scheduled Date/Time */}
                         {formData.status === 'SCHEDULED' && (
                             <div>
-                                <label htmlFor='scheduledAt' className='block text-sm font-medium text-gray-700'>
+                                <label
+                                    htmlFor='scheduledAt'
+                                    className='block text-sm font-medium text-gray-700'
+                                >
                                     Schedule Date & Time
                                 </label>
                                 <input

@@ -7,7 +7,8 @@ export default function CreatorSettingsPage() {
                     Creator Settings
                 </h1>
                 <p className='mt-2 max-w-4xl text-sm text-gray-500'>
-                    Manage your creator profile, notification preferences, and platform settings.
+                    Manage your creator profile, notification preferences, and
+                    platform settings.
                 </p>
             </div>
 
@@ -18,8 +19,8 @@ export default function CreatorSettingsPage() {
                     Creator Settings Coming Soon
                 </h3>
                 <p className='text-sm text-gray-500 mb-6 max-w-md mx-auto'>
-                    We&apos;re building comprehensive settings to help you customize 
-                    your creator experience and manage your profile.
+                    We&apos;re building comprehensive settings to help you
+                    customize your creator experience and manage your profile.
                 </p>
                 <div className='bg-purple-50 border border-purple-200 rounded-lg p-6 max-w-lg mx-auto'>
                     <h4 className='font-medium text-purple-900 mb-2'>
@@ -36,8 +37,12 @@ export default function CreatorSettingsPage() {
                 </div>
                 <div className='mt-8'>
                     <p className='text-xs text-gray-400'>
-                        For now, you can manage basic profile settings through your{' '}
-                        <a href='/profile' className='text-blue-600 hover:underline'>
+                        For now, you can manage basic profile settings through
+                        your{' '}
+                        <a
+                            href='/profile'
+                            className='text-blue-600 hover:underline'
+                        >
                             User Profile
                         </a>
                     </p>

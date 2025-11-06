@@ -46,8 +46,8 @@ export default async function NewBlogPage() {
                     Write New Blog Post
                 </h1>
                 <p className='mt-2 max-w-4xl text-sm text-gray-500'>
-                    Share your thoughts, experiences, and insights with your audience. 
-                    You can save as a draft or publish immediately.
+                    Share your thoughts, experiences, and insights with your
+                    audience. You can save as a draft or publish immediately.
                 </p>
             </div>
 

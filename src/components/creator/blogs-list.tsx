@@ -166,7 +166,7 @@ export function BlogsList({ blogs }: BlogsListProps) {
                                         <p className='text-sm font-medium text-gray-900 truncate'>
                                             {blog.title}
                                         </p>
-                                        
+
                                         {blog.excerpt && (
                                             <p className='mt-1 text-sm text-gray-500 line-clamp-2'>
                                                 {blog.excerpt}
@@ -183,9 +183,12 @@ export function BlogsList({ blogs }: BlogsListProps) {
                                                 {blog.viewCount} views
                                             </span>
                                             <span>
-                                                {formatDistanceToNow(new Date(blog.createdAt), {
-                                                    addSuffix: true,
-                                                })}
+                                                {formatDistanceToNow(
+                                                    new Date(blog.createdAt),
+                                                    {
+                                                        addSuffix: true,
+                                                    }
+                                                )}
                                             </span>
                                         </div>
 
@@ -193,17 +196,20 @@ export function BlogsList({ blogs }: BlogsListProps) {
                                         {blog.tags.length > 0 && (
                                             <div className='mt-2 flex flex-wrap gap-1'>
                                                 <TagIcon className='h-3 w-3 text-gray-400 mt-0.5' />
-                                                {blog.tags.slice(0, 3).map((tag, index) => (
-                                                    <span
-                                                        key={index}
-                                                        className='inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded'
-                                                    >
-                                                        {tag}
-                                                    </span>
-                                                ))}
+                                                {blog.tags
+                                                    .slice(0, 3)
+                                                    .map((tag, index) => (
+                                                        <span
+                                                            key={index}
+                                                            className='inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded'
+                                                        >
+                                                            {tag}
+                                                        </span>
+                                                    ))}
                                                 {blog.tags.length > 3 && (
                                                     <span className='text-xs text-gray-500'>
-                                                        +{blog.tags.length - 3} more
+                                                        +{blog.tags.length - 3}{' '}
+                                                        more
                                                     </span>
                                                 )}
                                             </div>
@@ -243,7 +249,10 @@ export function BlogsList({ blogs }: BlogsListProps) {
                                             )
                                         ) {
                                             // TODO: Implement delete functionality
-                                            console.log('Delete blog:', blog.id);
+                                            console.log(
+                                                'Delete blog:',
+                                                blog.id
+                                            );
                                         }
                                     }}
                                 >
@@ -255,7 +264,8 @@ export function BlogsList({ blogs }: BlogsListProps) {
                         {/* Scheduled Info */}
                         {blog.status === 'SCHEDULED' && blog.scheduledAt && (
                             <div className='mt-2 ml-8 text-xs text-blue-600'>
-                                Scheduled for {new Date(blog.scheduledAt).toLocaleString()}
+                                Scheduled for{' '}
+                                {new Date(blog.scheduledAt).toLocaleString()}
                             </div>
                         )}
                     </li>

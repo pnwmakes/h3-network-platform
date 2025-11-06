@@ -7,7 +7,8 @@ export default function CreatorAnalyticsPage() {
                     Analytics & Insights
                 </h1>
                 <p className='mt-2 max-w-4xl text-sm text-gray-500'>
-                    Track your content performance, audience engagement, and growth metrics.
+                    Track your content performance, audience engagement, and
+                    growth metrics.
                 </p>
             </div>
 
@@ -18,8 +19,8 @@ export default function CreatorAnalyticsPage() {
                     Analytics Dashboard Coming Soon
                 </h3>
                 <p className='text-sm text-gray-500 mb-6 max-w-md mx-auto'>
-                    We&apos;re building comprehensive analytics to help you understand 
-                    your audience and optimize your content strategy.
+                    We&apos;re building comprehensive analytics to help you
+                    understand your audience and optimize your content strategy.
                 </p>
                 <div className='bg-green-50 border border-green-200 rounded-lg p-6 max-w-lg mx-auto'>
                     <h4 className='font-medium text-green-900 mb-2'>
@@ -37,7 +38,10 @@ export default function CreatorAnalyticsPage() {
                 <div className='mt-8'>
                     <p className='text-xs text-gray-400'>
                         For now, you can view basic stats in your{' '}
-                        <a href='/creator' className='text-blue-600 hover:underline'>
+                        <a
+                            href='/creator'
+                            className='text-blue-600 hover:underline'
+                        >
                             Dashboard Overview
                         </a>
                     </p>

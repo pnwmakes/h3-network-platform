@@ -52,7 +52,8 @@ export default async function CreatorBlogsPage() {
                         My Blog Posts
                     </h1>
                     <p className='mt-2 max-w-4xl text-sm text-gray-500'>
-                        Manage your blog articles and share your stories with the H3 Network community.
+                        Manage your blog articles and share your stories with
+                        the H3 Network community.
                     </p>
                 </div>
                 <div className='mt-4 sm:mt-0'>
