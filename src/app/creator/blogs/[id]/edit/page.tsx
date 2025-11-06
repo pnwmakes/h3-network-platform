@@ -2,10 +2,10 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
-import { VideoForm } from '@/components/creator/video-form';
+import { BlogForm } from '@/components/creator/blog-form';
 import { notFound } from 'next/navigation';
 
-export default async function EditVideoPage({
+export default async function EditBlogPage({
     params,
 }: {
     params: { id: string };
@@ -28,8 +28,8 @@ export default async function EditVideoPage({
 
     const creator = user.creator;
 
-    // Get the video to edit
-    const video = await prisma.video.findUnique({
+    // Get the blog to edit
+    const blog = await prisma.blog.findUnique({
         where: { id: params.id },
         include: {
             creator: {
@@ -41,16 +41,16 @@ export default async function EditVideoPage({
         },
     });
 
-    if (!video) {
+    if (!blog) {
         notFound();
     }
 
-    // Check if user owns this video or is super admin
+    // Check if user owns this blog or is super admin
     if (
         user.role !== 'SUPER_ADMIN' &&
-        (!creator || video.creatorId !== creator.id)
+        (!creator || blog.creatorId !== creator.id)
     ) {
-        redirect('/creator/videos');
+        redirect('/creator/blogs');
     }
 
     return (
@@ -58,15 +58,15 @@ export default async function EditVideoPage({
             {/* Header */}
             <div className='border-b border-gray-200 pb-5'>
                 <h1 className='text-3xl font-bold leading-6 text-gray-900'>
-                    Edit Video
+                    Edit Blog Post
                 </h1>
                 <p className='mt-2 max-w-4xl text-sm text-gray-500'>
-                    Update your video information and publishing settings.
+                    Update your blog post content and publishing settings.
                 </p>
             </div>
 
-            {/* Video Form */}
-            <VideoForm video={video} />
+            {/* Blog Form */}
+            <BlogForm blog={blog} />
         </div>
     );
 }
