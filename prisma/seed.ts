@@ -11,6 +11,22 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('🌱 Starting database seed...');
 
+    // Create super admin user
+    const superAdminPassword = await bcrypt.hash('SuperAdmin123!', 12);
+
+    const superAdmin = await prisma.user.upsert({
+        where: { email: 'admin@h3network.org' },
+        update: {},
+        create: {
+            email: 'admin@h3network.org',
+            name: 'Super Admin',
+            password: superAdminPassword,
+            role: UserRole.SUPER_ADMIN,
+        },
+    });
+
+    console.log('✅ Created super admin:', superAdmin.email);
+
     // Create sample test viewer
     const viewerPassword = await bcrypt.hash('password123', 12);
 
@@ -404,6 +420,7 @@ Because sometimes, the bravest thing you can do is laugh in the face of adversit
 
     console.log('✅ H3 Network database seeded successfully!');
     console.log(`Created:`);
+    console.log(`- 1 super admin (admin@h3network.org / SuperAdmin123!)`);
     console.log(`- 1 test viewer (test@h3network.org / password123)`);
     console.log(`- 4 H3 Network creators (Noah, Rita, Marcus, Sarah)`);
     console.log(
@@ -415,11 +432,12 @@ Because sometimes, the bravest thing you can do is laugh in the face of adversit
     console.log(`- ${blogPosts.length} blog posts with authentic stories`);
     console.log('');
     console.log('🧪 To test the platform:');
-    console.log('1. Sign in with test@h3network.org / password123');
-    console.log('2. Browse videos and creators');
-    console.log('3. Save content and check /profile?tab=saved');
+    console.log('1. Super Admin: admin@h3network.org / SuperAdmin123!');
+    console.log('2. Test Viewer: test@h3network.org / password123');
+    console.log('3. Browse videos and creators');
+    console.log('4. Save content and check /profile?tab=saved');
     console.log(
-        '4. Creators: noah@h3network.org, rita@h3network.org, etc. (creator123)'
+        '5. Creators: noah@h3network.org, rita@h3network.org, etc. (creator123)'
     );
 }
 
