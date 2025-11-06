@@ -104,6 +104,15 @@ export default function CreatorSchedulePage() {
     const [showRecurringModal, setShowRecurringModal] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    // Debug logging
+    console.log('Schedule page state:', {
+        activeTab,
+        showScheduleModal,
+        showRecurringModal,
+        loading,
+        hasSession: !!session?.user,
+    });
+
     // Load scheduled content
     useEffect(() => {
         const loadScheduledContent = async () => {
@@ -188,6 +197,9 @@ export default function CreatorSchedulePage() {
                 loadAvailableContent(),
                 loadTeamMembers(),
             ]).finally(() => setLoading(false));
+        } else if (session === null) {
+            // No session, still show the UI for demo purposes
+            setLoading(false);
         }
     }, [session]);
 
@@ -345,14 +357,21 @@ export default function CreatorSchedulePage() {
 
                 <div className='flex items-center space-x-3'>
                     <button
-                        onClick={() => setShowRecurringModal(true)}
+                        onClick={() => {
+                            console.log('Recurring schedule button clicked');
+                            setShowRecurringModal(true);
+                        }}
                         className='inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'
                     >
                         <ArrowPathIcon className='h-4 w-4 mr-2' />
                         Recurring Schedule
                     </button>
                     <button
-                        onClick={() => setShowScheduleModal(true)}
+                        onClick={() => {
+                            console.log('Schedule content button clicked');
+                            setSelectedDate(new Date()); // Set a default date
+                            setShowScheduleModal(true);
+                        }}
                         className='inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700'
                     >
                         <PlusIcon className='h-4 w-4 mr-2' />
@@ -375,7 +394,10 @@ export default function CreatorSchedulePage() {
                         Calendar View
                     </button>
                     <button
-                        onClick={() => setActiveTab('collaboration')}
+                        onClick={() => {
+                            console.log('Team collaboration tab clicked');
+                            setActiveTab('collaboration');
+                        }}
                         className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center ${
                             activeTab === 'collaboration'
                                 ? 'border-blue-500 text-blue-600'

@@ -44,7 +44,10 @@ export function ScheduleModal({
         'ALL' | 'VIDEO' | 'BLOG'
     >('ALL');
 
-    if (!isOpen || !selectedDate) return null;
+    if (!isOpen) return null;
+
+    // Use selected date or default to today if none provided
+    const dateToUse = selectedDate || new Date();
 
     const filteredContent = availableContent.filter((content) => {
         if (contentFilter === 'ALL') return true;
@@ -65,7 +68,7 @@ export function ScheduleModal({
                 await onSchedule(
                     content.id,
                     content.type,
-                    selectedDate,
+                    dateToUse,
                     selectedTime,
                     notes || undefined
                 );
@@ -116,7 +119,7 @@ export function ScheduleModal({
                                 Publish Date
                             </label>
                             <div className='text-sm text-gray-900 bg-gray-50 px-3 py-2 rounded-md'>
-                                {format(selectedDate, 'EEEE, MMMM d, yyyy')}
+                                {format(dateToUse, 'EEEE, MMMM d, yyyy')}
                             </div>
                         </div>
 
@@ -264,7 +267,7 @@ export function ScheduleModal({
                                     </div>
                                     <div>
                                         <strong>Date:</strong>{' '}
-                                        {format(selectedDate, 'MMM d, yyyy')}
+                                        {format(dateToUse, 'MMM d, yyyy')}
                                     </div>
                                     <div>
                                         <strong>Time:</strong>{' '}
