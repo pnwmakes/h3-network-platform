@@ -125,9 +125,15 @@ export default async function VideosPage() {
                                             contentId={video.id}
                                             contentType='video'
                                             title={video.title}
-                                            description={video.description || undefined}
-                                            initialLikeCount={video.likeCount || 0}
-                                            initialIsLiked={video.isLiked || false}
+                                            description={
+                                                video.description || undefined
+                                            }
+                                            initialLikeCount={
+                                                video.likeCount || 0
+                                            }
+                                            initialIsLiked={
+                                                video.isLiked || false
+                                            }
                                             showLikeCount={true}
                                             shareVariant='minimal'
                                         />

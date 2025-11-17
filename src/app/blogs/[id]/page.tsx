@@ -280,7 +280,9 @@ export default function BlogPage() {
                                             contentId={blog.id}
                                             contentType='blog'
                                             title={blog.title}
-                                            description={blog.excerpt || undefined}
+                                            description={
+                                                blog.excerpt || undefined
+                                            }
                                             showLikeCount={true}
                                             shareVariant='minimal'
                                         />

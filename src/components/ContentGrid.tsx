@@ -337,13 +337,11 @@ export default function ContentGrid({
                             <h3 className='text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2'>
                                 {item.title}
                             </h3>
-
                             {item.description && (
                                 <p className='text-gray-600 mb-4 line-clamp-2'>
                                     {item.description}
                                 </p>
                             )}
-
                             {/* Creator and Date */}
                             <div className='flex items-center justify-between mb-3'>
                                 <div className='flex items-center space-x-3'>
@@ -372,22 +370,22 @@ export default function ContentGrid({
                                     {formatDate(item.publishedAt)}
                                 </span>
                             </div>
-
-            {/* Like and Share Actions */}
-            <div 
-                className='mb-3 flex justify-center'
-                onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }}
-            >
-                <ContentCardActions
-                    contentId={item.id}
-                    contentType={item.type}
-                    title={item.title}
-                    description={item.description || undefined}
-                />
-            </div>                            {/* Tags */}
+                            {/* Like and Share Actions */}
+                            <div
+                                className='mb-3 flex justify-center'
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                }}
+                            >
+                                <ContentCardActions
+                                    contentId={item.id}
+                                    contentType={item.type}
+                                    title={item.title}
+                                    description={item.description || undefined}
+                                />
+                            </div>{' '}
+                            {/* Tags */}
                             {item.tags.length > 0 && (
                                 <div className='flex flex-wrap gap-2'>
                                     {item.tags.slice(0, 3).map((tag, index) => (
@@ -405,7 +403,6 @@ export default function ContentGrid({
                                     )}
                                 </div>
                             )}
-
                             {/* Read Time for Blogs */}
                             {item.type === 'blog' && item.readTime && (
                                 <div className='mt-3 text-sm text-gray-500'>

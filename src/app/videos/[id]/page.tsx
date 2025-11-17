@@ -102,11 +102,7 @@ export default async function VideoPage({ params }: VideoPageProps) {
             : 0;
 
     // Get like status for the current user/session
-    const likeStatus = await getUserLikeStatus(
-        id,
-        'video',
-        session?.user?.id
-    );
+    const likeStatus = await getUserLikeStatus(id, 'video', session?.user?.id);
 
     return (
         <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
@@ -182,7 +178,9 @@ export default async function VideoPage({ params }: VideoPageProps) {
                                         contentId={video.id}
                                         contentType='video'
                                         title={video.title}
-                                        description={video.description || undefined}
+                                        description={
+                                            video.description || undefined
+                                        }
                                         initialLikeCount={likeStatus.likeCount}
                                         initialIsLiked={likeStatus.isLiked}
                                     />

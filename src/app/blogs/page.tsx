@@ -293,7 +293,7 @@ export default function BlogsPage() {
                                     </div>
 
                                     {/* Like and Share Actions */}
-                                    <div 
+                                    <div
                                         className='mb-4 flex justify-center'
                                         onClick={(e) => {
                                             e.preventDefault();
@@ -304,7 +304,9 @@ export default function BlogsPage() {
                                             contentId={blog.id}
                                             contentType='blog'
                                             title={blog.title}
-                                            description={blog.excerpt || undefined}
+                                            description={
+                                                blog.excerpt || undefined
+                                            }
                                         />
                                     </div>
 
