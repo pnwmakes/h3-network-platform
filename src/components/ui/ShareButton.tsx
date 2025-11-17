@@ -24,6 +24,7 @@ export function ShareButton({
 }: ShareButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
   const shareUrl = `${baseUrl}/${contentType}s/${contentId}`;
@@ -77,8 +78,18 @@ export function ShareButton({
       event.preventDefault();
       event.stopPropagation();
     }
+    
+    // Prevent multiple simultaneous share operations
+    if (isSharing) {
+      console.log('Share already in progress, ignoring click');
+      return;
+    }
+    
+    console.log('Share button clicked!', { contentId, contentType, variant });
+    
     if (navigator.share) {
       try {
+        setIsSharing(true);
         await navigator.share({
           title,
           text: description,
@@ -89,6 +100,8 @@ export function ShareButton({
         if ((error as Error).name !== 'AbortError') {
           console.error('Error sharing:', error);
         }
+      } finally {
+        setIsSharing(false);
       }
     } else {
       setIsOpen(!isOpen);
