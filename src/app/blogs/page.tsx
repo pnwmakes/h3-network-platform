@@ -293,7 +293,13 @@ export default function BlogsPage() {
                                     </div>
 
                                     {/* Like and Share Actions */}
-                                    <div className='mb-4 flex justify-center'>
+                                    <div 
+                                        className='mb-4 flex justify-center'
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                        }}
+                                    >
                                         <ContentCardActions
                                             contentId={blog.id}
                                             contentType='blog'
