@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+    metadataBase: new URL(process.env.NEXTAUTH_URL || process.env.APP_URL || 'https://h3network.org'),
     title: 'H3 Network - Hope, Help, Humor',
     description:
         'A community for justice-impacted people and those who work within criminal justice. Find Hope, Help, and Humor through content covering addiction recovery, reentry support, and criminal justice reform.',

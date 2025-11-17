@@ -343,28 +343,29 @@ export default function CreatorSchedulePage() {
 
     return (
         <div className='space-y-6'>
-            {/* Header */}
-            <div className='flex items-center justify-between'>
-                <div>
-                    <h1 className='text-3xl font-bold text-gray-900'>
+            {/* Header - Mobile Optimized */}
+            <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0'>
+                <div className='min-w-0 flex-1'>
+                    <h1 className='text-2xl md:text-3xl font-bold text-gray-900 truncate'>
                         Content Calendar
                     </h1>
-                    <p className='mt-1 text-gray-500'>
+                    <p className='mt-1 text-gray-500 text-sm md:text-base'>
                         Schedule and manage your content releases across
                         platforms
                     </p>
                 </div>
 
-                <div className='flex items-center space-x-3'>
+                <div className='flex flex-col sm:flex-row items-stretch sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 flex-shrink-0'>
                     <button
                         onClick={() => {
                             console.log('Recurring schedule button clicked');
                             setShowRecurringModal(true);
                         }}
-                        className='inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50'
+                        className='inline-flex items-center justify-center px-4 py-3 min-h-11 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 touch-manipulation'
                     >
                         <ArrowPathIcon className='h-4 w-4 mr-2' />
-                        Recurring Schedule
+                        <span className='hidden xs:inline'>Recurring Schedule</span>
+                        <span className='xs:hidden'>Recurring</span>
                     </button>
                     <button
                         onClick={() => {
@@ -372,20 +373,21 @@ export default function CreatorSchedulePage() {
                             setSelectedDate(new Date()); // Set a default date
                             setShowScheduleModal(true);
                         }}
-                        className='inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700'
+                        className='inline-flex items-center justify-center px-4 py-3 min-h-11 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 touch-manipulation'
                     >
                         <PlusIcon className='h-4 w-4 mr-2' />
-                        Schedule Content
+                        <span className='hidden xs:inline'>Schedule Content</span>
+                        <span className='xs:hidden'>Schedule</span>
                     </button>
                 </div>
             </div>
 
-            {/* Tabs */}
+            {/* Tabs - Mobile Optimized */}
             <div className='border-b border-gray-200'>
-                <nav className='-mb-px flex space-x-8'>
+                <nav className='-mb-px flex overflow-x-auto scrollbar-hide'>
                     <button
                         onClick={() => setActiveTab('calendar')}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                        className={`py-3 px-4 border-b-2 font-medium text-sm whitespace-nowrap flex-shrink-0 touch-manipulation min-h-11 ${
                             activeTab === 'calendar'
                                 ? 'border-blue-500 text-blue-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -398,25 +400,27 @@ export default function CreatorSchedulePage() {
                             console.log('Team collaboration tab clicked');
                             setActiveTab('collaboration');
                         }}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center ${
+                        className={`py-3 px-4 border-b-2 font-medium text-sm flex items-center whitespace-nowrap flex-shrink-0 touch-manipulation min-h-11 ${
                             activeTab === 'collaboration'
                                 ? 'border-blue-500 text-blue-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                         }`}
                     >
                         <UserGroupIcon className='h-4 w-4 mr-2' />
-                        Team Collaboration
+                        <span className='hidden sm:inline'>Team Collaboration</span>
+                        <span className='sm:hidden'>Team</span>
                     </button>
                     <button
                         onClick={() => setActiveTab('publishing')}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm flex items-center ${
+                        className={`py-3 px-4 border-b-2 font-medium text-sm flex items-center whitespace-nowrap flex-shrink-0 touch-manipulation min-h-11 ${
                             activeTab === 'publishing'
                                 ? 'border-blue-500 text-blue-600'
                                 : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                         }`}
                     >
                         <GlobeAltIcon className='h-4 w-4 mr-2' />
-                        Multi-Platform Publishing
+                        <span className='hidden sm:inline'>Multi-Platform Publishing</span>
+                        <span className='sm:hidden'>Publishing</span>
                     </button>
                 </nav>
             </div>

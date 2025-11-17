@@ -226,23 +226,27 @@ export function CreatorDashboard() {
                                 </p>
                             </div>
                         </div>
-                        <div className='flex items-center space-x-3'>
+                        {/* Mobile header actions */}
+                        <div className='flex items-center space-x-2 md:space-x-3'>
+                            {/* Mobile compact buttons */}
                             <Button
                                 variant='outline'
                                 size='sm'
                                 onClick={() =>
                                     router.push(`/creators/${profile.id}`)
                                 }
+                                className='min-h-11 px-3 md:px-4'
                             >
-                                <Eye className='h-4 w-4 mr-2' />
-                                Preview Profile
+                                <Eye className='h-4 w-4 md:mr-2' />
+                                <span className='hidden sm:inline ml-1'>Preview</span>
                             </Button>
                             <Button
                                 size='sm'
                                 onClick={() => setActiveTab('content')}
+                                className='min-h-11 px-3 md:px-4'
                             >
-                                <Plus className='h-4 w-4 mr-2' />
-                                Create Content
+                                <Plus className='h-4 w-4 md:mr-2' />
+                                <span className='hidden sm:inline ml-1'>Create</span>
                             </Button>
                         </div>
                     </div>
@@ -256,7 +260,33 @@ export function CreatorDashboard() {
                     onValueChange={setActiveTab}
                     className='w-full'
                 >
-                    <TabsList className='grid w-full grid-cols-5'>
+                    {/* Mobile-optimized tab navigation */}
+                    <div className='md:hidden overflow-x-auto'>
+                        <TabsList className='inline-flex w-max min-w-full h-12'>
+                            <TabsTrigger value='overview' className='min-w-24 px-3 text-xs'>
+                                <BarChart3 className='h-4 w-4 md:mr-2' />
+                                <span className='hidden xs:inline ml-1'>Overview</span>
+                            </TabsTrigger>
+                            <TabsTrigger value='content' className='min-w-24 px-3 text-xs'>
+                                <Video className='h-4 w-4 md:mr-2' />
+                                <span className='hidden xs:inline ml-1'>Content</span>
+                            </TabsTrigger>
+                            <TabsTrigger value='schedule' className='min-w-24 px-3 text-xs'>
+                                <Calendar className='h-4 w-4 md:mr-2' />
+                                <span className='hidden xs:inline ml-1'>Schedule</span>
+                            </TabsTrigger>
+                            <TabsTrigger value='templates' className='min-w-24 px-3 text-xs'>
+                                <FileText className='h-4 w-4 md:mr-2' />
+                                <span className='hidden xs:inline ml-1'>Templates</span>
+                            </TabsTrigger>
+                            <TabsTrigger value='settings' className='min-w-24 px-3 text-xs'>
+                                <Settings className='h-4 w-4 md:mr-2' />
+                                <span className='hidden xs:inline ml-1'>Settings</span>
+                            </TabsTrigger>
+                        </TabsList>
+                    </div>
+                    {/* Desktop tab navigation */}
+                    <TabsList className='hidden md:grid w-full grid-cols-5'>
                         <TabsTrigger value='overview'>
                             <BarChart3 className='h-4 w-4 mr-2' />
                             Overview
@@ -280,17 +310,17 @@ export function CreatorDashboard() {
                     </TabsList>
                     <TabsContent value='overview' className='mt-6'>
                         <div className='grid gap-6'>
-                            {/* Quick Stats */}
-                            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
-                                <Card>
-                                    <CardContent className='p-6'>
+                            {/* Quick Stats - Mobile Optimized */}
+                            <div className='grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4'>
+                                <Card className='touch-manipulation'>
+                                    <CardContent className='p-4 md:p-6'>
                                         <div className='flex items-center'>
-                                            <Video className='h-8 w-8 text-blue-500' />
-                                            <div className='ml-4'>
-                                                <p className='text-sm font-medium text-gray-600'>
+                                            <Video className='h-6 w-6 md:h-8 md:w-8 text-blue-500 flex-shrink-0' />
+                                            <div className='ml-2 md:ml-4 min-w-0'>
+                                                <p className='text-xs md:text-sm font-medium text-gray-600 truncate'>
                                                     Total Videos
                                                 </p>
-                                                <p className='text-2xl font-bold'>
+                                                <p className='text-lg md:text-2xl font-bold'>
                                                     12
                                                 </p>
                                             </div>
@@ -298,15 +328,15 @@ export function CreatorDashboard() {
                                     </CardContent>
                                 </Card>
 
-                                <Card>
-                                    <CardContent className='p-6'>
+                                <Card className='touch-manipulation'>
+                                    <CardContent className='p-4 md:p-6'>
                                         <div className='flex items-center'>
-                                            <FileText className='h-8 w-8 text-green-500' />
-                                            <div className='ml-4'>
-                                                <p className='text-sm font-medium text-gray-600'>
+                                            <FileText className='h-6 w-6 md:h-8 md:w-8 text-green-500 flex-shrink-0' />
+                                            <div className='ml-2 md:ml-4 min-w-0'>
+                                                <p className='text-xs md:text-sm font-medium text-gray-600 truncate'>
                                                     Blog Posts
                                                 </p>
-                                                <p className='text-2xl font-bold'>
+                                                <p className='text-lg md:text-2xl font-bold'>
                                                     8
                                                 </p>
                                             </div>
@@ -314,15 +344,15 @@ export function CreatorDashboard() {
                                     </CardContent>
                                 </Card>
 
-                                <Card>
-                                    <CardContent className='p-6'>
+                                <Card className='touch-manipulation'>
+                                    <CardContent className='p-4 md:p-6'>
                                         <div className='flex items-center'>
-                                            <Eye className='h-8 w-8 text-purple-500' />
-                                            <div className='ml-4'>
-                                                <p className='text-sm font-medium text-gray-600'>
+                                            <Eye className='h-6 w-6 md:h-8 md:w-8 text-purple-500 flex-shrink-0' />
+                                            <div className='ml-2 md:ml-4 min-w-0'>
+                                                <p className='text-xs md:text-sm font-medium text-gray-600 truncate'>
                                                     Total Views
                                                 </p>
-                                                <p className='text-2xl font-bold'>
+                                                <p className='text-lg md:text-2xl font-bold'>
                                                     2,543
                                                 </p>
                                             </div>
@@ -330,15 +360,15 @@ export function CreatorDashboard() {
                                     </CardContent>
                                 </Card>
 
-                                <Card>
-                                    <CardContent className='p-6'>
+                                <Card className='touch-manipulation'>
+                                    <CardContent className='p-4 md:p-6'>
                                         <div className='flex items-center'>
-                                            <TrendingUp className='h-8 w-8 text-orange-500' />
-                                            <div className='ml-4'>
-                                                <p className='text-sm font-medium text-gray-600'>
+                                            <TrendingUp className='h-6 w-6 md:h-8 md:w-8 text-orange-500 flex-shrink-0' />
+                                            <div className='ml-2 md:ml-4 min-w-0'>
+                                                <p className='text-xs md:text-sm font-medium text-gray-600 truncate'>
                                                     This Month
                                                 </p>
-                                                <p className='text-2xl font-bold'>
+                                                <p className='text-lg md:text-2xl font-bold'>
                                                     +24%
                                                 </p>
                                             </div>

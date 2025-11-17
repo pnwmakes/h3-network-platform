@@ -128,10 +128,7 @@ export const ErrorFactory = {
         );
     },
 
-    notFoundError(
-        resource: string,
-        userMessage?: string
-    ): H3NetworkError {
+    notFoundError(resource: string, userMessage?: string): H3NetworkError {
         return new H3NetworkError(
             ErrorType.NOT_FOUND_ERROR,
             `${resource} not found`,
@@ -181,10 +178,7 @@ export const ErrorFactory = {
         );
     },
 
-    fileUploadError(
-        reason: string,
-        userMessage?: string
-    ): H3NetworkError {
+    fileUploadError(reason: string, userMessage?: string): H3NetworkError {
         return new H3NetworkError(
             ErrorType.FILE_UPLOAD_ERROR,
             `File upload failed: ${reason}`,
@@ -212,8 +206,10 @@ export const ErrorFactory = {
 
 // Error handler for API routes
 export function handleApiError(error: unknown, context?: string): NextResponse {
-    const errorId = `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    
+    const errorId = `err_${Date.now()}_${Math.random()
+        .toString(36)
+        .substr(2, 9)}`;
+
     // Handle known H3NetworkError instances
     if (error instanceof H3NetworkError) {
         logger.warn('API error handled', {
@@ -242,7 +238,7 @@ export function handleApiError(error: unknown, context?: string): NextResponse {
             }),
         };
 
-        return NextResponse.json(responseBody, { 
+        return NextResponse.json(responseBody, {
             status: error.statusCode,
             headers: {
                 'X-Error-ID': errorId,
@@ -265,7 +261,8 @@ export function handleApiError(error: unknown, context?: string): NextResponse {
             error: {
                 id: errorId,
                 type: ErrorType.INTERNAL_ERROR,
-                message: 'An unexpected error occurred. Our team has been notified.',
+                message:
+                    'An unexpected error occurred. Our team has been notified.',
                 timestamp: new Date().toISOString(),
             },
             ...(env.NODE_ENV === 'development' && {
@@ -276,7 +273,7 @@ export function handleApiError(error: unknown, context?: string): NextResponse {
             }),
         };
 
-        return NextResponse.json(responseBody, { 
+        return NextResponse.json(responseBody, {
             status: 500,
             headers: {
                 'X-Error-ID': errorId,
@@ -297,7 +294,8 @@ export function handleApiError(error: unknown, context?: string): NextResponse {
         error: {
             id: errorId,
             type: ErrorType.INTERNAL_ERROR,
-            message: 'An unexpected error occurred. Our team has been notified.',
+            message:
+                'An unexpected error occurred. Our team has been notified.',
             timestamp: new Date().toISOString(),
         },
         ...(env.NODE_ENV === 'development' && {
@@ -307,7 +305,7 @@ export function handleApiError(error: unknown, context?: string): NextResponse {
         }),
     };
 
-    return NextResponse.json(responseBody, { 
+    return NextResponse.json(responseBody, {
         status: 500,
         headers: {
             'X-Error-ID': errorId,
@@ -317,10 +315,9 @@ export function handleApiError(error: unknown, context?: string): NextResponse {
 }
 
 // Global error handler wrapper for API routes
-export function withErrorHandler<T extends (...args: unknown[]) => Promise<NextResponse>>(
-    handler: T,
-    context?: string
-): T {
+export function withErrorHandler<
+    T extends (...args: unknown[]) => Promise<NextResponse>
+>(handler: T, context?: string): T {
     return (async (...args: Parameters<T>): Promise<NextResponse> => {
         try {
             return await handler(...args);
@@ -339,7 +336,7 @@ export async function withDatabaseErrorHandler<T>(
         return await operation();
     } catch (error) {
         logger.dbError(operationName, error as Error);
-        
+
         if (error instanceof Error) {
             // Check for specific database error patterns
             if (error.message.includes('unique constraint')) {
@@ -349,7 +346,7 @@ export async function withDatabaseErrorHandler<T>(
                     'This information is already in use. Please try different values.'
                 );
             }
-            
+
             if (error.message.includes('foreign key')) {
                 throw ErrorFactory.validationError(
                     `${operationName}: Invalid reference`,
@@ -357,7 +354,7 @@ export async function withDatabaseErrorHandler<T>(
                     'Referenced resource does not exist.'
                 );
             }
-            
+
             if (error.message.includes('not-null')) {
                 throw ErrorFactory.validationError(
                     `${operationName}: Missing required field`,
@@ -367,7 +364,10 @@ export async function withDatabaseErrorHandler<T>(
             }
 
             // Connection errors
-            if (error.message.includes('connect') || error.message.includes('timeout')) {
+            if (
+                error.message.includes('connect') ||
+                error.message.includes('timeout')
+            ) {
                 throw ErrorFactory.databaseError(
                     operationName,
                     error,
@@ -401,26 +401,26 @@ export async function withRetry<T>(
     } = options;
 
     let lastError: Error;
-    
+
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
             return await operation();
         } catch (error) {
             lastError = error as Error;
-            
+
             if (attempt === maxAttempts || !shouldRetry(lastError)) {
                 throw lastError;
             }
-            
+
             if (onRetry) {
                 onRetry(attempt, lastError);
             }
-            
+
             const delay = delayMs * Math.pow(backoffMultiplier, attempt - 1);
-            await new Promise(resolve => setTimeout(resolve, delay));
+            await new Promise((resolve) => setTimeout(resolve, delay));
         }
     }
-    
+
     throw lastError!;
 }
 
@@ -429,7 +429,7 @@ export class CircuitBreaker {
     private failures = 0;
     private lastFailureTime = 0;
     private state: 'closed' | 'open' | 'half-open' = 'closed';
-    
+
     constructor(
         private readonly threshold: number = 5,
         private readonly timeout: number = 60000, // 1 minute
@@ -451,11 +451,11 @@ export class CircuitBreaker {
 
         try {
             const result = await operation();
-            
+
             if (this.state === 'half-open') {
                 this.reset();
             }
-            
+
             return result;
         } catch (error) {
             this.recordFailure();
@@ -466,7 +466,7 @@ export class CircuitBreaker {
     private recordFailure(): void {
         this.failures++;
         this.lastFailureTime = Date.now();
-        
+
         if (this.failures >= this.threshold) {
             this.state = 'open';
             logger.warn('Circuit breaker opened', {
@@ -512,8 +512,12 @@ export async function withErrorBoundary<T>(
             } catch (fallbackError) {
                 logger.error('Fallback operation also failed', {
                     context,
-                    originalError: error instanceof Error ? error.message : String(error),
-                    fallbackError: fallbackError instanceof Error ? fallbackError.message : String(fallbackError),
+                    originalError:
+                        error instanceof Error ? error.message : String(error),
+                    fallbackError:
+                        fallbackError instanceof Error
+                            ? fallbackError.message
+                            : String(fallbackError),
                 });
                 throw error; // Throw original error
             }
@@ -529,7 +533,8 @@ export function initializeErrorMonitoring(): void {
         // Handle unhandled promise rejections
         process.on('unhandledRejection', (reason, promise) => {
             logger.error('Unhandled promise rejection', {
-                reason: reason instanceof Error ? reason.message : String(reason),
+                reason:
+                    reason instanceof Error ? reason.message : String(reason),
                 stack: reason instanceof Error ? reason.stack : undefined,
                 promise: promise.toString(),
             });
@@ -541,7 +546,7 @@ export function initializeErrorMonitoring(): void {
                 message: error.message,
                 stack: error.stack,
             });
-            
+
             // Graceful shutdown
             process.exit(1);
         });

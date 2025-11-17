@@ -58,7 +58,7 @@ export class DatabaseBackupManager {
             encryption: isProd,
             destinations: isProd ? ['cloud', 's3'] : ['local'],
         };
-        
+
         if (this.config.enabled) {
             this.initializeScheduler();
         }
@@ -92,7 +92,11 @@ export class DatabaseBackupManager {
         if (this.config.schedule.weekly) {
             setInterval(async () => {
                 const now = new Date();
-                if (now.getDay() === 0 && now.getHours() === 3 && now.getMinutes() === 0) {
+                if (
+                    now.getDay() === 0 &&
+                    now.getHours() === 3 &&
+                    now.getMinutes() === 0
+                ) {
                     await this.createBackup('full');
                 }
             }, 60000);
@@ -102,7 +106,11 @@ export class DatabaseBackupManager {
         if (this.config.schedule.monthly) {
             setInterval(async () => {
                 const now = new Date();
-                if (now.getDate() === 1 && now.getHours() === 4 && now.getMinutes() === 0) {
+                if (
+                    now.getDate() === 1 &&
+                    now.getHours() === 4 &&
+                    now.getMinutes() === 0
+                ) {
                     await this.createBackup('full');
                 }
             }, 60000);
@@ -117,7 +125,9 @@ export class DatabaseBackupManager {
             throw new Error('Backup already in progress');
         }
 
-        const backupId = `backup_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        const backupId = `backup_${Date.now()}_${Math.random()
+            .toString(36)
+            .substr(2, 9)}`;
         const startTime = Date.now();
 
         logger.info('Starting database backup', {
@@ -177,10 +187,10 @@ export class DatabaseBackupManager {
             await this.cleanupOldBackups();
 
             return backupId;
-
         } catch (error) {
             backup.status = 'failed';
-            backup.error = error instanceof Error ? error.message : String(error);
+            backup.error =
+                error instanceof Error ? error.message : String(error);
             backup.duration = Date.now() - startTime;
 
             logger.error('Database backup failed', {
@@ -204,13 +214,13 @@ export class DatabaseBackupManager {
     }> {
         // For production, this would use actual pg_dump
         // For development/demo, we'll simulate the process
-        
+
         logger.info('Creating database dump', { backupId });
 
         // Simulate database dump process
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
-        const location = isProd 
+        const location = isProd
             ? `/backups/${backupId}.sql`
             : `./temp/backups/${backupId}.sql`;
 
@@ -227,7 +237,9 @@ export class DatabaseBackupManager {
             `;
         } catch {
             // Table might not exist, that's okay for demo
-            logger.debug('Backup logs table not available, skipping metadata insert');
+            logger.debug(
+                'Backup logs table not available, skipping metadata insert'
+            );
         }
 
         return { size, checksum, location };
@@ -236,13 +248,13 @@ export class DatabaseBackupManager {
     // Compress backup file
     private async compressBackup(backup: BackupMetadata): Promise<void> {
         logger.info('Compressing backup', { backupId: backup.id });
-        
+
         // Simulate compression
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         backup.location = backup.location.replace('.sql', '.sql.gz');
         backup.size = Math.floor(backup.size * 0.3); // Simulate 70% compression
-        
+
         logger.debug('Backup compressed', {
             backupId: backup.id,
             newSize: backup.size,
@@ -253,12 +265,12 @@ export class DatabaseBackupManager {
     // Encrypt backup file
     private async encryptBackup(backup: BackupMetadata): Promise<void> {
         logger.info('Encrypting backup', { backupId: backup.id });
-        
+
         // Simulate encryption
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
         backup.location = backup.location + '.enc';
-        
+
         logger.debug('Backup encrypted', {
             backupId: backup.id,
             location: backup.location,
@@ -266,7 +278,10 @@ export class DatabaseBackupManager {
     }
 
     // Upload backup to specified destination
-    private async uploadBackup(backup: BackupMetadata, destination: string): Promise<void> {
+    private async uploadBackup(
+        backup: BackupMetadata,
+        destination: string
+    ): Promise<void> {
         logger.info('Uploading backup', {
             backupId: backup.id,
             destination,
@@ -279,11 +294,11 @@ export class DatabaseBackupManager {
                 break;
             case 'cloud':
                 // Upload to cloud storage (simulate)
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                await new Promise((resolve) => setTimeout(resolve, 1500));
                 break;
             case 's3':
                 // Upload to AWS S3 (simulate)
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                await new Promise((resolve) => setTimeout(resolve, 2000));
                 break;
         }
 
@@ -303,22 +318,30 @@ export class DatabaseBackupManager {
         const toDelete: string[] = [];
 
         // Clean up daily backups older than retention period
-        const dailyCutoff = new Date(now.getTime() - this.config.retention.daily * 24 * 60 * 60 * 1000);
-        
-        // Clean up weekly backups
-        const weeklyCutoff = new Date(now.getTime() - this.config.retention.weekly * 7 * 24 * 60 * 60 * 1000);
-        
-        // Clean up monthly backups
-        const monthlyCutoff = new Date(now.getTime() - this.config.retention.monthly * 30 * 24 * 60 * 60 * 1000);
+        const dailyCutoff = new Date(
+            now.getTime() - this.config.retention.daily * 24 * 60 * 60 * 1000
+        );
 
-        this.backupHistory = this.backupHistory.filter(backup => {
-            const shouldDelete = backup.timestamp < dailyCutoff && 
-                               backup.status === 'completed';
-            
+        // Clean up weekly backups
+        const weeklyCutoff = new Date(
+            now.getTime() -
+                this.config.retention.weekly * 7 * 24 * 60 * 60 * 1000
+        );
+
+        // Clean up monthly backups
+        const monthlyCutoff = new Date(
+            now.getTime() -
+                this.config.retention.monthly * 30 * 24 * 60 * 60 * 1000
+        );
+
+        this.backupHistory = this.backupHistory.filter((backup) => {
+            const shouldDelete =
+                backup.timestamp < dailyCutoff && backup.status === 'completed';
+
             if (shouldDelete) {
                 toDelete.push(backup.id);
             }
-            
+
             return !shouldDelete;
         });
 
@@ -339,13 +362,13 @@ export class DatabaseBackupManager {
 
     // Get backup status
     getBackupStatus(backupId: string): BackupMetadata | undefined {
-        return this.backupHistory.find(backup => backup.id === backupId);
+        return this.backupHistory.find((backup) => backup.id === backupId);
     }
 
     // Restore from backup
     async restoreFromBackup(backupId: string): Promise<void> {
         const backup = this.getBackupStatus(backupId);
-        
+
         if (!backup) {
             throw new Error(`Backup ${backupId} not found`);
         }
@@ -368,7 +391,7 @@ export class DatabaseBackupManager {
         // 5. Verify data integrity
 
         // For demo, simulate restore process
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
 
         logger.info('Database restore completed', {
             backupId,
@@ -392,7 +415,7 @@ export class DatabaseBackupManager {
             // Test backup creation
             const testBackupId = await this.createBackup('full');
             backupTest = true;
-            
+
             logger.info('Backup test passed', { testBackupId });
 
             // Test restore (in a safe way - just validate the backup)
@@ -401,9 +424,9 @@ export class DatabaseBackupManager {
                 restoreTest = true;
                 logger.info('Restore test passed (validation only)');
             }
-
         } catch (error) {
-            const errorMsg = error instanceof Error ? error.message : String(error);
+            const errorMsg =
+                error instanceof Error ? error.message : String(error);
             errors.push(errorMsg);
             logger.error('Backup/restore test failed', { error: errorMsg });
         }
@@ -421,8 +444,10 @@ export class DatabaseBackupManager {
         lastBackup?: Date;
         nextScheduledBackup?: Date;
     } {
-        const successful = this.backupHistory.filter(b => b.status === 'completed');
-        const failed = this.backupHistory.filter(b => b.status === 'failed');
+        const successful = this.backupHistory.filter(
+            (b) => b.status === 'completed'
+        );
+        const failed = this.backupHistory.filter((b) => b.status === 'failed');
         const totalSize = successful.reduce((sum, b) => sum + b.size, 0);
 
         return {
@@ -430,12 +455,18 @@ export class DatabaseBackupManager {
             successfulBackups: successful.length,
             failedBackups: failed.length,
             totalSize,
-            averageSize: successful.length > 0 ? totalSize / successful.length : 0,
-            lastBackup: successful.length > 0 
-                ? new Date(Math.max(...successful.map(b => b.timestamp.getTime())))
-                : undefined,
+            averageSize:
+                successful.length > 0 ? totalSize / successful.length : 0,
+            lastBackup:
+                successful.length > 0
+                    ? new Date(
+                          Math.max(
+                              ...successful.map((b) => b.timestamp.getTime())
+                          )
+                      )
+                    : undefined,
             // Simplified - in production, calculate actual next scheduled time
-            nextScheduledBackup: this.config.schedule.daily 
+            nextScheduledBackup: this.config.schedule.daily
                 ? new Date(Date.now() + 24 * 60 * 60 * 1000)
                 : undefined,
         };
@@ -444,7 +475,7 @@ export class DatabaseBackupManager {
     // Update backup configuration
     updateConfiguration(newConfig: Partial<BackupConfig>): void {
         this.config = { ...this.config, ...newConfig };
-        logger.info('Backup configuration updated', { 
+        logger.info('Backup configuration updated', {
             enabled: this.config.enabled,
             dailySchedule: this.config.schedule.daily,
         });
@@ -457,17 +488,23 @@ export const backupManager = DatabaseBackupManager.getInstance();
 // Backup utility functions
 export const BackupUtils = {
     // Schedule manual backup
-    async scheduleManualBackup(type: 'full' | 'incremental' = 'full'): Promise<string> {
+    async scheduleManualBackup(
+        type: 'full' | 'incremental' = 'full'
+    ): Promise<string> {
         // Add to job queue for processing
-        return jobQueue.addJob('backup-operations', {
-            operation: 'create_backup',
-            type,
-            priority: 'high',
-            scheduledBy: 'manual',
-        }, {
-            priority: 'high',
-            maxAttempts: 2,
-        });
+        return jobQueue.addJob(
+            'backup-operations',
+            {
+                operation: 'create_backup',
+                type,
+                priority: 'high',
+                scheduledBy: 'manual',
+            },
+            {
+                priority: 'high',
+                maxAttempts: 2,
+            }
+        );
     },
 
     // Get backup health
@@ -479,24 +516,34 @@ export const BackupUtils = {
     }> {
         const stats = backupManager.getBackupStatistics();
         const issues: string[] = [];
-        
+
         // Check if backups are recent
         if (stats.lastBackup) {
-            const hoursSinceLastBackup = (Date.now() - stats.lastBackup.getTime()) / (1000 * 60 * 60);
-            if (hoursSinceLastBackup > 48) { // More than 48 hours
-                issues.push(`Last backup was ${Math.floor(hoursSinceLastBackup)} hours ago`);
+            const hoursSinceLastBackup =
+                (Date.now() - stats.lastBackup.getTime()) / (1000 * 60 * 60);
+            if (hoursSinceLastBackup > 48) {
+                // More than 48 hours
+                issues.push(
+                    `Last backup was ${Math.floor(
+                        hoursSinceLastBackup
+                    )} hours ago`
+                );
             }
         } else {
             issues.push('No successful backups found');
         }
-        
+
         // Check backup failure rate
-        const failureRate = stats.totalBackups > 0 
-            ? stats.failedBackups / stats.totalBackups 
-            : 0;
-        
-        if (failureRate > 0.2) { // More than 20% failure rate
-            issues.push(`High backup failure rate: ${(failureRate * 100).toFixed(1)}%`);
+        const failureRate =
+            stats.totalBackups > 0
+                ? stats.failedBackups / stats.totalBackups
+                : 0;
+
+        if (failureRate > 0.2) {
+            // More than 20% failure rate
+            issues.push(
+                `High backup failure rate: ${(failureRate * 100).toFixed(1)}%`
+            );
         }
 
         return {
@@ -528,7 +575,9 @@ export const BackupUtils = {
                 results: {
                     backupTest: false,
                     restoreTest: false,
-                    errors: [error instanceof Error ? error.message : String(error)],
+                    errors: [
+                        error instanceof Error ? error.message : String(error),
+                    ],
                 },
             };
         }
@@ -541,5 +590,7 @@ if (isProd) {
     // Initialize singleton by accessing it
     void backupManager.getBackupStatistics();
 } else {
-    logger.info('Backup system available for testing (disabled in development)');
+    logger.info(
+        'Backup system available for testing (disabled in development)'
+    );
 }

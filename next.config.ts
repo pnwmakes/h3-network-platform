@@ -2,6 +2,12 @@ import type { NextConfig } from 'next';
 import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig: NextConfig = {
+    // Production optimization flags
+    reactStrictMode: true,
+    poweredByHeader: false,
+    compress: true,
+    
+    // Image optimization for production
     images: {
         remotePatterns: [
             {
@@ -16,8 +22,17 @@ const nextConfig: NextConfig = {
                 port: '',
                 pathname: '/vi/**',
             },
+            {
+                protocol: 'https',
+                hostname: 'lh3.googleusercontent.com',
+                port: '',
+                pathname: '/a/**',
+            },
         ],
+        formats: ['image/webp', 'image/avif'],
+        minimumCacheTTL: 60,
     },
+    
     // Security headers
     async headers() {
         return [
@@ -44,10 +59,18 @@ const nextConfig: NextConfig = {
                         key: 'Permissions-Policy',
                         value: 'camera=(), microphone=(), geolocation=()',
                     },
+                    {
+                        key: 'Strict-Transport-Security',
+                        value: 'max-age=31536000; includeSubDomains; preload',
+                    },
+                    {
+                        key: 'Content-Security-Policy',
+                        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: wss:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; media-src 'self' https:;"
+                    },
                 ],
             },
             {
-                // API routes get additional security headers
+                // API routes caching for performance
                 source: '/api/(.*)',
                 headers: [
                     {
@@ -56,27 +79,66 @@ const nextConfig: NextConfig = {
                     },
                     {
                         key: 'Cache-Control',
-                        value: 'no-store, must-revalidate',
+                        value: 's-maxage=60, stale-while-revalidate=300',
                     },
                 ],
             },
         ];
     },
-    // Environment variable validation
-    env: {
-        CUSTOM_KEY: process.env.CUSTOM_KEY,
-    },
 
     // Production optimizations
     output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
-
-    // Enable experimental features for better performance
+    
+    // Performance optimizations
     experimental: {
-        optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+        optimizePackageImports: ['lucide-react', '@heroicons/react', '@radix-ui/react-icons'],
     },
-
+    
     // External packages for server components
-    serverExternalPackages: ['@prisma/client'],
+    serverExternalPackages: ['@prisma/client', 'bcryptjs'],
+    
+    // Bundle optimization
+    webpack: (config, { isServer, dev }) => {
+        if (!isServer && !dev) {
+            // Client-side bundle optimizations
+            config.resolve.fallback = {
+                ...config.resolve.fallback,
+                fs: false,
+                net: false,
+                tls: false,
+            };
+        }
+        
+        // Optimize for production builds
+        if (!dev) {
+            config.optimization = {
+                ...config.optimization,
+                splitChunks: {
+                    chunks: 'all',
+                    cacheGroups: {
+                        vendor: {
+                            test: /[\\/]node_modules[\\/]/,
+                            chunks: 'all',
+                            priority: 1,
+                        },
+                    },
+                },
+            };
+        }
+        
+        return config;
+    },
+    
+    // Redirects for SEO and UX
+    async redirects() {
+        return [
+            {
+                source: '/dashboard',
+                destination: '/creator/dashboard',
+                permanent: true,
+            },
+        ];
+    },
 };
 
 // Export with Sentry configuration
