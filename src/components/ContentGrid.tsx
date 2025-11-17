@@ -373,17 +373,21 @@ export default function ContentGrid({
                                 </span>
                             </div>
 
-                            {/* Like and Share Actions */}
-                            <div className='mb-3 flex justify-center'>
-                                <ContentCardActions
-                                    contentId={item.id}
-                                    contentType={item.type}
-                                    title={item.title}
-                                    description={item.description || undefined}
-                                />
-                            </div>
-
-                            {/* Tags */}
+            {/* Like and Share Actions */}
+            <div 
+                className='mb-3 flex justify-center'
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }}
+            >
+                <ContentCardActions
+                    contentId={item.id}
+                    contentType={item.type}
+                    title={item.title}
+                    description={item.description || undefined}
+                />
+            </div>                            {/* Tags */}
                             {item.tags.length > 0 && (
                                 <div className='flex flex-wrap gap-2'>
                                     {item.tags.slice(0, 3).map((tag, index) => (

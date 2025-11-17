@@ -29,7 +29,11 @@ export function ShareButton({
   const shareUrl = `${baseUrl}/${contentType}s/${contentId}`;
   const shareText = `Check out: ${title}`;
 
-  const handleCopyLink = async () => {
+  const handleCopyLink = async (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
@@ -48,19 +52,31 @@ export function ShareButton({
     }
   };
 
-  const shareToTwitter = () => {
+  const shareToTwitter = (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
     window.open(twitterUrl, '_blank', 'width=600,height=400');
     setIsOpen(false);
   };
 
-  const shareToFacebook = () => {
+  const shareToFacebook = (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
     window.open(facebookUrl, '_blank', 'width=600,height=400');
     setIsOpen(false);
   };
 
-  const handleNativeShare = async () => {
+  const handleNativeShare = async (event?: React.MouseEvent) => {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     if (navigator.share) {
       try {
         await navigator.share({

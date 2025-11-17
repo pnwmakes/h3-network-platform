@@ -69,7 +69,11 @@ export function LikeButton({
     fetchLikeStatus();
   }, [contentId, contentType]);
 
-  const handleLike = async () => {
+  const handleLike = async (event: React.MouseEvent) => {
+    // Prevent the click from bubbling up to parent elements (like Link)
+    event.preventDefault();
+    event.stopPropagation();
+    
     if (isLoading || isPending) return;
 
     setError(null);
