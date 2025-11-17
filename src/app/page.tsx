@@ -539,10 +539,7 @@ export default function Home() {
                 </div>
 
                 {/* Newsletter Subscription */}
-                <NewsletterSubscription 
-                    variant="inline" 
-                    className="mt-16"
-                />
+                <NewsletterSubscription variant='inline' className='mt-16' />
             </main>
         </div>
     );

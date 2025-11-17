@@ -14,7 +14,17 @@ interface CheckboxProps {
 }
 
 const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
-    ({ id, checked = false, onCheckedChange, disabled = false, className, ...props }, ref) => {
+    (
+        {
+            id,
+            checked = false,
+            onCheckedChange,
+            disabled = false,
+            className,
+            ...props
+        },
+        ref
+    ) => {
         return (
             <div className='relative inline-flex items-center'>
                 <input
@@ -33,7 +43,8 @@ const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
                         'focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2',
                         checked && 'bg-blue-600 border-blue-600',
                         disabled && 'opacity-50 cursor-not-allowed',
-                        !disabled && 'cursor-pointer hover:border-gray-400 dark:hover:border-gray-500',
+                        !disabled &&
+                            'cursor-pointer hover:border-gray-400 dark:hover:border-gray-500',
                         className
                     )}
                     onClick={() => !disabled && onCheckedChange?.(!checked)}

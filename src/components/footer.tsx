@@ -180,13 +180,39 @@ export function Footer() {
                 </div>
 
                 {/* Bottom Bar */}
-                <div className='border-t border-gray-800 mt-12 pt-8 text-center'>
-                    <p className='text-gray-400'>
-                        © Hope Help Humor, 2025. All rights reserved.
-                    </p>
-                    <p className='text-sm text-gray-500 mt-2'>
-                        We are more than a network. We are a community!
-                    </p>
+                <div className='border-t border-gray-800 mt-12 pt-8'>
+                    <div className='flex flex-col sm:flex-row justify-between items-center'>
+                        <div className='text-center sm:text-left'>
+                            <p className='text-gray-400'>
+                                © Hope Help Humor, 2025. All rights reserved.
+                            </p>
+                            <p className='text-sm text-gray-500 mt-2'>
+                                We are more than a network. We are a community!
+                            </p>
+                        </div>
+                        <div className='mt-4 sm:mt-0'>
+                            <div className='flex flex-wrap justify-center gap-6 text-sm'>
+                                <Link
+                                    href='/privacy'
+                                    className='text-gray-400 hover:text-white transition-colors duration-200'
+                                >
+                                    Privacy Policy
+                                </Link>
+                                <Link
+                                    href='/terms'
+                                    className='text-gray-400 hover:text-white transition-colors duration-200'
+                                >
+                                    Terms of Service
+                                </Link>
+                                <Link
+                                    href='/contact'
+                                    className='text-gray-400 hover:text-white transition-colors duration-200'
+                                >
+                                    Contact Us
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </footer>
