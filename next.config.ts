@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     reactStrictMode: true,
     poweredByHeader: false,
     compress: true,
-    
+
     // Image optimization for production
     images: {
         remotePatterns: [
@@ -32,7 +32,7 @@ const nextConfig: NextConfig = {
         formats: ['image/webp', 'image/avif'],
         minimumCacheTTL: 60,
     },
-    
+
     // Security headers
     async headers() {
         return [
@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
                     },
                     {
                         key: 'Content-Security-Policy',
-                        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: wss:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; media-src 'self' https:;"
+                        value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.youtube.com https://s.ytimg.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https: wss:; frame-src https://www.youtube.com https://www.youtube-nocookie.com; media-src 'self' https:;",
                     },
                 ],
             },
@@ -88,15 +88,19 @@ const nextConfig: NextConfig = {
 
     // Production optimizations
     output: process.env.BUILD_STANDALONE === 'true' ? 'standalone' : undefined,
-    
+
     // Performance optimizations
     experimental: {
-        optimizePackageImports: ['lucide-react', '@heroicons/react', '@radix-ui/react-icons'],
+        optimizePackageImports: [
+            'lucide-react',
+            '@heroicons/react',
+            '@radix-ui/react-icons',
+        ],
     },
-    
+
     // External packages for server components
     serverExternalPackages: ['@prisma/client', 'bcryptjs'],
-    
+
     // Bundle optimization
     webpack: (config, { isServer, dev }) => {
         if (!isServer && !dev) {
@@ -108,7 +112,7 @@ const nextConfig: NextConfig = {
                 tls: false,
             };
         }
-        
+
         // Optimize for production builds
         if (!dev) {
             config.optimization = {
@@ -125,10 +129,10 @@ const nextConfig: NextConfig = {
                 },
             };
         }
-        
+
         return config;
     },
-    
+
     // Redirects for SEO and UX
     async redirects() {
         return [

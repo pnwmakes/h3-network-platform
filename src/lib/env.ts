@@ -62,8 +62,13 @@ const envSchema = z.object({
     APP_URL: z.string().url('APP_URL must be a valid URL'),
 });
 
-// Validate environment variables
+// Validate environment variables (server-side only)
 function validateEnv() {
+    // Skip validation on client-side
+    if (typeof window !== 'undefined') {
+        return {} as z.infer<typeof envSchema>;
+    }
+
     try {
         return envSchema.parse(process.env);
     } catch (error) {
@@ -83,7 +88,7 @@ function validateEnv() {
     }
 }
 
-// Export validated environment variables
+// Export validated environment variables (only available server-side)
 export const env = validateEnv();
 
 // Production environment check

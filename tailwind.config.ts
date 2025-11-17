@@ -14,7 +14,7 @@ const config: Config = {
                 mono: ['var(--font-geist-mono)'],
             },
             screens: {
-                'xs': '475px',
+                xs: '475px',
             },
         },
     },

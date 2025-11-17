@@ -238,7 +238,9 @@ export function CreatorDashboard() {
                                 className='min-h-11 px-3 md:px-4'
                             >
                                 <Eye className='h-4 w-4 md:mr-2' />
-                                <span className='hidden sm:inline ml-1'>Preview</span>
+                                <span className='hidden sm:inline ml-1'>
+                                    Preview
+                                </span>
                             </Button>
                             <Button
                                 size='sm'
@@ -246,7 +248,9 @@ export function CreatorDashboard() {
                                 className='min-h-11 px-3 md:px-4'
                             >
                                 <Plus className='h-4 w-4 md:mr-2' />
-                                <span className='hidden sm:inline ml-1'>Create</span>
+                                <span className='hidden sm:inline ml-1'>
+                                    Create
+                                </span>
                             </Button>
                         </div>
                     </div>
@@ -263,25 +267,50 @@ export function CreatorDashboard() {
                     {/* Mobile-optimized tab navigation */}
                     <div className='md:hidden overflow-x-auto'>
                         <TabsList className='inline-flex w-max min-w-full h-12'>
-                            <TabsTrigger value='overview' className='min-w-24 px-3 text-xs'>
+                            <TabsTrigger
+                                value='overview'
+                                className='min-w-24 px-3 text-xs'
+                            >
                                 <BarChart3 className='h-4 w-4 md:mr-2' />
-                                <span className='hidden xs:inline ml-1'>Overview</span>
+                                <span className='hidden xs:inline ml-1'>
+                                    Overview
+                                </span>
                             </TabsTrigger>
-                            <TabsTrigger value='content' className='min-w-24 px-3 text-xs'>
+                            <TabsTrigger
+                                value='content'
+                                className='min-w-24 px-3 text-xs'
+                            >
                                 <Video className='h-4 w-4 md:mr-2' />
-                                <span className='hidden xs:inline ml-1'>Content</span>
+                                <span className='hidden xs:inline ml-1'>
+                                    Content
+                                </span>
                             </TabsTrigger>
-                            <TabsTrigger value='schedule' className='min-w-24 px-3 text-xs'>
+                            <TabsTrigger
+                                value='schedule'
+                                className='min-w-24 px-3 text-xs'
+                            >
                                 <Calendar className='h-4 w-4 md:mr-2' />
-                                <span className='hidden xs:inline ml-1'>Schedule</span>
+                                <span className='hidden xs:inline ml-1'>
+                                    Schedule
+                                </span>
                             </TabsTrigger>
-                            <TabsTrigger value='templates' className='min-w-24 px-3 text-xs'>
+                            <TabsTrigger
+                                value='templates'
+                                className='min-w-24 px-3 text-xs'
+                            >
                                 <FileText className='h-4 w-4 md:mr-2' />
-                                <span className='hidden xs:inline ml-1'>Templates</span>
+                                <span className='hidden xs:inline ml-1'>
+                                    Templates
+                                </span>
                             </TabsTrigger>
-                            <TabsTrigger value='settings' className='min-w-24 px-3 text-xs'>
+                            <TabsTrigger
+                                value='settings'
+                                className='min-w-24 px-3 text-xs'
+                            >
                                 <Settings className='h-4 w-4 md:mr-2' />
-                                <span className='hidden xs:inline ml-1'>Settings</span>
+                                <span className='hidden xs:inline ml-1'>
+                                    Settings
+                                </span>
                             </TabsTrigger>
                         </TabsList>
                     </div>

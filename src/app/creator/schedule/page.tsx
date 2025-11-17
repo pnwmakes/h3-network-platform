@@ -364,7 +364,9 @@ export default function CreatorSchedulePage() {
                         className='inline-flex items-center justify-center px-4 py-3 min-h-11 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 touch-manipulation'
                     >
                         <ArrowPathIcon className='h-4 w-4 mr-2' />
-                        <span className='hidden xs:inline'>Recurring Schedule</span>
+                        <span className='hidden xs:inline'>
+                            Recurring Schedule
+                        </span>
                         <span className='xs:hidden'>Recurring</span>
                     </button>
                     <button
@@ -376,7 +378,9 @@ export default function CreatorSchedulePage() {
                         className='inline-flex items-center justify-center px-4 py-3 min-h-11 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 touch-manipulation'
                     >
                         <PlusIcon className='h-4 w-4 mr-2' />
-                        <span className='hidden xs:inline'>Schedule Content</span>
+                        <span className='hidden xs:inline'>
+                            Schedule Content
+                        </span>
                         <span className='xs:hidden'>Schedule</span>
                     </button>
                 </div>
@@ -407,7 +411,9 @@ export default function CreatorSchedulePage() {
                         }`}
                     >
                         <UserGroupIcon className='h-4 w-4 mr-2' />
-                        <span className='hidden sm:inline'>Team Collaboration</span>
+                        <span className='hidden sm:inline'>
+                            Team Collaboration
+                        </span>
                         <span className='sm:hidden'>Team</span>
                     </button>
                     <button
@@ -419,7 +425,9 @@ export default function CreatorSchedulePage() {
                         }`}
                     >
                         <GlobeAltIcon className='h-4 w-4 mr-2' />
-                        <span className='hidden sm:inline'>Multi-Platform Publishing</span>
+                        <span className='hidden sm:inline'>
+                            Multi-Platform Publishing
+                        </span>
                         <span className='sm:hidden'>Publishing</span>
                     </button>
                 </nav>
