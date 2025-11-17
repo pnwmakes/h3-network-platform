@@ -48,6 +48,7 @@ model User {
   savedContent  SavedContent[]
   sessions      Session[]
   progress      UserProgress[]
+  likes         Like[]         @relation("UserLikes")
 }
 
 model VerificationToken {
@@ -100,6 +101,7 @@ model Video {
   thumbnailUrl     String?
   duration         Int?
   viewCount        Int               @default(0)
+  likeCount        Int               @default(0)
   tags             String[]
   topic            ContentTopic?
   status           ContentStatus     @default(DRAFT)
@@ -126,6 +128,7 @@ model Video {
   savedBy          SavedContent[]    @relation("SavedVideos")
   scheduledContent ScheduledContent?
   videoProgress    UserProgress[]    @relation("VideoProgress")
+  likes            Like[]            @relation("VideoLikes")
   creator          Creator           @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   show             Show?             @relation(fields: [showId], references: [id])
 }
@@ -137,6 +140,7 @@ model Blog {
   excerpt           String?
   featuredImage     String?
   viewCount         Int               @default(0)
+  likeCount         Int               @default(0)
   tags              String[]
   topic             ContentTopic?
   status            ContentStatus     @default(DRAFT)
@@ -160,6 +164,7 @@ model Blog {
   savedBy           SavedContent[]    @relation("SavedBlogs")
   scheduledContent  ScheduledContent?
   blogProgress      UserProgress[]    @relation("BlogProgress")
+  likes             Like[]            @relation("BlogLikes")
 }
 
 model UserProgress {
@@ -199,6 +204,27 @@ model SavedContent {
 
   @@unique([userId, videoId])
   @@unique([userId, blogId])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  userId    String?  // Optional for guest likes
+  sessionId String?  // For guest user tracking
+  videoId   String?
+  blogId    String?
+  ipAddress String?  // For guest rate limiting
+  createdAt DateTime @default(now())
+  
+  user  User?  @relation("UserLikes", fields: [userId], references: [id], onDelete: Cascade)
+  video Video? @relation("VideoLikes", fields: [videoId], references: [id], onDelete: Cascade)
+  blog  Blog?  @relation("BlogLikes", fields: [blogId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, videoId])
+  @@unique([userId, blogId])
+  @@unique([sessionId, videoId]) // For guest users
+  @@unique([sessionId, blogId])
+  @@index([createdAt])
+  @@index([ipAddress, createdAt]) // For rate limiting
 }
 
 model ScheduledContent {

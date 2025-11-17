@@ -8,8 +8,9 @@ import { PlusIcon, CloudArrowUpIcon } from '@heroicons/react/24/outline';
 export default async function CreatorVideosPage({
     searchParams,
 }: {
-    searchParams: { uploaded?: string };
+    searchParams: Promise<{ uploaded?: string }>;
 }) {
+    const { uploaded } = await searchParams;
     const session = await getServerSession(authOptions);
 
     if (!session) {
@@ -96,7 +97,7 @@ export default async function CreatorVideosPage({
             </div>
 
             {/* Success Message */}
-            {searchParams.uploaded === 'true' && (
+            {uploaded === 'true' && (
                 <div className='rounded-md bg-green-50 p-4'>
                     <div className='flex'>
                         <div className='flex-shrink-0'>

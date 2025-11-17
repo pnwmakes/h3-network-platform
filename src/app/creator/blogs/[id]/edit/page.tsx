@@ -8,8 +8,9 @@ import { notFound } from 'next/navigation';
 export default async function EditBlogPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
+    const { id } = await params;
     const session = await getServerSession(authOptions);
 
     if (!session?.user?.id) {
@@ -30,7 +31,7 @@ export default async function EditBlogPage({
 
     // Get the blog to edit
     const blog = await prisma.blog.findUnique({
-        where: { id: params.id },
+        where: { id },
         include: {
             creator: {
                 select: {

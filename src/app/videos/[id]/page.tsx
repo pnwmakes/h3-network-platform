@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { VideoPlayer } from '@/components/video-player';
 import { BackButton } from '@/components/back-button';
 import { SaveButton } from '@/components/save-button';
+import { ContentActions } from '@/components/ui/ContentActions';
+import { getUserLikeStatus } from '@/lib/like-utils';
 import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -99,6 +101,13 @@ export default async function VideoPage({ params }: VideoPageProps) {
             ? Math.round((userProgress.progressSeconds / video.duration) * 100)
             : 0;
 
+    // Get like status for the current user/session
+    const likeStatus = await getUserLikeStatus(
+        id,
+        'video',
+        session?.user?.id
+    );
+
     return (
         <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
@@ -166,6 +175,16 @@ export default async function VideoPage({ params }: VideoPageProps) {
                                     <SaveButton
                                         videoId={video.id}
                                         showText={true}
+                                    />
+
+                                    {/* Like and Share Actions */}
+                                    <ContentActions
+                                        contentId={video.id}
+                                        contentType='video'
+                                        title={video.title}
+                                        description={video.description || undefined}
+                                        initialLikeCount={likeStatus.likeCount}
+                                        initialIsLiked={likeStatus.isLiked}
                                     />
 
                                     {/* Video Stats */}
