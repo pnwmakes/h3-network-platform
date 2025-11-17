@@ -6,6 +6,7 @@ import Image from 'next/image';
 import CountdownBanner from '@/components/CountdownBanner';
 import { QuickAccessCard } from '@/components/quick-access-card';
 import ContentGrid from '@/components/ContentGrid';
+import NewsletterSubscription from '@/components/NewsletterSubscription';
 
 export default function Home() {
     const { data: session, status } = useSession();
@@ -536,6 +537,12 @@ export default function Home() {
                         </div>
                     </div>
                 </div>
+
+                {/* Newsletter Subscription */}
+                <NewsletterSubscription 
+                    variant="inline" 
+                    className="mt-16"
+                />
             </main>
         </div>
     );

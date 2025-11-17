@@ -4,14 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { ContentCardActions } from '@/components/ContentCardActions';
-import {
-    Calendar,
-    Eye,
-    User,
-    Clock,
-    Tag,
-    ArrowLeft,
-} from 'lucide-react';
+import { Calendar, Eye, User, Clock, Tag, ArrowLeft } from 'lucide-react';
 
 interface BlogPostPageProps {
     params: Promise<{ id: string }>;
@@ -208,10 +201,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
                             <ContentCardActions
                                 contentId={blog.id}
-                                contentType="blog"
+                                contentType='blog'
                                 title={blog.title}
                                 description={blog.excerpt || ''}
-                                className="flex items-center space-x-4"
+                                className='flex items-center space-x-4'
                             />
                         </div>
 

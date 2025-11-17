@@ -49,6 +49,7 @@ model User {
   sessions      Session[]
   progress      UserProgress[]
   likes         Like[]         @relation("UserLikes")
+  newsletters   Newsletter[]
 }
 
 model VerificationToken {
@@ -243,6 +244,77 @@ model ScheduledContent {
   video       Video?         @relation(fields: [videoId], references: [id], onDelete: Cascade)
 }
 
+model NewsletterSubscriber {
+  id             String                 @id @default(cuid())
+  email          String                 @unique
+  name           String?
+  isActive       Boolean                @default(true)
+  subscribedAt   DateTime               @default(now())
+  unsubscribedAt DateTime?
+  preferences    NewsletterPreferences?
+  sends          NewsletterSend[]
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  
+  @@index([email])
+  @@index([isActive])
+}
+
+model NewsletterPreferences {
+  id                    String              @id @default(cuid())
+  subscriberId          String              @unique
+  specialEvents         Boolean             @default(true)
+  majorUpdates          Boolean             @default(true)
+  monthlyNewsletter     Boolean             @default(true)
+  newContentNotify      Boolean             @default(false)
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+  
+  subscriber            NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+}
+
+model Newsletter {
+  id                String            @id @default(cuid())
+  title             String
+  subject           String
+  content           String            // HTML content
+  type              NewsletterType
+  status            NewsletterStatus  @default(DRAFT)
+  scheduledAt       DateTime?
+  sentAt            DateTime?
+  recipientCount    Int?
+  openCount         Int               @default(0)
+  clickCount        Int               @default(0)
+  createdById       String
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  
+  createdBy         User              @relation(fields: [createdById], references: [id])
+  sends             NewsletterSend[]
+  
+  @@index([type])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model NewsletterSend {
+  id               String              @id @default(cuid())
+  newsletterId     String
+  subscriberId     String
+  status           SendStatus          @default(PENDING)
+  sentAt           DateTime?
+  openedAt         DateTime?
+  clickedAt        DateTime?
+  errorMessage     String?
+  createdAt        DateTime            @default(now())
+  
+  newsletter       Newsletter          @relation(fields: [newsletterId], references: [id], onDelete: Cascade)
+  subscriber       NewsletterSubscriber @relation(fields: [subscriberId], references: [id], onDelete: Cascade)
+  
+  @@unique([newsletterId, subscriberId])
+  @@index([status])
+}
+
 enum ScheduleStatus {
   PENDING
   PUBLISHED
@@ -285,4 +357,30 @@ enum ContentTopic {
   NON_PROFIT
   READING
   POLITICS
+}
+
+enum NewsletterType {
+  SPECIAL_EVENT
+  MAJOR_UPDATE
+  MONTHLY_SUMMARY
+  NEW_CONTENT
+}
+
+enum NewsletterStatus {
+  DRAFT
+  SCHEDULED
+  SENDING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+enum SendStatus {
+  PENDING
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  FAILED
 }
