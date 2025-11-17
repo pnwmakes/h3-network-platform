@@ -1,0 +1,134 @@
+# Email System Setup Questions for Noah
+H3 Network Platform Development
+Date: November 17, 2025
+
+## REQUIRED INFORMATION FOR NEWSLETTER SYSTEM IMPLEMENTATION
+
+### EMAIL SERVICE PROVIDER
+1. Do you already have an email service account (SendGrid, Mailchimp, ConvertKit, etc.)?
+   - If yes, which service?
+   - Can you provide API credentials?
+
+2. If no email service, which would you prefer?
+   - SendGrid (recommended for developers, $15/month for 40K emails)
+   - Mailchimp (user-friendly, $13/month for 5K contacts)
+   - ConvertKit (creator-focused, $29/month for 1K subscribers)
+   - Other preference?
+
+3. What is your expected monthly email volume?
+   - How many subscribers do you anticipate initially?
+   - How often will you send newsletters (weekly, bi-weekly, monthly)?
+
+### EMAIL CONTENT AND BRANDING
+4. What should the welcome email say to new subscribers?
+   - Should it explain the H3 Network mission (Hope, Help, Humor)?
+   - Any specific call-to-action for new subscribers?
+
+5. What email address should newsletters come from?
+   - Current options: info@h3network.org, newsletter@h3network.org, noah@h3network.org
+   - Or do you need a new email address created?
+
+6. What should the "reply-to" email address be?
+   - Should subscribers be able to reply directly to newsletters?
+
+### NEWSLETTER FREQUENCY AND CONTENT
+7. How often do you want to send newsletters?
+   - Weekly roundup of new content?
+   - Bi-weekly with featured stories?
+   - Monthly comprehensive update?
+
+8. What content should be included in newsletters?
+   - New video releases?
+   - Featured blog posts?
+   - Creator spotlights?
+   - Upcoming events or conferences?
+   - Community updates?
+
+### LEGAL AND COMPLIANCE
+9. What physical address should be in newsletter footers?
+   - Required by CAN-SPAM Act
+   - Can be business address or PO Box
+
+10. Do you have any specific privacy policy requirements?
+    - How should subscriber data be handled?
+    - Any special considerations for justice-impacted community privacy?
+
+### EXISTING EMAIL LISTS
+11. Do you currently have any email lists or subscribers?
+    - How many current subscribers?
+    - What platform are they currently on?
+    - Do you need to migrate existing subscribers?
+
+12. Are there any existing email templates or designs to match?
+    - Should emails match the H3 Network website design?
+    - Any specific colors, fonts, or branding guidelines?
+
+### TECHNICAL REQUIREMENTS
+13. Do you need admin tools to:
+    - Send custom newsletters manually?
+    - View subscriber lists and statistics?
+    - Create automated email sequences?
+    - Segment subscribers by interests?
+
+14. Should the system support:
+    - Email preferences (frequency, content types)?
+    - Unsubscribe options with reasons?
+    - Re-engagement campaigns for inactive subscribers?
+
+### INTEGRATION NEEDS
+15. Should newsletters automatically include:
+    - Latest published videos?
+    - Recent blog posts?
+    - Creator highlights?
+    - Or manually curated content only?
+
+16. Do you want integration with:
+    - Social media platforms?
+    - Google Analytics for email tracking?
+    - CRM system for donor management?
+
+### TIMELINE AND PRIORITY
+17. What is the priority level for newsletter functionality?
+    - Critical for this week?
+    - Can wait until after like/share features?
+    - Part of larger launch strategy?
+
+18. Do you have any upcoming events or announcements that need newsletter support?
+    - Conferences, fundraisers, major content releases?
+
+### BUDGET CONSIDERATIONS
+19. What is the monthly budget for email service?
+    - Most services start at $10-30/month
+    - Costs increase with subscriber count
+
+20. Do you need any advanced features that might cost extra?
+    - A/B testing for subject lines?
+    - Advanced analytics and reporting?
+    - Marketing automation workflows?
+
+### CONTACT AND ACCESS
+21. Who should have admin access to the email system?
+    - Just Noah?
+    - Other team members?
+    - What level of access for each person?
+
+22. What is the best way to provide you with API keys and credentials?
+    - Secure method for sharing sensitive information?
+
+---
+
+## IMMEDIATE NEXT STEPS BASED ON ANSWERS
+
+Once you provide these answers, I can:
+1. Set up the chosen email service integration
+2. Create the newsletter database model
+3. Build the subscription API endpoints
+4. Design email templates matching H3 Network branding
+5. Implement admin tools for newsletter management
+6. Test the complete subscription flow
+
+## DEVELOPMENT PRIORITY
+
+If email setup takes longer than expected, I can proceed with the like/share functionality first and implement the newsletter system once we have the email service details sorted out.
+
+Please provide answers to as many questions as possible so we can move forward with implementation this week.
