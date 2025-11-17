@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { ContentActions } from '@/components/ui/ContentActions';
+import { ContentCardActions } from '@/components/ContentCardActions';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -276,15 +276,13 @@ export default function BlogPage() {
                                         </div>
 
                                         {/* Share/Like Actions */}
-                                        <ContentActions
+                                        <ContentCardActions
                                             contentId={blog.id}
                                             contentType='blog'
                                             title={blog.title}
                                             description={
                                                 blog.excerpt || undefined
                                             }
-                                            showLikeCount={true}
-                                            shareVariant='minimal'
                                         />
                                     </div>
                                 </header>
