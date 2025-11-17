@@ -69,9 +69,16 @@ export async function GET(request: NextRequest) {
 
         const offset = (page - 1) * limit;
 
-        const whereClause: any = {};
-        if (status) whereClause.status = status;
-        if (type) whereClause.type = type;
+        const whereClause: {
+            status?: 'DRAFT' | 'SCHEDULED' | 'SENDING' | 'SENT' | 'FAILED' | 'CANCELLED';
+            type?: 'SPECIAL_EVENT' | 'MAJOR_UPDATE' | 'MONTHLY_SUMMARY' | 'NEW_CONTENT';
+        } = {};
+        if (status && ['DRAFT', 'SCHEDULED', 'SENDING', 'SENT', 'FAILED', 'CANCELLED'].includes(status)) {
+            whereClause.status = status as 'DRAFT' | 'SCHEDULED' | 'SENDING' | 'SENT' | 'FAILED' | 'CANCELLED';
+        }
+        if (type && ['SPECIAL_EVENT', 'MAJOR_UPDATE', 'MONTHLY_SUMMARY', 'NEW_CONTENT'].includes(type)) {
+            whereClause.type = type as 'SPECIAL_EVENT' | 'MAJOR_UPDATE' | 'MONTHLY_SUMMARY' | 'NEW_CONTENT';
+        }
 
         const [newsletters, totalCount] = await Promise.all([
             prisma.newsletter.findMany({
@@ -303,7 +310,24 @@ export async function PUT(request: NextRequest) {
             );
         }
 
-        const updateData: any = {};
+        const updateData: {
+            title?: string;
+            subject?: string;
+            content?: string;
+            type?:
+                | 'SPECIAL_EVENT'
+                | 'MAJOR_UPDATE'
+                | 'MONTHLY_SUMMARY'
+                | 'NEW_CONTENT';
+            status?:
+                | 'DRAFT'
+                | 'SCHEDULED'
+                | 'SENDING'
+                | 'SENT'
+                | 'FAILED'
+                | 'CANCELLED';
+            scheduledAt?: Date | null;
+        } = {};
         if (validatedData.title !== undefined)
             updateData.title = validatedData.title;
         if (validatedData.subject !== undefined)
@@ -337,7 +361,7 @@ export async function PUT(request: NextRequest) {
         logger.info('Newsletter updated', {
             userId: session.user.id,
             newsletterId: newsletter.id,
-            changes: Object.keys(updateData),
+            changes: Object.keys(updateData).join(', '),
         });
 
         return NextResponse.json({

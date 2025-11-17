@@ -1,6 +1,6 @@
 import { logger } from './logger';
 import { prisma } from './prisma';
-import { env, isProd } from './env';
+import { isProd } from './env';
 import { jobQueue } from './job-queue';
 
 // Backup configuration
@@ -323,16 +323,16 @@ export class DatabaseBackupManager {
         );
 
         // Clean up weekly backups
-        const weeklyCutoff = new Date(
-            now.getTime() -
-                this.config.retention.weekly * 7 * 24 * 60 * 60 * 1000
-        );
+        // const weeklyCutoff = new Date(
+        //     now.getTime() -
+        //         this.config.retention.weekly * 7 * 24 * 60 * 60 * 1000
+        // );
 
         // Clean up monthly backups
-        const monthlyCutoff = new Date(
-            now.getTime() -
-                this.config.retention.monthly * 30 * 24 * 60 * 60 * 1000
-        );
+        // const monthlyCutoff = new Date(
+        //     now.getTime() -
+        //         this.config.retention.monthly * 30 * 24 * 60 * 60 * 1000
+        // );
 
         this.backupHistory = this.backupHistory.filter((backup) => {
             const shouldDelete =

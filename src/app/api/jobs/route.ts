@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withApiSecurity, createErrorResponse } from '@/lib/security';
 import { logger } from '@/lib/logger';
-import { jobQueue, JobUtils } from '@/lib/job-queue';
+import { JobUtils } from '@/lib/job-queue';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 

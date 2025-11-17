@@ -432,7 +432,7 @@ export default function PrivacyPolicyPage() {
                     {/* Children's Privacy */}
                     <section>
                         <h2 className='text-2xl font-semibold text-gray-900 mb-4'>
-                            Children's Privacy
+                            Children&apos;s Privacy
                         </h2>
                         <p className='text-gray-700'>
                             Our services are not intended for children under 13
@@ -481,8 +481,8 @@ export default function PrivacyPolicyPage() {
                                     </a>
                                 </p>
                                 <p>
-                                    <strong>Subject Line:</strong> "Privacy
-                                    Policy Question"
+                                    <strong>Subject Line:</strong> &quot;Privacy
+                                    Policy Question&quot;
                                 </p>
                             </div>
                             <p className='text-sm text-gray-600 mt-4'>

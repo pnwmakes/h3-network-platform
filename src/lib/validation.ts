@@ -561,9 +561,11 @@ export const ValidationHelpers = {
     },
 
     // Rate limit validation (check if user is making too many requests)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     checkRateLimit(_userId: string, _action: string): boolean {
         // Basic rate limiting - in production, use Redis-based solution
         // This is handled by the security middleware, but can be used for additional checks
+        // Parameters are intentionally unused in this simplified implementation
         return true; // Simplified for now
     },
 };
