@@ -3,6 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
+import { ContentCardActions } from '@/components/ContentCardActions';
 import {
     Calendar,
     Eye,
@@ -10,8 +11,6 @@ import {
     Clock,
     Tag,
     ArrowLeft,
-    Share2,
-    Heart,
 } from 'lucide-react';
 
 interface BlogPostPageProps {
@@ -207,16 +206,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                                 </div>
                             </div>
 
-                            <div className='flex items-center space-x-4'>
-                                <button className='flex items-center space-x-1 text-gray-600 hover:text-red-600 transition-colors'>
-                                    <Heart className='h-5 w-5' />
-                                    <span className='text-sm'>Like</span>
-                                </button>
-                                <button className='flex items-center space-x-1 text-gray-600 hover:text-blue-600 transition-colors'>
-                                    <Share2 className='h-5 w-5' />
-                                    <span className='text-sm'>Share</span>
-                                </button>
-                            </div>
+                            <ContentCardActions
+                                contentId={blog.id}
+                                contentType="blog"
+                                title={blog.title}
+                                description={blog.excerpt || ''}
+                                className="flex items-center space-x-4"
+                            />
                         </div>
 
                         {/* Post Meta */}
