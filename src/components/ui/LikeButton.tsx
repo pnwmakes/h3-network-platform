@@ -92,12 +92,11 @@ export function LikeButton({
 
     try {
       const method = newIsLiked ? 'POST' : 'DELETE';
-      const response = await fetch(`/api/content/${contentId}/like`, {
+      const response = await fetch(`/api/content/${contentId}/like?type=${contentType}`, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ type: contentType }),
       });
 
       if (!response.ok) {
