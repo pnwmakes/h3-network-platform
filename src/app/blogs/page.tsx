@@ -5,6 +5,7 @@ import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import Image from 'next/image';
 import { PreviewNotice } from '@/components/preview-notice';
+import { ContentCardActions } from '@/components/ContentCardActions';
 
 interface Blog {
     id: string;
@@ -289,6 +290,16 @@ export default function BlogsPage() {
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    {/* Like and Share Actions */}
+                                    <div className='mb-4 flex justify-center'>
+                                        <ContentCardActions
+                                            contentId={blog.id}
+                                            contentType='blog'
+                                            title={blog.title}
+                                            description={blog.excerpt || undefined}
+                                        />
                                     </div>
 
                                     {/* Topic */}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ContentCardActions } from './ContentCardActions';
 
 interface Creator {
     displayName: string;
@@ -370,6 +371,16 @@ export default function ContentGrid({
                                 <span className='text-sm text-gray-500'>
                                     {formatDate(item.publishedAt)}
                                 </span>
+                            </div>
+
+                            {/* Like and Share Actions */}
+                            <div className='mb-3 flex justify-center'>
+                                <ContentCardActions
+                                    contentId={item.id}
+                                    contentType={item.type}
+                                    title={item.title}
+                                    description={item.description || undefined}
+                                />
                             </div>
 
                             {/* Tags */}

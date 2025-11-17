@@ -4,10 +4,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PreviewNotice } from '@/components/preview-notice';
 import { SaveButton } from '@/components/save-button';
+import { ContentActions } from '@/components/ui/ContentActions';
+import { getUserLikeStatus } from '@/lib/like-utils';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
-async function getVideos() {
+async function getVideosWithLikeStatus(userId?: string) {
     try {
-        return await prisma.video.findMany({
+        const videos = await prisma.video.findMany({
             where: {
                 status: 'PUBLISHED',
             },
@@ -19,6 +23,24 @@ async function getVideos() {
                 publishedAt: 'desc',
             },
         });
+
+        // Get like status for each video if user is authenticated
+        const videosWithLikes = await Promise.all(
+            videos.map(async (video) => {
+                const likeStatus = await getUserLikeStatus(
+                    video.id,
+                    'video',
+                    userId
+                );
+                return {
+                    ...video,
+                    isLiked: likeStatus.isLiked,
+                    likeCount: likeStatus.likeCount,
+                };
+            })
+        );
+
+        return videosWithLikes;
     } catch (error) {
         console.warn(
             'Database not available, returning empty videos list:',
@@ -35,7 +57,8 @@ function formatDuration(seconds: number): string {
 }
 
 export default async function VideosPage() {
-    const videos = await getVideos();
+    const session = await getServerSession(authOptions);
+    const videos = await getVideosWithLikeStatus(session?.user?.id);
 
     return (
         <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
@@ -96,8 +119,18 @@ export default async function VideosPage() {
                                         </h3>
                                     </Link>
 
-                                    {/* Save Button */}
-                                    <div className='ml-2 flex-shrink-0'>
+                                    {/* Actions */}
+                                    <div className='ml-2 flex items-center space-x-1 flex-shrink-0'>
+                                        <ContentActions
+                                            contentId={video.id}
+                                            contentType='video'
+                                            title={video.title}
+                                            description={video.description || undefined}
+                                            initialLikeCount={video.likeCount || 0}
+                                            initialIsLiked={video.isLiked || false}
+                                            showLikeCount={true}
+                                            shareVariant='minimal'
+                                        />
                                         <SaveButton
                                             videoId={video.id}
                                             className='!p-2'
