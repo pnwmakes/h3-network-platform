@@ -38,7 +38,6 @@ import {
     Video,
     FileText,
     MoreHorizontal,
-
     Tag,
     Trash2,
     Archive,
@@ -130,11 +129,15 @@ export function BulkContentOperations() {
     };
 
     const filteredContent = content.filter((item) => {
-        const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                             item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
-        const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+        const matchesSearch =
+            item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.tags.some((tag) =>
+                tag.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        const matchesStatus =
+            statusFilter === 'all' || item.status === statusFilter;
         const matchesType = typeFilter === 'all' || item.type === typeFilter;
-        
+
         return matchesSearch && matchesStatus && matchesType;
     });
 
@@ -142,7 +145,7 @@ export function BulkContentOperations() {
         if (selectedItems.size === filteredContent.length) {
             setSelectedItems(new Set());
         } else {
-            setSelectedItems(new Set(filteredContent.map(item => item.id)));
+            setSelectedItems(new Set(filteredContent.map((item) => item.id)));
         }
     };
 
@@ -160,38 +163,42 @@ export function BulkContentOperations() {
         {
             id: 'publish',
             label: 'Publish Selected',
-            icon: <Eye className="h-4 w-4" />,
+            icon: <Eye className='h-4 w-4' />,
             color: 'bg-green-500 hover:bg-green-600',
             requiresConfirmation: true,
             confirmTitle: 'Publish Content',
-            confirmDescription: 'Are you sure you want to publish the selected content items?',
+            confirmDescription:
+                'Are you sure you want to publish the selected content items?',
         },
         {
             id: 'unpublish',
             label: 'Unpublish Selected',
-            icon: <EyeOff className="h-4 w-4" />,
+            icon: <EyeOff className='h-4 w-4' />,
             color: 'bg-yellow-500 hover:bg-yellow-600',
             requiresConfirmation: true,
             confirmTitle: 'Unpublish Content',
-            confirmDescription: 'Are you sure you want to unpublish the selected content items?',
+            confirmDescription:
+                'Are you sure you want to unpublish the selected content items?',
         },
         {
             id: 'archive',
             label: 'Archive Selected',
-            icon: <Archive className="h-4 w-4" />,
+            icon: <Archive className='h-4 w-4' />,
             color: 'bg-gray-500 hover:bg-gray-600',
             requiresConfirmation: true,
             confirmTitle: 'Archive Content',
-            confirmDescription: 'Archived content will be hidden from public view but preserved in your dashboard.',
+            confirmDescription:
+                'Archived content will be hidden from public view but preserved in your dashboard.',
         },
         {
             id: 'delete',
             label: 'Delete Selected',
-            icon: <Trash2 className="h-4 w-4" />,
+            icon: <Trash2 className='h-4 w-4' />,
             color: 'bg-red-500 hover:bg-red-600',
             requiresConfirmation: true,
             confirmTitle: 'Delete Content',
-            confirmDescription: 'This action cannot be undone. Are you sure you want to permanently delete the selected items?',
+            confirmDescription:
+                'This action cannot be undone. Are you sure you want to permanently delete the selected items?',
         },
     ];
 
@@ -256,19 +263,23 @@ export function BulkContentOperations() {
     };
 
     const exportSelected = () => {
-        const selectedContent = content.filter(item => selectedItems.has(item.id));
+        const selectedContent = content.filter((item) =>
+            selectedItems.has(item.id)
+        );
         const exportData = {
             exportedAt: new Date().toISOString(),
             contentCount: selectedContent.length,
             content: selectedContent,
         };
-        
+
         const dataStr = JSON.stringify(exportData, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/json' });
         const url = URL.createObjectURL(dataBlob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `content-export-${new Date().toISOString().split('T')[0]}.json`;
+        link.download = `content-export-${
+            new Date().toISOString().split('T')[0]
+        }.json`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -278,17 +289,17 @@ export function BulkContentOperations() {
     const getStatusIcon = (status: string) => {
         switch (status) {
             case 'PUBLISHED':
-                return <CheckCircle className="h-4 w-4 text-green-500" />;
+                return <CheckCircle className='h-4 w-4 text-green-500' />;
             case 'PENDING':
-                return <Clock className="h-4 w-4 text-yellow-500" />;
+                return <Clock className='h-4 w-4 text-yellow-500' />;
             case 'DRAFT':
-                return <AlertCircle className="h-4 w-4 text-gray-500" />;
+                return <AlertCircle className='h-4 w-4 text-gray-500' />;
             case 'REJECTED':
-                return <XCircle className="h-4 w-4 text-red-500" />;
+                return <XCircle className='h-4 w-4 text-red-500' />;
             case 'ARCHIVED':
-                return <Archive className="h-4 w-4 text-gray-400" />;
+                return <Archive className='h-4 w-4 text-gray-400' />;
             default:
-                return <AlertCircle className="h-4 w-4 text-gray-500" />;
+                return <AlertCircle className='h-4 w-4 text-gray-500' />;
         }
     };
 
@@ -311,24 +322,28 @@ export function BulkContentOperations() {
 
     if (loading) {
         return (
-            <div className="flex items-center justify-center p-8">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+            <div className='flex items-center justify-center p-8'>
+                <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500'></div>
             </div>
         );
     }
 
     return (
-        <div className="space-y-6">
+        <div className='space-y-6'>
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
                 <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Bulk Content Operations</h2>
-                    <p className="text-gray-600">Manage multiple content items efficiently</p>
+                    <h2 className='text-2xl font-bold text-gray-900'>
+                        Bulk Content Operations
+                    </h2>
+                    <p className='text-gray-600'>
+                        Manage multiple content items efficiently
+                    </p>
                 </div>
-                
-                <div className="flex items-center gap-2">
-                    <Button variant="outline" onClick={fetchContent}>
-                        <RefreshCw className="h-4 w-4 mr-2" />
+
+                <div className='flex items-center gap-2'>
+                    <Button variant='outline' onClick={fetchContent}>
+                        <RefreshCw className='h-4 w-4 mr-2' />
                         Refresh
                     </Button>
                 </div>
@@ -336,42 +351,56 @@ export function BulkContentOperations() {
 
             {/* Filters and Search */}
             <Card>
-                <CardContent className="p-4">
-                    <div className="flex flex-col md:flex-row gap-4">
-                        <div className="flex-1">
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <CardContent className='p-4'>
+                    <div className='flex flex-col md:flex-row gap-4'>
+                        <div className='flex-1'>
+                            <div className='relative'>
+                                <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
                                 <Input
-                                    placeholder="Search content by title or tags..."
+                                    placeholder='Search content by title or tags...'
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-9"
+                                    onChange={(e) =>
+                                        setSearchQuery(e.target.value)
+                                    }
+                                    className='pl-9'
                                 />
                             </div>
                         </div>
-                        
-                        <Select value={statusFilter} onValueChange={setStatusFilter}>
-                            <SelectTrigger className="w-40">
-                                <SelectValue placeholder="Status" />
+
+                        <Select
+                            value={statusFilter}
+                            onValueChange={setStatusFilter}
+                        >
+                            <SelectTrigger className='w-40'>
+                                <SelectValue placeholder='Status' />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All Status</SelectItem>
-                                <SelectItem value="PUBLISHED">Published</SelectItem>
-                                <SelectItem value="PENDING">Pending</SelectItem>
-                                <SelectItem value="DRAFT">Draft</SelectItem>
-                                <SelectItem value="REJECTED">Rejected</SelectItem>
-                                <SelectItem value="ARCHIVED">Archived</SelectItem>
+                                <SelectItem value='all'>All Status</SelectItem>
+                                <SelectItem value='PUBLISHED'>
+                                    Published
+                                </SelectItem>
+                                <SelectItem value='PENDING'>Pending</SelectItem>
+                                <SelectItem value='DRAFT'>Draft</SelectItem>
+                                <SelectItem value='REJECTED'>
+                                    Rejected
+                                </SelectItem>
+                                <SelectItem value='ARCHIVED'>
+                                    Archived
+                                </SelectItem>
                             </SelectContent>
                         </Select>
-                        
-                        <Select value={typeFilter} onValueChange={setTypeFilter}>
-                            <SelectTrigger className="w-32">
-                                <SelectValue placeholder="Type" />
+
+                        <Select
+                            value={typeFilter}
+                            onValueChange={setTypeFilter}
+                        >
+                            <SelectTrigger className='w-32'>
+                                <SelectValue placeholder='Type' />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All Types</SelectItem>
-                                <SelectItem value="video">Videos</SelectItem>
-                                <SelectItem value="blog">Blogs</SelectItem>
+                                <SelectItem value='all'>All Types</SelectItem>
+                                <SelectItem value='video'>Videos</SelectItem>
+                                <SelectItem value='blog'>Blogs</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -380,17 +409,18 @@ export function BulkContentOperations() {
 
             {/* Bulk Actions Bar */}
             {selectedItems.size > 0 && (
-                <Card className="border-blue-200 bg-blue-50">
-                    <CardContent className="p-4">
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                            <div className="flex items-center gap-2">
-                                <Zap className="h-5 w-5 text-blue-600" />
-                                <span className="font-medium text-blue-900">
-                                    {selectedItems.size} item{selectedItems.size > 1 ? 's' : ''} selected
+                <Card className='border-blue-200 bg-blue-50'>
+                    <CardContent className='p-4'>
+                        <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
+                            <div className='flex items-center gap-2'>
+                                <Zap className='h-5 w-5 text-blue-600' />
+                                <span className='font-medium text-blue-900'>
+                                    {selectedItems.size} item
+                                    {selectedItems.size > 1 ? 's' : ''} selected
                                 </span>
                             </div>
-                            
-                            <div className="flex items-center gap-2 flex-wrap">
+
+                            <div className='flex items-center gap-2 flex-wrap'>
                                 {bulkActions.map((action) => (
                                     <BulkActionButton
                                         key={action.id}
@@ -399,26 +429,24 @@ export function BulkContentOperations() {
                                         disabled={processing}
                                     />
                                 ))}
-                                
+
                                 <Button
-                                    variant="outline"
-                                    size="sm"
+                                    variant='outline'
+                                    size='sm'
                                     onClick={() => setShowBulkEdit(true)}
                                     disabled={processing}
                                 >
-                                    <Tag className="h-4 w-4 mr-2" />
+                                    <Tag className='h-4 w-4 mr-2' />
                                     Edit Tags
                                 </Button>
-                                
 
-                                
                                 <Button
-                                    variant="outline"
-                                    size="sm"
+                                    variant='outline'
+                                    size='sm'
                                     onClick={exportSelected}
                                     disabled={processing}
                                 >
-                                    <Download className="h-4 w-4 mr-2" />
+                                    <Download className='h-4 w-4 mr-2' />
                                     Export
                                 </Button>
                             </div>
@@ -430,18 +458,21 @@ export function BulkContentOperations() {
             {/* Content List */}
             <Card>
                 <CardHeader>
-                    <div className="flex items-center justify-between">
-                        <CardTitle>Content Items ({filteredContent.length})</CardTitle>
-                        <div className="flex items-center gap-2">
+                    <div className='flex items-center justify-between'>
+                        <CardTitle>
+                            Content Items ({filteredContent.length})
+                        </CardTitle>
+                        <div className='flex items-center gap-2'>
                             <Button
-                                variant="ghost"
-                                size="sm"
+                                variant='ghost'
+                                size='sm'
                                 onClick={handleSelectAll}
                             >
-                                {selectedItems.size === filteredContent.length ? (
-                                    <CheckSquare className="h-4 w-4 mr-2" />
+                                {selectedItems.size ===
+                                filteredContent.length ? (
+                                    <CheckSquare className='h-4 w-4 mr-2' />
                                 ) : (
-                                    <Square className="h-4 w-4 mr-2" />
+                                    <Square className='h-4 w-4 mr-2' />
                                 )}
                                 Select All
                             </Button>
@@ -450,19 +481,21 @@ export function BulkContentOperations() {
                 </CardHeader>
                 <CardContent>
                     {filteredContent.length === 0 ? (
-                        <div className="text-center py-8">
-                            <FileText className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                        <div className='text-center py-8'>
+                            <FileText className='h-16 w-16 text-gray-300 mx-auto mb-4' />
+                            <h3 className='text-lg font-medium text-gray-900 mb-2'>
                                 No content found
                             </h3>
-                            <p className="text-gray-600">
-                                {searchQuery || statusFilter !== 'all' || typeFilter !== 'all'
+                            <p className='text-gray-600'>
+                                {searchQuery ||
+                                statusFilter !== 'all' ||
+                                typeFilter !== 'all'
                                     ? 'Try adjusting your filters or search query.'
                                     : 'Create your first piece of content to get started.'}
                             </p>
                         </div>
                     ) : (
-                        <div className="space-y-4">
+                        <div className='space-y-4'>
                             {filteredContent.map((item) => (
                                 <ContentItemRow
                                     key={item.id}
@@ -484,55 +517,79 @@ export function BulkContentOperations() {
                     <DialogHeader>
                         <DialogTitle>Bulk Edit Content</DialogTitle>
                         <DialogDescription>
-                            Edit tags and status for {selectedItems.size} selected items
+                            Edit tags and status for {selectedItems.size}{' '}
+                            selected items
                         </DialogDescription>
                     </DialogHeader>
-                    
-                    <div className="space-y-4">
+
+                    <div className='space-y-4'>
                         <div>
-                            <Label htmlFor="tags">Tags</Label>
+                            <Label htmlFor='tags'>Tags</Label>
                             <Input
-                                id="tags"
-                                placeholder="Enter tags separated by commas"
+                                id='tags'
+                                placeholder='Enter tags separated by commas'
                                 value={bulkEditData.tags}
-                                onChange={(e) => setBulkEditData({ ...bulkEditData, tags: e.target.value })}
+                                onChange={(e) =>
+                                    setBulkEditData({
+                                        ...bulkEditData,
+                                        tags: e.target.value,
+                                    })
+                                }
                             />
-                            <div className="flex items-center space-x-2 mt-2">
+                            <div className='flex items-center space-x-2 mt-2'>
                                 <Checkbox
-                                    id="addTags"
+                                    id='addTags'
                                     checked={bulkEditData.addTags}
-                                    onCheckedChange={(checked) => 
-                                        setBulkEditData({ ...bulkEditData, addTags: !!checked })
+                                    onCheckedChange={(checked) =>
+                                        setBulkEditData({
+                                            ...bulkEditData,
+                                            addTags: !!checked,
+                                        })
                                     }
                                 />
-                                <Label htmlFor="addTags" className="text-sm">
-                                    Add to existing tags (unchecked = replace existing tags)
+                                <Label htmlFor='addTags' className='text-sm'>
+                                    Add to existing tags (unchecked = replace
+                                    existing tags)
                                 </Label>
                             </div>
                         </div>
-                        
+
                         <div>
-                            <Label htmlFor="status">Status</Label>
-                            <Select 
-                                value={bulkEditData.status} 
-                                onValueChange={(value) => setBulkEditData({ ...bulkEditData, status: value })}
+                            <Label htmlFor='status'>Status</Label>
+                            <Select
+                                value={bulkEditData.status}
+                                onValueChange={(value) =>
+                                    setBulkEditData({
+                                        ...bulkEditData,
+                                        status: value,
+                                    })
+                                }
                             >
                                 <SelectTrigger>
-                                    <SelectValue placeholder="Select status (optional)" />
+                                    <SelectValue placeholder='Select status (optional)' />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="">No change</SelectItem>
-                                    <SelectItem value="DRAFT">Draft</SelectItem>
-                                    <SelectItem value="PENDING">Pending Review</SelectItem>
-                                    <SelectItem value="PUBLISHED">Published</SelectItem>
-                                    <SelectItem value="ARCHIVED">Archived</SelectItem>
+                                    <SelectItem value=''>No change</SelectItem>
+                                    <SelectItem value='DRAFT'>Draft</SelectItem>
+                                    <SelectItem value='PENDING'>
+                                        Pending Review
+                                    </SelectItem>
+                                    <SelectItem value='PUBLISHED'>
+                                        Published
+                                    </SelectItem>
+                                    <SelectItem value='ARCHIVED'>
+                                        Archived
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                     </div>
-                    
+
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setShowBulkEdit(false)}>
+                        <Button
+                            variant='outline'
+                            onClick={() => setShowBulkEdit(false)}
+                        >
                             Cancel
                         </Button>
                         <Button onClick={handleBulkEdit} disabled={processing}>
@@ -553,7 +610,13 @@ interface ContentItemRowProps {
     statusColor: string;
 }
 
-function ContentItemRow({ item, isSelected, onSelect, statusIcon, statusColor }: ContentItemRowProps) {
+function ContentItemRow({
+    item,
+    isSelected,
+    onSelect,
+    statusIcon,
+    statusColor,
+}: ContentItemRowProps) {
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -569,49 +632,57 @@ function ContentItemRow({ item, isSelected, onSelect, statusIcon, statusColor }:
     };
 
     return (
-        <div className={`flex items-center gap-4 p-4 border rounded-lg transition-colors ${
-            isSelected ? 'border-blue-300 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
-        }`}>
+        <div
+            className={`flex items-center gap-4 p-4 border rounded-lg transition-colors ${
+                isSelected
+                    ? 'border-blue-300 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300'
+            }`}
+        >
             {/* Checkbox */}
             <Checkbox checked={isSelected} onCheckedChange={onSelect} />
-            
+
             {/* Thumbnail/Icon */}
-            <div className="flex-shrink-0">
+            <div className='flex-shrink-0'>
                 {item.type === 'video' ? (
-                    <div className="w-16 h-12 bg-gray-200 rounded overflow-hidden flex items-center justify-center">
+                    <div className='w-16 h-12 bg-gray-200 rounded overflow-hidden flex items-center justify-center'>
                         {item.thumbnailUrl ? (
-                            <Image 
-                                src={item.thumbnailUrl} 
+                            <Image
+                                src={item.thumbnailUrl}
                                 alt={item.title}
                                 fill
-                                className="object-cover"
+                                className='object-cover'
                             />
                         ) : (
-                            <Video className="h-6 w-6 text-gray-400" />
+                            <Video className='h-6 w-6 text-gray-400' />
                         )}
                     </div>
                 ) : (
-                    <div className="w-16 h-12 bg-green-100 rounded flex items-center justify-center">
-                        <FileText className="h-6 w-6 text-green-600" />
+                    <div className='w-16 h-12 bg-green-100 rounded flex items-center justify-center'>
+                        <FileText className='h-6 w-6 text-green-600' />
                     </div>
                 )}
             </div>
-            
+
             {/* Content Info */}
-            <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-gray-900 truncate">
+            <div className='flex-1 min-w-0'>
+                <div className='flex items-center gap-2 mb-1'>
+                    <h4 className='font-medium text-gray-900 truncate'>
                         {item.title}
                     </h4>
                     <Badge className={statusColor}>
                         {statusIcon}
-                        <span className="ml-1">{item.status}</span>
+                        <span className='ml-1'>{item.status}</span>
                     </Badge>
                 </div>
-                
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <span className="flex items-center gap-1">
-                        {item.type === 'video' ? <Video className="h-3 w-3" /> : <FileText className="h-3 w-3" />}
+
+                <div className='flex items-center gap-4 text-sm text-gray-600'>
+                    <span className='flex items-center gap-1'>
+                        {item.type === 'video' ? (
+                            <Video className='h-3 w-3' />
+                        ) : (
+                            <FileText className='h-3 w-3' />
+                        )}
                         {item.type}
                     </span>
                     <span>{formatNumber(item.views)} views</span>
@@ -619,43 +690,47 @@ function ContentItemRow({ item, isSelected, onSelect, statusIcon, statusColor }:
                     <span>{item.engagement.toFixed(1)}% engagement</span>
                     <span>Created {formatDate(item.createdAt)}</span>
                 </div>
-                
+
                 {item.tags.length > 0 && (
-                    <div className="flex items-center gap-1 mt-2">
+                    <div className='flex items-center gap-1 mt-2'>
                         {item.tags.slice(0, 3).map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
+                            <Badge
+                                key={tag}
+                                variant='outline'
+                                className='text-xs'
+                            >
                                 {tag}
                             </Badge>
                         ))}
                         {item.tags.length > 3 && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant='outline' className='text-xs'>
                                 +{item.tags.length - 3}
                             </Badge>
                         )}
                     </div>
                 )}
             </div>
-            
+
             {/* Actions */}
-            <div className="flex-shrink-0">
+            <div className='flex-shrink-0'>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
+                        <Button variant='ghost' size='sm'>
+                            <MoreHorizontal className='h-4 w-4' />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent align='end'>
                         <DropdownMenuItem>
-                            <Eye className="h-4 w-4 mr-2" />
+                            <Eye className='h-4 w-4 mr-2' />
                             View
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Copy className="h-4 w-4 mr-2" />
+                            <Copy className='h-4 w-4 mr-2' />
                             Duplicate
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-600">
-                            <Trash2 className="h-4 w-4 mr-2" />
+                        <DropdownMenuItem className='text-red-600'>
+                            <Trash2 className='h-4 w-4 mr-2' />
                             Delete
                         </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -671,18 +746,24 @@ interface BulkActionButtonProps {
     disabled: boolean;
 }
 
-function BulkActionButton({ action, onExecute, disabled }: BulkActionButtonProps) {
+function BulkActionButton({
+    action,
+    onExecute,
+    disabled,
+}: BulkActionButtonProps) {
     if (action.requiresConfirmation) {
         return (
             <Dialog>
                 <DialogTrigger asChild>
                     <Button
-                        size="sm"
+                        size='sm'
                         className={action.color}
                         disabled={disabled}
                     >
                         {action.icon}
-                        <span className="ml-2 hidden sm:inline">{action.label}</span>
+                        <span className='ml-2 hidden sm:inline'>
+                            {action.label}
+                        </span>
                     </Button>
                 </DialogTrigger>
                 <DialogContent>
@@ -693,7 +774,7 @@ function BulkActionButton({ action, onExecute, disabled }: BulkActionButtonProps
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline">Cancel</Button>
+                        <Button variant='outline'>Cancel</Button>
                         <Button
                             className={action.color}
                             onClick={() => onExecute(action.id)}
@@ -709,13 +790,13 @@ function BulkActionButton({ action, onExecute, disabled }: BulkActionButtonProps
 
     return (
         <Button
-            size="sm"
+            size='sm'
             className={action.color}
             onClick={() => onExecute(action.id)}
             disabled={disabled}
         >
             {action.icon}
-            <span className="ml-2 hidden sm:inline">{action.label}</span>
+            <span className='ml-2 hidden sm:inline'>{action.label}</span>
         </Button>
     );
 }

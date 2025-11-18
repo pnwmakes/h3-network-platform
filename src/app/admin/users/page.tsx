@@ -598,7 +598,10 @@ export default function UserManagement() {
                                                 Math.max(1, prev - 1)
                                             )
                                         }
-                                        disabled={(data?.pagination?.current || 1) === 1}
+                                        disabled={
+                                            (data?.pagination?.current || 1) ===
+                                            1
+                                        }
                                         className='flex items-center space-x-1'
                                     >
                                         <ChevronLeft className='h-4 w-4' />
@@ -618,7 +621,9 @@ export default function UserManagement() {
                                                     <Button
                                                         key={page}
                                                         variant={
-                                                            page === (data?.pagination?.current || 1)
+                                                            page ===
+                                                            (data?.pagination
+                                                                ?.current || 1)
                                                                 ? 'default'
                                                                 : 'outline'
                                                         }
@@ -640,7 +645,8 @@ export default function UserManagement() {
                                         onClick={() =>
                                             setCurrentPage((prev) =>
                                                 Math.min(
-                                                    data?.pagination?.pages || 1,
+                                                    data?.pagination?.pages ||
+                                                        1,
                                                     currentPage + 3
                                                 )
                                             )

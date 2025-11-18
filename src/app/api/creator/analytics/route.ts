@@ -2,13 +2,19 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
-
 export async function GET() {
     try {
         const session = await getServerSession(authOptions);
-        
-        if (!session?.user || (session.user.role !== 'CREATOR' && session.user.role !== 'SUPER_ADMIN')) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+        if (
+            !session?.user ||
+            (session.user.role !== 'CREATOR' &&
+                session.user.role !== 'SUPER_ADMIN')
+        ) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
         }
 
         // Parameters for future analytics filtering
@@ -35,7 +41,8 @@ export async function GET() {
                         type: 'video',
                         views: 2543,
                         engagement: 0.087,
-                        thumbnail: 'https://img.youtube.com/vi/sample1/maxresdefault.jpg'
+                        thumbnail:
+                            'https://img.youtube.com/vi/sample1/maxresdefault.jpg',
                     },
                     {
                         id: '2',
@@ -43,7 +50,8 @@ export async function GET() {
                         type: 'video',
                         views: 1892,
                         engagement: 0.112,
-                        thumbnail: 'https://img.youtube.com/vi/sample2/maxresdefault.jpg'
+                        thumbnail:
+                            'https://img.youtube.com/vi/sample2/maxresdefault.jpg',
                     },
                     {
                         id: '3',
@@ -51,14 +59,16 @@ export async function GET() {
                         type: 'blog',
                         views: 1456,
                         engagement: 0.093,
-                        thumbnail: '/api/placeholder/300/200'
-                    }
+                        thumbnail: '/api/placeholder/300/200',
+                    },
                 ],
                 viewsOverTime: Array.from({ length: 30 }, (_, i) => ({
-                    date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+                    date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split('T')[0],
                     views: Math.floor(Math.random() * 200) + 50,
-                    engagement: Math.random() * 0.1 + 0.02
-                }))
+                    engagement: Math.random() * 0.1 + 0.02,
+                })),
             },
             audience: {
                 demographics: {
@@ -67,14 +77,14 @@ export async function GET() {
                         { range: '25-34', percentage: 35 },
                         { range: '35-44', percentage: 28 },
                         { range: '45-54', percentage: 15 },
-                        { range: '55+', percentage: 7 }
+                        { range: '55+', percentage: 7 },
                     ],
                     locations: [
                         { country: 'United States', percentage: 78 },
                         { country: 'Canada', percentage: 12 },
                         { country: 'United Kingdom', percentage: 6 },
-                        { country: 'Australia', percentage: 4 }
-                    ]
+                        { country: 'Australia', percentage: 4 },
+                    ],
                 },
                 engagement: {
                     peakHours: [
@@ -101,9 +111,9 @@ export async function GET() {
                         { hour: 20, engagement: 0.138 },
                         { hour: 21, engagement: 0.125 },
                         { hour: 22, engagement: 0.089 },
-                        { hour: 23, engagement: 0.056 }
-                    ]
-                }
+                        { hour: 23, engagement: 0.056 },
+                    ],
+                },
             },
             goals: [
                 {
@@ -113,7 +123,7 @@ export async function GET() {
                     current: 7543,
                     progress: 75.43,
                     deadline: '2024-01-31',
-                    status: 'on-track'
+                    status: 'on-track',
                 },
                 {
                     id: '2',
@@ -122,7 +132,7 @@ export async function GET() {
                     current: 0.067,
                     progress: 83.75,
                     deadline: '2024-02-15',
-                    status: 'on-track'
+                    status: 'on-track',
                 },
                 {
                     id: '3',
@@ -131,9 +141,9 @@ export async function GET() {
                     current: 12,
                     progress: 60,
                     deadline: '2024-01-31',
-                    status: 'behind'
-                }
-            ]
+                    status: 'behind',
+                },
+            ],
         };
 
         return NextResponse.json({ success: true, analytics: mockAnalytics });

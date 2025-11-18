@@ -5,16 +5,20 @@ import { authOptions } from '@/lib/auth';
 export async function GET() {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
         }
 
         // Mock settings data for now
         const settings = {
             platform: {
                 siteName: 'H3 Network Platform',
-                siteDescription: 'Criminal justice reform, addiction recovery, and reentry support platform',
+                siteDescription:
+                    'Criminal justice reform, addiction recovery, and reentry support platform',
                 maintenanceMode: false,
                 registrationEnabled: true,
                 emailVerificationRequired: true,
@@ -51,12 +55,12 @@ export async function GET() {
                 lockoutDuration: 30, // minutes
                 passwordMinLength: 8,
                 requireStrongPasswords: true,
-            }
+            },
         };
 
-        return NextResponse.json({ 
-            success: true, 
-            settings 
+        return NextResponse.json({
+            success: true,
+            settings,
         });
     } catch (error) {
         console.error('Settings API error:', error);
@@ -70,20 +74,23 @@ export async function GET() {
 export async function PUT(request: Request) {
     try {
         const session = await getServerSession(authOptions);
-        
+
         if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
         }
 
         const updates = await request.json();
-        
+
         // In a real implementation, you would save these settings to the database
         // For now, just return success
         console.log('Settings update request:', updates);
 
-        return NextResponse.json({ 
-            success: true, 
-            message: 'Settings updated successfully' 
+        return NextResponse.json({
+            success: true,
+            message: 'Settings updated successfully',
         });
     } catch (error) {
         console.error('Settings update error:', error);

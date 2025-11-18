@@ -6,15 +6,25 @@ import { prisma } from '@/lib/prisma';
 export async function POST(request: NextRequest) {
     try {
         const session = await getServerSession(authOptions);
-        
-        if (!session?.user || (session.user.role !== 'CREATOR' && session.user.role !== 'SUPER_ADMIN')) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+        if (
+            !session?.user ||
+            (session.user.role !== 'CREATOR' &&
+                session.user.role !== 'SUPER_ADMIN')
+        ) {
+            return NextResponse.json(
+                { error: 'Unauthorized' },
+                { status: 401 }
+            );
         }
 
         const { action, contentIds, contentType, data } = await request.json();
 
         if (!action || !contentIds || !Array.isArray(contentIds)) {
-            return NextResponse.json({ error: 'Invalid request data' }, { status: 400 });
+            return NextResponse.json(
+                { error: 'Invalid request data' },
+                { status: 400 }
+            );
         }
 
         let result;
@@ -25,17 +35,23 @@ export async function POST(request: NextRequest) {
                     result = await prisma.video.updateMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
                         },
-                        data: { status: 'PUBLISHED', publishedAt: new Date() }
+                        data: { status: 'PUBLISHED', publishedAt: new Date() },
                     });
                 } else if (contentType === 'blog') {
                     result = await prisma.blog.updateMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
                         },
-                        data: { status: 'PUBLISHED', publishedAt: new Date() }
+                        data: { status: 'PUBLISHED', publishedAt: new Date() },
                     });
                 }
                 break;
@@ -45,17 +61,23 @@ export async function POST(request: NextRequest) {
                     result = await prisma.video.updateMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
                         },
-                        data: { status: 'DRAFT' }
+                        data: { status: 'DRAFT' },
                     });
                 } else if (contentType === 'blog') {
                     result = await prisma.blog.updateMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
                         },
-                        data: { status: 'DRAFT' }
+                        data: { status: 'DRAFT' },
                     });
                 }
                 break;
@@ -65,17 +87,23 @@ export async function POST(request: NextRequest) {
                     result = await prisma.video.updateMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
                         },
-                        data: { status: 'ARCHIVED' }
+                        data: { status: 'ARCHIVED' },
                     });
                 } else if (contentType === 'blog') {
                     result = await prisma.blog.updateMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
                         },
-                        data: { status: 'ARCHIVED' }
+                        data: { status: 'ARCHIVED' },
                     });
                 }
                 break;
@@ -85,61 +113,82 @@ export async function POST(request: NextRequest) {
                     result = await prisma.video.deleteMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
-                        }
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
+                        },
                     });
                 } else if (contentType === 'blog') {
                     result = await prisma.blog.deleteMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
-                        }
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
+                        },
                     });
                 }
                 break;
 
             case 'bulk-edit':
                 if (!data) {
-                    return NextResponse.json({ error: 'Bulk edit data required' }, { status: 400 });
+                    return NextResponse.json(
+                        { error: 'Bulk edit data required' },
+                        { status: 400 }
+                    );
                 }
-                
+
                 if (contentType === 'video') {
                     result = await prisma.video.updateMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
                         },
                         data: {
                             ...(data.tags && { tags: data.tags }),
                             ...(data.category && { category: data.category }),
-                            ...(data.featured !== undefined && { featured: data.featured })
-                        }
+                            ...(data.featured !== undefined && {
+                                featured: data.featured,
+                            }),
+                        },
                     });
                 } else if (contentType === 'blog') {
                     result = await prisma.blog.updateMany({
                         where: {
                             id: { in: contentIds },
-                            creatorId: session.user.role === 'SUPER_ADMIN' ? undefined : session.user.id
+                            creatorId:
+                                session.user.role === 'SUPER_ADMIN'
+                                    ? undefined
+                                    : session.user.id,
                         },
                         data: {
                             ...(data.tags && { tags: data.tags }),
                             ...(data.category && { category: data.category }),
-                            ...(data.featured !== undefined && { featured: data.featured })
-                        }
+                            ...(data.featured !== undefined && {
+                                featured: data.featured,
+                            }),
+                        },
                     });
                 }
                 break;
 
             default:
-                return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+                return NextResponse.json(
+                    { error: 'Invalid action' },
+                    { status: 400 }
+                );
         }
 
-        return NextResponse.json({ 
-            success: true, 
+        return NextResponse.json({
+            success: true,
             message: `Successfully ${action}ed ${result?.count || 0} items`,
-            count: result?.count || 0
+            count: result?.count || 0,
         });
-
     } catch (error) {
         console.error('Bulk operation error:', error);
         return NextResponse.json(
