@@ -70,14 +70,52 @@ export async function GET(request: NextRequest) {
         const offset = (page - 1) * limit;
 
         const whereClause: {
-            status?: 'DRAFT' | 'SCHEDULED' | 'SENDING' | 'SENT' | 'FAILED' | 'CANCELLED';
-            type?: 'SPECIAL_EVENT' | 'MAJOR_UPDATE' | 'MONTHLY_SUMMARY' | 'NEW_CONTENT';
+            status?:
+                | 'DRAFT'
+                | 'SCHEDULED'
+                | 'SENDING'
+                | 'SENT'
+                | 'FAILED'
+                | 'CANCELLED';
+            type?:
+                | 'SPECIAL_EVENT'
+                | 'MAJOR_UPDATE'
+                | 'MONTHLY_SUMMARY'
+                | 'NEW_CONTENT';
         } = {};
-        if (status && ['DRAFT', 'SCHEDULED', 'SENDING', 'SENT', 'FAILED', 'CANCELLED'].includes(status)) {
-            whereClause.status = status as 'DRAFT' | 'SCHEDULED' | 'SENDING' | 'SENT' | 'FAILED' | 'CANCELLED';
+        if (
+            status &&
+            [
+                'DRAFT',
+                'SCHEDULED',
+                'SENDING',
+                'SENT',
+                'FAILED',
+                'CANCELLED',
+            ].includes(status)
+        ) {
+            whereClause.status = status as
+                | 'DRAFT'
+                | 'SCHEDULED'
+                | 'SENDING'
+                | 'SENT'
+                | 'FAILED'
+                | 'CANCELLED';
         }
-        if (type && ['SPECIAL_EVENT', 'MAJOR_UPDATE', 'MONTHLY_SUMMARY', 'NEW_CONTENT'].includes(type)) {
-            whereClause.type = type as 'SPECIAL_EVENT' | 'MAJOR_UPDATE' | 'MONTHLY_SUMMARY' | 'NEW_CONTENT';
+        if (
+            type &&
+            [
+                'SPECIAL_EVENT',
+                'MAJOR_UPDATE',
+                'MONTHLY_SUMMARY',
+                'NEW_CONTENT',
+            ].includes(type)
+        ) {
+            whereClause.type = type as
+                | 'SPECIAL_EVENT'
+                | 'MAJOR_UPDATE'
+                | 'MONTHLY_SUMMARY'
+                | 'NEW_CONTENT';
         }
 
         const [newsletters, totalCount] = await Promise.all([

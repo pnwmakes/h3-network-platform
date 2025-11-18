@@ -15,6 +15,8 @@ import {
     Plus,
     Eye,
     TrendingUp,
+    Database,
+    LineChart,
 } from 'lucide-react';
 // Components will be imported as they're created
 // import { CreatorStats } from './CreatorStats';
@@ -24,6 +26,8 @@ import ScheduleCalendar from './ScheduleCalendar';
 import { ScheduleContentModal } from './ScheduleContentModal';
 import { AutoPublishMonitor } from './AutoPublishMonitor';
 import { ProfileSettings } from './ProfileSettings';
+import { AdvancedAnalytics } from './AdvancedAnalytics';
+import { BulkContentOperations } from './BulkContentOperations';
 
 interface RawScheduledContent {
     id: string;
@@ -269,7 +273,7 @@ export function CreatorDashboard() {
                         <TabsList className='inline-flex w-max min-w-full h-12'>
                             <TabsTrigger
                                 value='overview'
-                                className='min-w-24 px-3 text-xs'
+                                className='min-w-20 px-2 text-xs'
                             >
                                 <BarChart3 className='h-4 w-4 md:mr-2' />
                                 <span className='hidden xs:inline ml-1'>
@@ -278,7 +282,7 @@ export function CreatorDashboard() {
                             </TabsTrigger>
                             <TabsTrigger
                                 value='content'
-                                className='min-w-24 px-3 text-xs'
+                                className='min-w-20 px-2 text-xs'
                             >
                                 <Video className='h-4 w-4 md:mr-2' />
                                 <span className='hidden xs:inline ml-1'>
@@ -286,8 +290,26 @@ export function CreatorDashboard() {
                                 </span>
                             </TabsTrigger>
                             <TabsTrigger
+                                value='analytics'
+                                className='min-w-20 px-2 text-xs'
+                            >
+                                <LineChart className='h-4 w-4 md:mr-2' />
+                                <span className='hidden xs:inline ml-1'>
+                                    Analytics
+                                </span>
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value='bulk'
+                                className='min-w-20 px-2 text-xs'
+                            >
+                                <Database className='h-4 w-4 md:mr-2' />
+                                <span className='hidden xs:inline ml-1'>
+                                    Bulk Ops
+                                </span>
+                            </TabsTrigger>
+                            <TabsTrigger
                                 value='schedule'
-                                className='min-w-24 px-3 text-xs'
+                                className='min-w-20 px-2 text-xs'
                             >
                                 <Calendar className='h-4 w-4 md:mr-2' />
                                 <span className='hidden xs:inline ml-1'>
@@ -296,7 +318,7 @@ export function CreatorDashboard() {
                             </TabsTrigger>
                             <TabsTrigger
                                 value='templates'
-                                className='min-w-24 px-3 text-xs'
+                                className='min-w-20 px-2 text-xs'
                             >
                                 <FileText className='h-4 w-4 md:mr-2' />
                                 <span className='hidden xs:inline ml-1'>
@@ -305,7 +327,7 @@ export function CreatorDashboard() {
                             </TabsTrigger>
                             <TabsTrigger
                                 value='settings'
-                                className='min-w-24 px-3 text-xs'
+                                className='min-w-20 px-2 text-xs'
                             >
                                 <Settings className='h-4 w-4 md:mr-2' />
                                 <span className='hidden xs:inline ml-1'>
@@ -315,7 +337,7 @@ export function CreatorDashboard() {
                         </TabsList>
                     </div>
                     {/* Desktop tab navigation */}
-                    <TabsList className='hidden md:grid w-full grid-cols-5'>
+                    <TabsList className='hidden md:grid w-full grid-cols-7'>
                         <TabsTrigger value='overview'>
                             <BarChart3 className='h-4 w-4 mr-2' />
                             Overview
@@ -323,6 +345,14 @@ export function CreatorDashboard() {
                         <TabsTrigger value='content'>
                             <Video className='h-4 w-4 mr-2' />
                             Content
+                        </TabsTrigger>
+                        <TabsTrigger value='analytics'>
+                            <LineChart className='h-4 w-4 mr-2' />
+                            Analytics
+                        </TabsTrigger>
+                        <TabsTrigger value='bulk'>
+                            <Database className='h-4 w-4 mr-2' />
+                            Bulk Operations
                         </TabsTrigger>
                         <TabsTrigger value='schedule'>
                             <Calendar className='h-4 w-4 mr-2' />
@@ -422,6 +452,12 @@ export function CreatorDashboard() {
                     </TabsContent>
                     <TabsContent value='content' className='mt-6'>
                         <ContentManager onCreateNew={handleCreateContent} />
+                    </TabsContent>
+                    <TabsContent value='analytics' className='mt-6'>
+                        <AdvancedAnalytics />
+                    </TabsContent>
+                    <TabsContent value='bulk' className='mt-6'>
+                        <BulkContentOperations />
                     </TabsContent>
                     <TabsContent value='schedule' className='mt-6'>
                         <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
