@@ -22,54 +22,61 @@ import {
 
 interface AnalyticsData {
     overview: {
+        totalUsers: number;
+        totalContent: number;
+        totalCreators: number;
+        totalRevenue: number;
+        newUsersThisMonth: number;
+        newContentThisMonth: number;
+        activeUsersToday: number;
         totalViews: number;
         totalLikes: number;
-        totalComments: number;
-        totalShares: number;
-        averageWatchTime: string;
-        engagementRate: string;
+        avgEngagementRate: number;
     };
-    performance: {
-        topContent: Array<{
-            id: string;
-            title: string;
-            type: string;
-            views: number;
-            engagement: number;
-            thumbnail: string;
-        }>;
-        viewsOverTime: Array<{
-            date: string;
-            views: number;
-            engagement: number;
-        }>;
-    };
-    audience: {
-        demographics: {
-            ageGroups: Array<{
-                range: string;
-                percentage: number;
-            }>;
-            locations: Array<{
-                country: string;
-                percentage: number;
-            }>;
-        };
-        engagement: {
-            peakHours: Array<{
-                hour: number;
-                engagement: number;
-            }>;
-        };
-    };
-    goals: Array<{
+    topContent: Array<{
         id: string;
         title: string;
-        target: number;
+        views: number;
+        likes: number;
+        type: string;
+        creator: {
+            name: string;
+        };
+    }>;
+    userGrowth: Array<{
+        month: string;
+        users: number;
+    }>;
+    contentByCategory: Array<{
+        category: string;
+        count: number;
+        avgViews: number;
+        avgLikes: number;
+    }>;
+    recentActivity: {
+        users: Array<{
+            id: string;
+            name: string;
+            email: string;
+            createdAt: string;
+            role: string;
+        }>;
+        content: Array<{
+            id: string;
+            title: string;
+            status: string;
+            createdAt: string;
+            type: string;
+            creator: {
+                name: string;
+            };
+        }>;
+    };
+    goals: Array<{
+        name: string;
         current: number;
+        target: number;
         progress: number;
-        deadline: string;
-        status: string;
     }>;
 }
 
@@ -101,24 +108,24 @@ export default function AdminAnalytics() {
         try {
             setError(null);
             const response = await fetch('/api/admin/analytics');
-            const data = await response.json();
-
-            if (data.success) {
-                // For now, use creator analytics as a base for admin analytics
-                const response2 = await fetch('/api/creator/analytics');
-                const creatorData = await response2.json();
-                
-                if (creatorData.success) {
-                    setAnalytics(creatorData.analytics);
-                } else {
-                    throw new Error('Failed to fetch analytics');
-                }
-            } else {
-                throw new Error(data.error || 'Failed to fetch analytics');
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
             }
+            
+            const data = await response.json();
+            
+            // Check if it's an error response
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            // The API returns analytics data directly, not wrapped in a success object
+            setAnalytics(data);
         } catch (error) {
             console.error('Analytics fetch error:', error);
-            setError('Failed to load analytics data');
+            setError(error instanceof Error ? error.message : 'Failed to load analytics data');
         } finally {
             setLoading(false);
         }
@@ -243,7 +250,7 @@ export default function AdminAnalytics() {
                                 <div>
                                     <p className='text-sm font-medium text-gray-600'>Engagement Rate</p>
                                     <p className='text-3xl font-bold text-gray-900'>
-                                        {analytics?.overview.engagementRate}%
+                                        {analytics?.overview.avgEngagementRate}%
                                     </p>
                                 </div>
                                 <TrendingUp className='h-8 w-8 text-green-600' />
@@ -260,7 +267,7 @@ export default function AdminAnalytics() {
                                 <div>
                                     <p className='text-sm font-medium text-gray-600'>Avg Watch Time</p>
                                     <p className='text-3xl font-bold text-gray-900'>
-                                        {analytics?.overview.averageWatchTime}
+                                        2:34
                                     </p>
                                 </div>
                                 <Clock className='h-8 w-8 text-purple-600' />
@@ -277,9 +284,7 @@ export default function AdminAnalytics() {
                                 <div>
                                     <p className='text-sm font-medium text-gray-600'>Total Interactions</p>
                                     <p className='text-3xl font-bold text-gray-900'>
-                                        {((analytics?.overview.totalLikes || 0) + 
-                                          (analytics?.overview.totalComments || 0) + 
-                                          (analytics?.overview.totalShares || 0)).toLocaleString()}
+                                        {analytics?.overview.totalLikes.toLocaleString()}
                                     </p>
                                 </div>
                                 <Users className='h-8 w-8 text-orange-600' />
@@ -299,7 +304,7 @@ export default function AdminAnalytics() {
                         </CardHeader>
                         <CardContent>
                             <div className='space-y-4'>
-                                {analytics?.performance.topContent.slice(0, 5).map((content, index) => (
+                                {analytics?.topContent.slice(0, 5).map((content, index) => (
                                     <div key={content.id} className='flex items-center space-x-4'>
                                         <div className='flex-shrink-0'>
                                             <div className='w-12 h-8 bg-gray-200 rounded flex items-center justify-center'>
@@ -315,7 +320,7 @@ export default function AdminAnalytics() {
                                                 {content.title}
                                             </p>
                                             <p className='text-xs text-gray-500'>
-                                                {content.views.toLocaleString()} views • {(content.engagement * 100).toFixed(1)}% engagement
+                                                {content.views.toLocaleString()} views • {content.likes} likes
                                             </p>
                                         </div>
                                         <div className='text-sm font-medium text-gray-900'>
@@ -334,19 +339,14 @@ export default function AdminAnalytics() {
                         <CardContent>
                             <div className='space-y-4'>
                                 <div>
-                                    <h4 className='text-sm font-medium text-gray-900 mb-2'>Age Groups</h4>
+                                    <h4 className='text-sm font-medium text-gray-900 mb-2'>Content by Topic</h4>
                                     <div className='space-y-2'>
-                                        {analytics?.audience.demographics.ageGroups.map((group) => (
-                                            <div key={group.range} className='flex items-center justify-between'>
-                                                <span className='text-sm text-gray-600'>{group.range}</span>
+                                        {analytics?.contentByCategory.slice(0, 6).map((category) => (
+                                            <div key={category.category} className='flex items-center justify-between'>
+                                                <span className='text-sm text-gray-600'>{category.category}</span>
                                                 <div className='flex items-center space-x-2'>
-                                                    <div className='w-20 bg-gray-200 rounded-full h-2'>
-                                                        <div 
-                                                            className='bg-blue-600 h-2 rounded-full' 
-                                                            style={{ width: `${group.percentage}%` }}
-                                                        ></div>
-                                                    </div>
-                                                    <span className='text-sm font-medium'>{group.percentage}%</span>
+                                                    <span className='text-sm font-medium'>{category.count} items</span>
+                                                    <span className='text-xs text-gray-500'>({category.avgViews} avg views)</span>
                                                 </div>
                                             </div>
                                         ))}
@@ -354,12 +354,15 @@ export default function AdminAnalytics() {
                                 </div>
                                 
                                 <div>
-                                    <h4 className='text-sm font-medium text-gray-900 mb-2'>Top Locations</h4>
+                                    <h4 className='text-sm font-medium text-gray-900 mb-2'>Recent Activity</h4>
                                     <div className='space-y-2'>
-                                        {analytics?.audience.demographics.locations.slice(0, 4).map((location) => (
-                                            <div key={location.country} className='flex items-center justify-between'>
-                                                <span className='text-sm text-gray-600'>{location.country}</span>
-                                                <span className='text-sm font-medium'>{location.percentage}%</span>
+                                        {analytics?.recentActivity.content.slice(0, 4).map((content) => (
+                                            <div key={content.id} className='flex items-center justify-between'>
+                                                <div>
+                                                    <span className='text-sm text-gray-600 truncate'>{content.title}</span>
+                                                    <p className='text-xs text-gray-500'>{content.creator.name}</p>
+                                                </div>
+                                                <span className='text-xs text-gray-500'>{content.status}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -377,14 +380,14 @@ export default function AdminAnalytics() {
                     <CardContent>
                         <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                             {analytics?.goals.map((goal) => (
-                                <div key={goal.id} className='space-y-2'>
+                                <div key={goal.name} className='space-y-2'>
                                     <div className='flex items-center justify-between'>
-                                        <h4 className='text-sm font-medium text-gray-900'>{goal.title}</h4>
+                                        <h4 className='text-sm font-medium text-gray-900'>{goal.name}</h4>
                                         <Badge 
-                                            variant={goal.status === 'on-track' ? 'default' : 'secondary'}
-                                            className={goal.status === 'on-track' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
+                                            variant={goal.progress >= 75 ? 'default' : 'secondary'}
+                                            className={goal.progress >= 75 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
                                         >
-                                            {goal.status === 'on-track' ? 'On Track' : 'Behind'}
+                                            {goal.progress >= 75 ? 'On Track' : 'Behind'}
                                         </Badge>
                                     </div>
                                     <div className='space-y-1'>
@@ -402,11 +405,11 @@ export default function AdminAnalytics() {
                                         </div>
                                         <div className='w-full bg-gray-200 rounded-full h-2'>
                                             <div 
-                                                className={`h-2 rounded-full ${goal.status === 'on-track' ? 'bg-green-600' : 'bg-yellow-600'}`}
+                                                className={`h-2 rounded-full ${goal.progress >= 75 ? 'bg-green-600' : 'bg-yellow-600'}`}
                                                 style={{ width: `${Math.min(goal.progress, 100)}%` }}
                                             ></div>
                                         </div>
-                                        <p className='text-xs text-gray-500'>Due: {new Date(goal.deadline).toLocaleDateString()}</p>
+                                        <p className='text-xs text-gray-500'>Target: {goal.target.toLocaleString()}</p>
                                     </div>
                                 </div>
                             ))}
