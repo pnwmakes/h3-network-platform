@@ -129,7 +129,8 @@ export default function AdminSettings() {
             if (data.success) {
                 toast({
                     title: 'Settings Saved',
-                    description: 'Platform settings have been updated successfully.',
+                    description:
+                        'Platform settings have been updated successfully.',
                 });
             } else {
                 throw new Error(data.error || 'Failed to save settings');
@@ -146,9 +147,13 @@ export default function AdminSettings() {
         }
     };
 
-    const updateSettings = (section: keyof SettingsData, field: string, value: string | number | boolean | string[]) => {
+    const updateSettings = (
+        section: keyof SettingsData,
+        field: string,
+        value: string | number | boolean | string[]
+    ) => {
         if (!settings) return;
-        
+
         setSettings({
             ...settings,
             [section]: {
@@ -171,7 +176,9 @@ export default function AdminSettings() {
             <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
                 <Card className='w-96'>
                     <CardContent className='p-6 text-center'>
-                        <h2 className='text-xl font-semibold mb-4'>Error Loading Settings</h2>
+                        <h2 className='text-xl font-semibold mb-4'>
+                            Error Loading Settings
+                        </h2>
                         <p className='text-gray-600 mb-4'>{error}</p>
                         <Button onClick={() => window.location.reload()}>
                             Try Again
@@ -206,7 +213,10 @@ export default function AdminSettings() {
                             </div>
                         </div>
                         <div className='flex items-center space-x-3'>
-                            <Badge variant='outline' className='bg-blue-50 text-blue-700 border-blue-200'>
+                            <Badge
+                                variant='outline'
+                                className='bg-blue-50 text-blue-700 border-blue-200'
+                            >
                                 Super Admin Access
                             </Badge>
                             <Button
@@ -215,7 +225,11 @@ export default function AdminSettings() {
                                 onClick={fetchSettings}
                                 disabled={loading}
                             >
-                                <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                                <RefreshCw
+                                    className={`h-4 w-4 mr-2 ${
+                                        loading ? 'animate-spin' : ''
+                                    }`}
+                                />
                                 Refresh
                             </Button>
                             <Button
@@ -223,7 +237,11 @@ export default function AdminSettings() {
                                 onClick={handleSaveSettings}
                                 disabled={saving}
                             >
-                                <Save className={`h-4 w-4 mr-2 ${saving ? 'animate-spin' : ''}`} />
+                                <Save
+                                    className={`h-4 w-4 mr-2 ${
+                                        saving ? 'animate-spin' : ''
+                                    }`}
+                                />
                                 Save Changes
                             </Button>
                         </div>
@@ -253,40 +271,74 @@ export default function AdminSettings() {
                             <CardContent className='space-y-6'>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='siteName'>Site Name</Label>
+                                        <Label htmlFor='siteName'>
+                                            Site Name
+                                        </Label>
                                         <Input
                                             id='siteName'
-                                            value={settings?.platform.siteName || ''}
-                                            onChange={(e) => updateSettings('platform', 'siteName', e.target.value)}
+                                            value={
+                                                settings?.platform.siteName ||
+                                                ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'platform',
+                                                    'siteName',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='H3 Network Platform'
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='siteDescription'>Site Description</Label>
+                                        <Label htmlFor='siteDescription'>
+                                            Site Description
+                                        </Label>
                                         <Textarea
                                             id='siteDescription'
-                                            value={settings?.platform.siteDescription || ''}
-                                            onChange={(e) => updateSettings('platform', 'siteDescription', e.target.value)}
+                                            value={
+                                                settings?.platform
+                                                    .siteDescription || ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'platform',
+                                                    'siteDescription',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='Platform description'
                                             rows={3}
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className='space-y-4'>
                                     <div className='flex items-center justify-between'>
                                         <div className='space-y-0.5'>
                                             <Label>Maintenance Mode</Label>
                                             <p className='text-sm text-gray-500'>
-                                                Put the platform in maintenance mode
+                                                Put the platform in maintenance
+                                                mode
                                             </p>
                                         </div>
                                         <Switch
-                                            checked={settings?.platform.maintenanceMode || false}
-                                            onCheckedChange={(checked: boolean) => updateSettings('platform', 'maintenanceMode', checked)}
+                                            checked={
+                                                settings?.platform
+                                                    .maintenanceMode || false
+                                            }
+                                            onCheckedChange={(
+                                                checked: boolean
+                                            ) =>
+                                                updateSettings(
+                                                    'platform',
+                                                    'maintenanceMode',
+                                                    checked
+                                                )
+                                            }
                                         />
                                     </div>
-                                    
+
                                     <div className='flex items-center justify-between'>
                                         <div className='space-y-0.5'>
                                             <Label>Registration Enabled</Label>
@@ -295,21 +347,48 @@ export default function AdminSettings() {
                                             </p>
                                         </div>
                                         <Switch
-                                            checked={settings?.platform.registrationEnabled || false}
-                                            onCheckedChange={(checked: boolean) => updateSettings('platform', 'registrationEnabled', checked)}
+                                            checked={
+                                                settings?.platform
+                                                    .registrationEnabled ||
+                                                false
+                                            }
+                                            onCheckedChange={(
+                                                checked: boolean
+                                            ) =>
+                                                updateSettings(
+                                                    'platform',
+                                                    'registrationEnabled',
+                                                    checked
+                                                )
+                                            }
                                         />
                                     </div>
-                                    
+
                                     <div className='flex items-center justify-between'>
                                         <div className='space-y-0.5'>
-                                            <Label>Email Verification Required</Label>
+                                            <Label>
+                                                Email Verification Required
+                                            </Label>
                                             <p className='text-sm text-gray-500'>
-                                                Require email verification for new accounts
+                                                Require email verification for
+                                                new accounts
                                             </p>
                                         </div>
                                         <Switch
-                                            checked={settings?.platform.emailVerificationRequired || false}
-                                            onCheckedChange={(checked: boolean) => updateSettings('platform', 'emailVerificationRequired', checked)}
+                                            checked={
+                                                settings?.platform
+                                                    .emailVerificationRequired ||
+                                                false
+                                            }
+                                            onCheckedChange={(
+                                                checked: boolean
+                                            ) =>
+                                                updateSettings(
+                                                    'platform',
+                                                    'emailVerificationRequired',
+                                                    checked
+                                                )
+                                            }
                                         />
                                     </div>
                                 </div>
@@ -327,52 +406,108 @@ export default function AdminSettings() {
                                     <div className='space-y-0.5'>
                                         <Label>Auto-approval Enabled</Label>
                                         <p className='text-sm text-gray-500'>
-                                            Automatically approve new content from trusted creators
+                                            Automatically approve new content
+                                            from trusted creators
                                         </p>
                                     </div>
                                     <Switch
-                                        checked={settings?.content.autoApprovalEnabled || false}
-                                        onCheckedChange={(checked: boolean) => updateSettings('content', 'autoApprovalEnabled', checked)}
+                                        checked={
+                                            settings?.content
+                                                .autoApprovalEnabled || false
+                                        }
+                                        onCheckedChange={(checked: boolean) =>
+                                            updateSettings(
+                                                'content',
+                                                'autoApprovalEnabled',
+                                                checked
+                                            )
+                                        }
                                     />
                                 </div>
-                                
+
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='maxVideoFileSize'>Max Video File Size (MB)</Label>
+                                        <Label htmlFor='maxVideoFileSize'>
+                                            Max Video File Size (MB)
+                                        </Label>
                                         <Input
                                             id='maxVideoFileSize'
                                             type='number'
-                                            value={settings?.content.maxVideoFileSize || 0}
-                                            onChange={(e) => updateSettings('content', 'maxVideoFileSize', parseInt(e.target.value))}
+                                            value={
+                                                settings?.content
+                                                    .maxVideoFileSize || 0
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'content',
+                                                    'maxVideoFileSize',
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='maxImageFileSize'>Max Image File Size (MB)</Label>
+                                        <Label htmlFor='maxImageFileSize'>
+                                            Max Image File Size (MB)
+                                        </Label>
                                         <Input
                                             id='maxImageFileSize'
                                             type='number'
-                                            value={settings?.content.maxImageFileSize || 0}
-                                            onChange={(e) => updateSettings('content', 'maxImageFileSize', parseInt(e.target.value))}
+                                            value={
+                                                settings?.content
+                                                    .maxImageFileSize || 0
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'content',
+                                                    'maxImageFileSize',
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='allowedVideoFormats'>Allowed Video Formats</Label>
+                                        <Label htmlFor='allowedVideoFormats'>
+                                            Allowed Video Formats
+                                        </Label>
                                         <Input
                                             id='allowedVideoFormats'
-                                            value={settings?.content.allowedVideoFormats.join(', ') || ''}
-                                            onChange={(e) => updateSettings('content', 'allowedVideoFormats', e.target.value.split(', '))}
+                                            value={
+                                                settings?.content.allowedVideoFormats.join(
+                                                    ', '
+                                                ) || ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'content',
+                                                    'allowedVideoFormats',
+                                                    e.target.value.split(', ')
+                                                )
+                                            }
                                             placeholder='mp4, webm, mov'
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='allowedImageFormats'>Allowed Image Formats</Label>
+                                        <Label htmlFor='allowedImageFormats'>
+                                            Allowed Image Formats
+                                        </Label>
                                         <Input
                                             id='allowedImageFormats'
-                                            value={settings?.content.allowedImageFormats.join(', ') || ''}
-                                            onChange={(e) => updateSettings('content', 'allowedImageFormats', e.target.value.split(', '))}
+                                            value={
+                                                settings?.content.allowedImageFormats.join(
+                                                    ', '
+                                                ) || ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'content',
+                                                    'allowedImageFormats',
+                                                    e.target.value.split(', ')
+                                                )
+                                            }
                                             placeholder='jpg, jpeg, png, webp'
                                         />
                                     </div>
@@ -392,47 +527,87 @@ export default function AdminSettings() {
                             <CardContent className='space-y-6'>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='smtpHost'>SMTP Host</Label>
+                                        <Label htmlFor='smtpHost'>
+                                            SMTP Host
+                                        </Label>
                                         <Input
                                             id='smtpHost'
-                                            value={settings?.email.smtpHost || ''}
-                                            onChange={(e) => updateSettings('email', 'smtpHost', e.target.value)}
+                                            value={
+                                                settings?.email.smtpHost || ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'email',
+                                                    'smtpHost',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='smtp.gmail.com'
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='smtpPort'>SMTP Port</Label>
+                                        <Label htmlFor='smtpPort'>
+                                            SMTP Port
+                                        </Label>
                                         <Input
                                             id='smtpPort'
-                                            value={settings?.email.smtpPort || ''}
-                                            onChange={(e) => updateSettings('email', 'smtpPort', e.target.value)}
+                                            value={
+                                                settings?.email.smtpPort || ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'email',
+                                                    'smtpPort',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='587'
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='fromEmail'>From Email</Label>
+                                        <Label htmlFor='fromEmail'>
+                                            From Email
+                                        </Label>
                                         <Input
                                             id='fromEmail'
                                             type='email'
-                                            value={settings?.email.fromEmail || ''}
-                                            onChange={(e) => updateSettings('email', 'fromEmail', e.target.value)}
+                                            value={
+                                                settings?.email.fromEmail || ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'email',
+                                                    'fromEmail',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='noreply@h3network.org'
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='fromName'>From Name</Label>
+                                        <Label htmlFor='fromName'>
+                                            From Name
+                                        </Label>
                                         <Input
                                             id='fromName'
-                                            value={settings?.email.fromName || ''}
-                                            onChange={(e) => updateSettings('email', 'fromName', e.target.value)}
+                                            value={
+                                                settings?.email.fromName || ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'email',
+                                                    'fromName',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='H3 Network'
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className='flex items-center justify-between'>
                                     <div className='space-y-0.5'>
                                         <Label>SMTP Secure</Label>
@@ -441,8 +616,16 @@ export default function AdminSettings() {
                                         </p>
                                     </div>
                                     <Switch
-                                        checked={settings?.email.smtpSecure || false}
-                                        onCheckedChange={(checked: boolean) => updateSettings('email', 'smtpSecure', checked)}
+                                        checked={
+                                            settings?.email.smtpSecure || false
+                                        }
+                                        onCheckedChange={(checked: boolean) =>
+                                            updateSettings(
+                                                'email',
+                                                'smtpSecure',
+                                                checked
+                                            )
+                                        }
                                     />
                                 </div>
                             </CardContent>
@@ -459,31 +642,63 @@ export default function AdminSettings() {
                             </CardHeader>
                             <CardContent className='space-y-6'>
                                 <div className='space-y-2'>
-                                    <Label htmlFor='googleAnalyticsId'>Google Analytics ID</Label>
+                                    <Label htmlFor='googleAnalyticsId'>
+                                        Google Analytics ID
+                                    </Label>
                                     <Input
                                         id='googleAnalyticsId'
-                                        value={settings?.analytics.googleAnalyticsId || ''}
-                                        onChange={(e) => updateSettings('analytics', 'googleAnalyticsId', e.target.value)}
+                                        value={
+                                            settings?.analytics
+                                                .googleAnalyticsId || ''
+                                        }
+                                        onChange={(e) =>
+                                            updateSettings(
+                                                'analytics',
+                                                'googleAnalyticsId',
+                                                e.target.value
+                                            )
+                                        }
                                         placeholder='G-XXXXXXXXXX'
                                     />
                                 </div>
-                                
+
                                 <div className='space-y-2'>
-                                    <Label htmlFor='facebookPixelId'>Facebook Pixel ID</Label>
+                                    <Label htmlFor='facebookPixelId'>
+                                        Facebook Pixel ID
+                                    </Label>
                                     <Input
                                         id='facebookPixelId'
-                                        value={settings?.analytics.facebookPixelId || ''}
-                                        onChange={(e) => updateSettings('analytics', 'facebookPixelId', e.target.value)}
+                                        value={
+                                            settings?.analytics
+                                                .facebookPixelId || ''
+                                        }
+                                        onChange={(e) =>
+                                            updateSettings(
+                                                'analytics',
+                                                'facebookPixelId',
+                                                e.target.value
+                                            )
+                                        }
                                         placeholder='123456789012345'
                                     />
                                 </div>
-                                
+
                                 <div className='space-y-2'>
-                                    <Label htmlFor='hotjarId'>Hotjar Site ID</Label>
+                                    <Label htmlFor='hotjarId'>
+                                        Hotjar Site ID
+                                    </Label>
                                     <Input
                                         id='hotjarId'
-                                        value={settings?.analytics.hotjarId || ''}
-                                        onChange={(e) => updateSettings('analytics', 'hotjarId', e.target.value)}
+                                        value={
+                                            settings?.analytics.hotjarId || ''
+                                        }
+                                        onChange={(e) =>
+                                            updateSettings(
+                                                'analytics',
+                                                'hotjarId',
+                                                e.target.value
+                                            )
+                                        }
                                         placeholder='1234567'
                                     />
                                 </div>
@@ -502,52 +717,106 @@ export default function AdminSettings() {
                             <CardContent className='space-y-6'>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='facebookUrl'>Facebook URL</Label>
+                                        <Label htmlFor='facebookUrl'>
+                                            Facebook URL
+                                        </Label>
                                         <Input
                                             id='facebookUrl'
-                                            value={settings?.social.facebookUrl || ''}
-                                            onChange={(e) => updateSettings('social', 'facebookUrl', e.target.value)}
+                                            value={
+                                                settings?.social.facebookUrl ||
+                                                ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'social',
+                                                    'facebookUrl',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='https://facebook.com/h3network'
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='twitterUrl'>Twitter URL</Label>
+                                        <Label htmlFor='twitterUrl'>
+                                            Twitter URL
+                                        </Label>
                                         <Input
                                             id='twitterUrl'
-                                            value={settings?.social.twitterUrl || ''}
-                                            onChange={(e) => updateSettings('social', 'twitterUrl', e.target.value)}
+                                            value={
+                                                settings?.social.twitterUrl ||
+                                                ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'social',
+                                                    'twitterUrl',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='https://twitter.com/h3network'
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='instagramUrl'>Instagram URL</Label>
+                                        <Label htmlFor='instagramUrl'>
+                                            Instagram URL
+                                        </Label>
                                         <Input
                                             id='instagramUrl'
-                                            value={settings?.social.instagramUrl || ''}
-                                            onChange={(e) => updateSettings('social', 'instagramUrl', e.target.value)}
+                                            value={
+                                                settings?.social.instagramUrl ||
+                                                ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'social',
+                                                    'instagramUrl',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='https://instagram.com/h3network'
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='youtubeUrl'>YouTube URL</Label>
+                                        <Label htmlFor='youtubeUrl'>
+                                            YouTube URL
+                                        </Label>
                                         <Input
                                             id='youtubeUrl'
-                                            value={settings?.social.youtubeUrl || ''}
-                                            onChange={(e) => updateSettings('social', 'youtubeUrl', e.target.value)}
+                                            value={
+                                                settings?.social.youtubeUrl ||
+                                                ''
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'social',
+                                                    'youtubeUrl',
+                                                    e.target.value
+                                                )
+                                            }
                                             placeholder='https://youtube.com/@h3network'
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className='space-y-2'>
-                                    <Label htmlFor='linkedinUrl'>LinkedIn URL</Label>
+                                    <Label htmlFor='linkedinUrl'>
+                                        LinkedIn URL
+                                    </Label>
                                     <Input
                                         id='linkedinUrl'
-                                        value={settings?.social.linkedinUrl || ''}
-                                        onChange={(e) => updateSettings('social', 'linkedinUrl', e.target.value)}
+                                        value={
+                                            settings?.social.linkedinUrl || ''
+                                        }
+                                        onChange={(e) =>
+                                            updateSettings(
+                                                'social',
+                                                'linkedinUrl',
+                                                e.target.value
+                                            )
+                                        }
                                         placeholder='https://linkedin.com/company/h3network'
                                     />
                                 </div>
@@ -566,46 +835,90 @@ export default function AdminSettings() {
                             <CardContent className='space-y-6'>
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='sessionTimeout'>Session Timeout (hours)</Label>
+                                        <Label htmlFor='sessionTimeout'>
+                                            Session Timeout (hours)
+                                        </Label>
                                         <Input
                                             id='sessionTimeout'
                                             type='number'
-                                            value={settings?.security.sessionTimeout || 0}
-                                            onChange={(e) => updateSettings('security', 'sessionTimeout', parseInt(e.target.value))}
+                                            value={
+                                                settings?.security
+                                                    .sessionTimeout || 0
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'security',
+                                                    'sessionTimeout',
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='maxLoginAttempts'>Max Login Attempts</Label>
+                                        <Label htmlFor='maxLoginAttempts'>
+                                            Max Login Attempts
+                                        </Label>
                                         <Input
                                             id='maxLoginAttempts'
                                             type='number'
-                                            value={settings?.security.maxLoginAttempts || 0}
-                                            onChange={(e) => updateSettings('security', 'maxLoginAttempts', parseInt(e.target.value))}
+                                            value={
+                                                settings?.security
+                                                    .maxLoginAttempts || 0
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'security',
+                                                    'maxLoginAttempts',
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='lockoutDuration'>Lockout Duration (minutes)</Label>
+                                        <Label htmlFor='lockoutDuration'>
+                                            Lockout Duration (minutes)
+                                        </Label>
                                         <Input
                                             id='lockoutDuration'
                                             type='number'
-                                            value={settings?.security.lockoutDuration || 0}
-                                            onChange={(e) => updateSettings('security', 'lockoutDuration', parseInt(e.target.value))}
+                                            value={
+                                                settings?.security
+                                                    .lockoutDuration || 0
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'security',
+                                                    'lockoutDuration',
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
                                         />
                                     </div>
                                     <div className='space-y-2'>
-                                        <Label htmlFor='passwordMinLength'>Password Min Length</Label>
+                                        <Label htmlFor='passwordMinLength'>
+                                            Password Min Length
+                                        </Label>
                                         <Input
                                             id='passwordMinLength'
                                             type='number'
-                                            value={settings?.security.passwordMinLength || 0}
-                                            onChange={(e) => updateSettings('security', 'passwordMinLength', parseInt(e.target.value))}
+                                            value={
+                                                settings?.security
+                                                    .passwordMinLength || 0
+                                            }
+                                            onChange={(e) =>
+                                                updateSettings(
+                                                    'security',
+                                                    'passwordMinLength',
+                                                    parseInt(e.target.value)
+                                                )
+                                            }
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div className='flex items-center justify-between'>
                                     <div className='space-y-0.5'>
                                         <Label>Require Strong Passwords</Label>
@@ -614,8 +927,17 @@ export default function AdminSettings() {
                                         </p>
                                     </div>
                                     <Switch
-                                        checked={settings?.security.requireStrongPasswords || false}
-                                        onCheckedChange={(checked: boolean) => updateSettings('security', 'requireStrongPasswords', checked)}
+                                        checked={
+                                            settings?.security
+                                                .requireStrongPasswords || false
+                                        }
+                                        onCheckedChange={(checked: boolean) =>
+                                            updateSettings(
+                                                'security',
+                                                'requireStrongPasswords',
+                                                checked
+                                            )
+                                        }
                                     />
                                 </div>
                             </CardContent>

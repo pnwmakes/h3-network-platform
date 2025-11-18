@@ -137,17 +137,100 @@ export default function AdminReports() {
 
     const exportReport = (reportType: string) => {
         if (!reports) return;
+
+        let csvContent = '';
+        const date = new Date().toLocaleDateString();
         
-        const reportData = reportType === 'full' ? reports : reports[reportType as keyof ReportsData];
-        const dataStr = JSON.stringify(reportData, null, 2);
-        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        csvContent += `H3 Network Platform - ${reportType.toUpperCase()} Report\n`;
+        csvContent += `Generated on: ${date}\n\n`;
+
+        if (reportType === 'full') {
+            // Platform Overview
+            csvContent += `PLATFORM OVERVIEW\n`;
+            csvContent += `Metric,Value\n`;
+            csvContent += `Total Users,${reports.overview.totalUsers}\n`;
+            csvContent += `Active Users,${reports.overview.activeUsers}\n`;
+            csvContent += `Total Content,${reports.overview.totalContent}\n`;
+            csvContent += `Pending Content,${reports.overview.pendingContent}\n\n`;
+
+            // User Activity
+            csvContent += `USER ACTIVITY\n`;
+            csvContent += `Metric,Value\n`;
+            csvContent += `New Registrations (Last Week),${reports.userActivity.newRegistrations.lastWeek}\n`;
+            csvContent += `New Registrations (Last Month),${reports.userActivity.newRegistrations.lastMonth}\n\n`;
+
+            csvContent += `USERS BY ROLE\n`;
+            csvContent += `Role,Count\n`;
+            reports.userActivity.usersByRole.forEach(user => {
+                csvContent += `${user.role},${user._count.role}\n`;
+            });
+            csvContent += `\n`;
+
+            // Content by Status
+            csvContent += `VIDEO CONTENT BY STATUS\n`;
+            csvContent += `Status,Count\n`;
+            reports.contentActivity.contentByStatus.videos.forEach(video => {
+                csvContent += `${video.status},${video._count.status}\n`;
+            });
+            csvContent += `\n`;
+
+            csvContent += `BLOG CONTENT BY STATUS\n`;
+            csvContent += `Status,Count\n`;
+            reports.contentActivity.contentByStatus.blogs.forEach(blog => {
+                csvContent += `${blog.status},${blog._count.status}\n`;
+            });
+            csvContent += `\n`;
+
+            // Creator Performance
+            csvContent += `CREATOR PERFORMANCE\n`;
+            csvContent += `Metric,Value\n`;
+            csvContent += `Total Creators,${reports.creatorActivity.totalCreators}\n`;
+            csvContent += `Active Creators,${reports.creatorActivity.activeCreators}\n\n`;
+
+            csvContent += `TOP CREATORS\n`;
+            csvContent += `Name,Videos,Blogs,Total Content\n`;
+            reports.creatorActivity.topCreators.forEach(creator => {
+                const totalContent = creator._count.videos + creator._count.blogs;
+                csvContent += `"${creator.displayName}",${creator._count.videos},${creator._count.blogs},${totalContent}\n`;
+            });
+            csvContent += `\n`;
+
+            // System Health
+            csvContent += `SYSTEM HEALTH\n`;
+            csvContent += `Metric,Value\n`;
+            csvContent += `Database Status,${reports.systemHealth.databaseStatus}\n`;
+            csvContent += `Last Backup,${reports.systemHealth.lastBackup}\n`;
+            csvContent += `Storage Used,${reports.systemHealth.storageUsed}\n`;
+            csvContent += `Bandwidth,${reports.systemHealth.bandwidth}\n`;
+            csvContent += `Uptime,${reports.systemHealth.uptime}\n`;
+        } else {
+            // Export specific report type
+            const reportData = reports[reportType as keyof ReportsData];
+            if (reportData && typeof reportData === 'object') {
+                csvContent += `METRICS\n`;
+                csvContent += `Metric,Value\n`;
+                Object.entries(reportData).forEach(([key, value]) => {
+                    const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    csvContent += `${formattedKey},${value}\n`;
+                });
+            }
+        }
+
+        // Create and download CSV file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
         
-        const exportFileDefaultName = `h3-${reportType}-report-${new Date().toISOString().split('T')[0]}.json`;
+        link.setAttribute('href', url);
+        link.setAttribute('download', `H3-${reportType}-Report-${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
         
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up the URL object
+        URL.revokeObjectURL(url);
     };
 
     if (loading) {
@@ -163,7 +246,9 @@ export default function AdminReports() {
             <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
                 <Card className='w-96'>
                     <CardContent className='p-6 text-center'>
-                        <h2 className='text-xl font-semibold mb-4'>Error Loading Reports</h2>
+                        <h2 className='text-xl font-semibold mb-4'>
+                            Error Loading Reports
+                        </h2>
                         <p className='text-gray-600 mb-4'>{error}</p>
                         <Button onClick={() => window.location.reload()}>
                             Try Again
@@ -193,12 +278,18 @@ export default function AdminReports() {
                                     Platform Reports
                                 </h1>
                                 <p className='text-sm text-gray-500'>
-                                    Generated {generatedAt ? new Date(generatedAt).toLocaleString() : 'now'}
+                                    Generated{' '}
+                                    {generatedAt
+                                        ? new Date(generatedAt).toLocaleString()
+                                        : 'now'}
                                 </p>
                             </div>
                         </div>
                         <div className='flex items-center space-x-3'>
-                            <Badge variant='outline' className='bg-blue-50 text-blue-700 border-blue-200'>
+                            <Badge
+                                variant='outline'
+                                className='bg-blue-50 text-blue-700 border-blue-200'
+                            >
                                 Super Admin Access
                             </Badge>
                             <Button
@@ -207,7 +298,11 @@ export default function AdminReports() {
                                 onClick={handleRefresh}
                                 disabled={refreshing}
                             >
-                                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                                <RefreshCw
+                                    className={`h-4 w-4 mr-2 ${
+                                        refreshing ? 'animate-spin' : ''
+                                    }`}
+                                />
                                 Refresh
                             </Button>
                             <Button
@@ -216,7 +311,7 @@ export default function AdminReports() {
                                 onClick={() => exportReport('full')}
                             >
                                 <Download className='h-4 w-4 mr-2' />
-                                Export All
+                                Export All CSV
                             </Button>
                         </div>
                     </div>
@@ -230,7 +325,9 @@ export default function AdminReports() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>Total Users</p>
+                                    <p className='text-sm font-medium text-gray-600'>
+                                        Total Users
+                                    </p>
                                     <p className='text-3xl font-bold text-gray-900'>
                                         {reports?.overview.totalUsers}
                                     </p>
@@ -238,7 +335,11 @@ export default function AdminReports() {
                                 <Users className='h-8 w-8 text-blue-600' />
                             </div>
                             <p className='text-xs text-gray-500 mt-2'>
-                                {reports?.userActivity.newRegistrations.lastMonth} new this month
+                                {
+                                    reports?.userActivity.newRegistrations
+                                        .lastMonth
+                                }{' '}
+                                new this month
                             </p>
                         </CardContent>
                     </Card>
@@ -247,7 +348,9 @@ export default function AdminReports() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>Total Content</p>
+                                    <p className='text-sm font-medium text-gray-600'>
+                                        Total Content
+                                    </p>
                                     <p className='text-3xl font-bold text-gray-900'>
                                         {reports?.overview.totalContent}
                                     </p>
@@ -255,7 +358,8 @@ export default function AdminReports() {
                                 <FileText className='h-8 w-8 text-green-600' />
                             </div>
                             <p className='text-xs text-gray-500 mt-2'>
-                                {reports?.overview.pendingContent} pending approval
+                                {reports?.overview.pendingContent} pending
+                                approval
                             </p>
                         </CardContent>
                     </Card>
@@ -264,7 +368,9 @@ export default function AdminReports() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>Active Users</p>
+                                    <p className='text-sm font-medium text-gray-600'>
+                                        Active Users
+                                    </p>
                                     <p className='text-3xl font-bold text-gray-900'>
                                         {reports?.overview.activeUsers}
                                     </p>
@@ -272,9 +378,15 @@ export default function AdminReports() {
                                 <Activity className='h-8 w-8 text-purple-600' />
                             </div>
                             <p className='text-xs text-green-600 mt-2'>
-                                {reports?.overview.activeUsers && reports?.overview.totalUsers 
-                                    ? Math.round((reports.overview.activeUsers / reports.overview.totalUsers) * 100)
-                                    : 0}% of total users
+                                {reports?.overview.activeUsers &&
+                                reports?.overview.totalUsers
+                                    ? Math.round(
+                                          (reports.overview.activeUsers /
+                                              reports.overview.totalUsers) *
+                                              100
+                                      )
+                                    : 0}
+                                % of total users
                             </p>
                         </CardContent>
                     </Card>
@@ -283,15 +395,21 @@ export default function AdminReports() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>Active Creators</p>
+                                    <p className='text-sm font-medium text-gray-600'>
+                                        Active Creators
+                                    </p>
                                     <p className='text-3xl font-bold text-gray-900'>
-                                        {reports?.creatorActivity.activeCreators}
+                                        {
+                                            reports?.creatorActivity
+                                                .activeCreators
+                                        }
                                     </p>
                                 </div>
                                 <Video className='h-8 w-8 text-orange-600' />
                             </div>
                             <p className='text-xs text-gray-500 mt-2'>
-                                of {reports?.creatorActivity.totalCreators} total creators
+                                of {reports?.creatorActivity.totalCreators}{' '}
+                                total creators
                             </p>
                         </CardContent>
                     </Card>
@@ -314,7 +432,9 @@ export default function AdminReports() {
                                     <Button
                                         variant='outline'
                                         size='sm'
-                                        onClick={() => exportReport('userActivity')}
+                                        onClick={() =>
+                                            exportReport('userActivity')
+                                        }
                                     >
                                         <Download className='h-4 w-4 mr-2' />
                                         Export
@@ -323,15 +443,27 @@ export default function AdminReports() {
                                 <CardContent>
                                     <div className='space-y-4'>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm font-medium'>New registrations (7 days)</span>
+                                            <span className='text-sm font-medium'>
+                                                New registrations (7 days)
+                                            </span>
                                             <span className='text-lg font-bold text-green-600'>
-                                                {reports?.userActivity.newRegistrations.lastWeek}
+                                                {
+                                                    reports?.userActivity
+                                                        .newRegistrations
+                                                        .lastWeek
+                                                }
                                             </span>
                                         </div>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm font-medium'>New registrations (30 days)</span>
+                                            <span className='text-sm font-medium'>
+                                                New registrations (30 days)
+                                            </span>
                                             <span className='text-lg font-bold text-blue-600'>
-                                                {reports?.userActivity.newRegistrations.lastMonth}
+                                                {
+                                                    reports?.userActivity
+                                                        .newRegistrations
+                                                        .lastMonth
+                                                }
                                             </span>
                                         </div>
                                     </div>
@@ -344,18 +476,23 @@ export default function AdminReports() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className='space-y-3'>
-                                        {reports?.userActivity.usersByRole.map((roleData) => (
-                                            <div key={roleData.role} className='flex items-center justify-between'>
-                                                <div className='flex items-center space-x-2'>
-                                                    <Badge variant='outline'>
-                                                        {roleData.role}
-                                                    </Badge>
+                                        {reports?.userActivity.usersByRole.map(
+                                            (roleData) => (
+                                                <div
+                                                    key={roleData.role}
+                                                    className='flex items-center justify-between'
+                                                >
+                                                    <div className='flex items-center space-x-2'>
+                                                        <Badge variant='outline'>
+                                                            {roleData.role}
+                                                        </Badge>
+                                                    </div>
+                                                    <span className='font-medium'>
+                                                        {roleData._count.role}
+                                                    </span>
                                                 </div>
-                                                <span className='font-medium'>
-                                                    {roleData._count.role}
-                                                </span>
-                                            </div>
-                                        ))}
+                                            )
+                                        )}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -370,7 +507,9 @@ export default function AdminReports() {
                                     <Button
                                         variant='outline'
                                         size='sm'
-                                        onClick={() => exportReport('contentActivity')}
+                                        onClick={() =>
+                                            exportReport('contentActivity')
+                                        }
                                     >
                                         <Download className='h-4 w-4 mr-2' />
                                         Export
@@ -379,34 +518,64 @@ export default function AdminReports() {
                                 <CardContent>
                                     <div className='space-y-4'>
                                         <div>
-                                            <h4 className='text-sm font-medium text-gray-900 mb-2'>Videos</h4>
+                                            <h4 className='text-sm font-medium text-gray-900 mb-2'>
+                                                Videos
+                                            </h4>
                                             <div className='space-y-2'>
-                                                {reports?.contentActivity.contentByStatus.videos.map((statusData) => (
-                                                    <div key={statusData.status} className='flex items-center justify-between'>
-                                                        <Badge variant='outline'>
-                                                            {statusData.status}
-                                                        </Badge>
-                                                        <span className='font-medium'>
-                                                            {statusData._count.status}
-                                                        </span>
-                                                    </div>
-                                                ))}
+                                                {reports?.contentActivity.contentByStatus.videos.map(
+                                                    (statusData) => (
+                                                        <div
+                                                            key={
+                                                                statusData.status
+                                                            }
+                                                            className='flex items-center justify-between'
+                                                        >
+                                                            <Badge variant='outline'>
+                                                                {
+                                                                    statusData.status
+                                                                }
+                                                            </Badge>
+                                                            <span className='font-medium'>
+                                                                {
+                                                                    statusData
+                                                                        ._count
+                                                                        .status
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    )
+                                                )}
                                             </div>
                                         </div>
-                                        
+
                                         <div>
-                                            <h4 className='text-sm font-medium text-gray-900 mb-2'>Blogs</h4>
+                                            <h4 className='text-sm font-medium text-gray-900 mb-2'>
+                                                Blogs
+                                            </h4>
                                             <div className='space-y-2'>
-                                                {reports?.contentActivity.contentByStatus.blogs.map((statusData) => (
-                                                    <div key={statusData.status} className='flex items-center justify-between'>
-                                                        <Badge variant='outline'>
-                                                            {statusData.status}
-                                                        </Badge>
-                                                        <span className='font-medium'>
-                                                            {statusData._count.status}
-                                                        </span>
-                                                    </div>
-                                                ))}
+                                                {reports?.contentActivity.contentByStatus.blogs.map(
+                                                    (statusData) => (
+                                                        <div
+                                                            key={
+                                                                statusData.status
+                                                            }
+                                                            className='flex items-center justify-between'
+                                                        >
+                                                            <Badge variant='outline'>
+                                                                {
+                                                                    statusData.status
+                                                                }
+                                                            </Badge>
+                                                            <span className='font-medium'>
+                                                                {
+                                                                    statusData
+                                                                        ._count
+                                                                        .status
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    )
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -420,34 +589,65 @@ export default function AdminReports() {
                                 <CardContent>
                                     <div className='space-y-4'>
                                         <div>
-                                            <h4 className='text-sm font-medium text-gray-900 mb-2'>Latest Videos</h4>
+                                            <h4 className='text-sm font-medium text-gray-900 mb-2'>
+                                                Latest Videos
+                                            </h4>
                                             <div className='space-y-2'>
-                                                {reports?.contentActivity.recentContent.videos.slice(0, 3).map((video) => (
-                                                    <div key={video.id} className='text-sm'>
-                                                        <p className='font-medium text-gray-900 truncate'>
-                                                            {video.title}
-                                                        </p>
-                                                        <p className='text-gray-500 text-xs'>
-                                                            by {video.creator.displayName} • {new Date(video.createdAt).toLocaleDateString()}
-                                                        </p>
-                                                    </div>
-                                                ))}
+                                                {reports?.contentActivity.recentContent.videos
+                                                    .slice(0, 3)
+                                                    .map((video) => (
+                                                        <div
+                                                            key={video.id}
+                                                            className='text-sm'
+                                                        >
+                                                            <p className='font-medium text-gray-900 truncate'>
+                                                                {video.title}
+                                                            </p>
+                                                            <p className='text-gray-500 text-xs'>
+                                                                by{' '}
+                                                                {
+                                                                    video
+                                                                        .creator
+                                                                        .displayName
+                                                                }{' '}
+                                                                •{' '}
+                                                                {new Date(
+                                                                    video.createdAt
+                                                                ).toLocaleDateString()}
+                                                            </p>
+                                                        </div>
+                                                    ))}
                                             </div>
                                         </div>
-                                        
+
                                         <div>
-                                            <h4 className='text-sm font-medium text-gray-900 mb-2'>Latest Blogs</h4>
+                                            <h4 className='text-sm font-medium text-gray-900 mb-2'>
+                                                Latest Blogs
+                                            </h4>
                                             <div className='space-y-2'>
-                                                {reports?.contentActivity.recentContent.blogs.slice(0, 3).map((blog) => (
-                                                    <div key={blog.id} className='text-sm'>
-                                                        <p className='font-medium text-gray-900 truncate'>
-                                                            {blog.title}
-                                                        </p>
-                                                        <p className='text-gray-500 text-xs'>
-                                                            by {blog.creator.displayName} • {new Date(blog.createdAt).toLocaleDateString()}
-                                                        </p>
-                                                    </div>
-                                                ))}
+                                                {reports?.contentActivity.recentContent.blogs
+                                                    .slice(0, 3)
+                                                    .map((blog) => (
+                                                        <div
+                                                            key={blog.id}
+                                                            className='text-sm'
+                                                        >
+                                                            <p className='font-medium text-gray-900 truncate'>
+                                                                {blog.title}
+                                                            </p>
+                                                            <p className='text-gray-500 text-xs'>
+                                                                by{' '}
+                                                                {
+                                                                    blog.creator
+                                                                        .displayName
+                                                                }{' '}
+                                                                •{' '}
+                                                                {new Date(
+                                                                    blog.createdAt
+                                                                ).toLocaleDateString()}
+                                                            </p>
+                                                        </div>
+                                                    ))}
                                             </div>
                                         </div>
                                     </div>
@@ -463,7 +663,9 @@ export default function AdminReports() {
                                 <Button
                                     variant='outline'
                                     size='sm'
-                                    onClick={() => exportReport('creatorActivity')}
+                                    onClick={() =>
+                                        exportReport('creatorActivity')
+                                    }
                                 >
                                     <Download className='h-4 w-4 mr-2' />
                                     Export
@@ -474,29 +676,53 @@ export default function AdminReports() {
                                     <table className='w-full'>
                                         <thead>
                                             <tr className='border-b'>
-                                                <th className='text-left py-2'>Creator</th>
-                                                <th className='text-right py-2'>Videos</th>
-                                                <th className='text-right py-2'>Blogs</th>
-                                                <th className='text-right py-2'>Total</th>
+                                                <th className='text-left py-2'>
+                                                    Creator
+                                                </th>
+                                                <th className='text-right py-2'>
+                                                    Videos
+                                                </th>
+                                                <th className='text-right py-2'>
+                                                    Blogs
+                                                </th>
+                                                <th className='text-right py-2'>
+                                                    Total
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {reports?.creatorActivity.topCreators.slice(0, 10).map((creator) => (
-                                                <tr key={creator.id} className='border-b'>
-                                                    <td className='py-2 font-medium'>
-                                                        {creator.displayName}
-                                                    </td>
-                                                    <td className='py-2 text-right'>
-                                                        {creator._count.videos}
-                                                    </td>
-                                                    <td className='py-2 text-right'>
-                                                        {creator._count.blogs}
-                                                    </td>
-                                                    <td className='py-2 text-right font-medium'>
-                                                        {creator._count.videos + creator._count.blogs}
-                                                    </td>
-                                                </tr>
-                                            ))}
+                                            {reports?.creatorActivity.topCreators
+                                                .slice(0, 10)
+                                                .map((creator) => (
+                                                    <tr
+                                                        key={creator.id}
+                                                        className='border-b'
+                                                    >
+                                                        <td className='py-2 font-medium'>
+                                                            {
+                                                                creator.displayName
+                                                            }
+                                                        </td>
+                                                        <td className='py-2 text-right'>
+                                                            {
+                                                                creator._count
+                                                                    .videos
+                                                            }
+                                                        </td>
+                                                        <td className='py-2 text-right'>
+                                                            {
+                                                                creator._count
+                                                                    .blogs
+                                                            }
+                                                        </td>
+                                                        <td className='py-2 text-right font-medium'>
+                                                            {creator._count
+                                                                .videos +
+                                                                creator._count
+                                                                    .blogs}
+                                                        </td>
+                                                    </tr>
+                                                ))}
                                         </tbody>
                                     </table>
                                 </div>
@@ -521,39 +747,63 @@ export default function AdminReports() {
                                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                                     <div className='space-y-4'>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm font-medium'>Database Status</span>
-                                            <Badge variant='default' className='bg-green-100 text-green-800'>
-                                                {reports?.systemHealth.databaseStatus}
+                                            <span className='text-sm font-medium'>
+                                                Database Status
+                                            </span>
+                                            <Badge
+                                                variant='default'
+                                                className='bg-green-100 text-green-800'
+                                            >
+                                                {
+                                                    reports?.systemHealth
+                                                        .databaseStatus
+                                                }
                                             </Badge>
                                         </div>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm font-medium'>System Uptime</span>
+                                            <span className='text-sm font-medium'>
+                                                System Uptime
+                                            </span>
                                             <span className='font-medium text-green-600'>
                                                 {reports?.systemHealth.uptime}
                                             </span>
                                         </div>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm font-medium'>Storage Used</span>
+                                            <span className='text-sm font-medium'>
+                                                Storage Used
+                                            </span>
                                             <span className='font-medium'>
-                                                {reports?.systemHealth.storageUsed}
+                                                {
+                                                    reports?.systemHealth
+                                                        .storageUsed
+                                                }
                                             </span>
                                         </div>
                                     </div>
-                                    
+
                                     <div className='space-y-4'>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm font-medium'>Bandwidth Usage</span>
+                                            <span className='text-sm font-medium'>
+                                                Bandwidth Usage
+                                            </span>
                                             <span className='font-medium'>
-                                                {reports?.systemHealth.bandwidth}
+                                                {
+                                                    reports?.systemHealth
+                                                        .bandwidth
+                                                }
                                             </span>
                                         </div>
                                         <div className='flex items-center justify-between'>
-                                            <span className='text-sm font-medium'>Last Backup</span>
+                                            <span className='text-sm font-medium'>
+                                                Last Backup
+                                            </span>
                                             <span className='font-medium text-blue-600'>
-                                                {reports?.systemHealth.lastBackup 
-                                                    ? new Date(reports.systemHealth.lastBackup).toLocaleString()
-                                                    : 'N/A'
-                                                }
+                                                {reports?.systemHealth
+                                                    .lastBackup
+                                                    ? new Date(
+                                                          reports.systemHealth.lastBackup
+                                                      ).toLocaleString()
+                                                    : 'N/A'}
                                             </span>
                                         </div>
                                     </div>

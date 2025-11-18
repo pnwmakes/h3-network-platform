@@ -108,24 +108,31 @@ export default function AdminAnalytics() {
         try {
             setError(null);
             const response = await fetch('/api/admin/analytics');
-            
+
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+                throw new Error(
+                    errorData.error ||
+                        `HTTP ${response.status}: ${response.statusText}`
+                );
             }
-            
+
             const data = await response.json();
-            
+
             // Check if it's an error response
             if (data.error) {
                 throw new Error(data.error);
             }
-            
+
             // The API returns analytics data directly, not wrapped in a success object
             setAnalytics(data);
         } catch (error) {
             console.error('Analytics fetch error:', error);
-            setError(error instanceof Error ? error.message : 'Failed to load analytics data');
+            setError(
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to load analytics data'
+            );
         } finally {
             setLoading(false);
         }
@@ -139,16 +146,92 @@ export default function AdminAnalytics() {
 
     const exportData = () => {
         if (!analytics) return;
+
+        // Create CSV content with multiple sections
+        let csvContent = '';
+        const date = new Date().toLocaleDateString();
         
-        const dataStr = JSON.stringify(analytics, null, 2);
-        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+        // Header section
+        csvContent += `H3 Network Platform Analytics Report\n`;
+        csvContent += `Generated on: ${date}\n\n`;
         
-        const exportFileDefaultName = `h3-analytics-${new Date().toISOString().split('T')[0]}.json`;
+        // Platform Overview
+        csvContent += `PLATFORM OVERVIEW\n`;
+        csvContent += `Metric,Value\n`;
+        csvContent += `Total Users,${analytics.overview.totalUsers.toLocaleString()}\n`;
+        csvContent += `Total Content,${analytics.overview.totalContent.toLocaleString()}\n`;
+        csvContent += `Total Creators,${analytics.overview.totalCreators.toLocaleString()}\n`;
+        csvContent += `Total Views,${analytics.overview.totalViews.toLocaleString()}\n`;
+        csvContent += `Total Likes,${analytics.overview.totalLikes.toLocaleString()}\n`;
+        csvContent += `Engagement Rate,${analytics.overview.avgEngagementRate}%\n`;
+        csvContent += `New Users This Month,${analytics.overview.newUsersThisMonth.toLocaleString()}\n`;
+        csvContent += `New Content This Month,${analytics.overview.newContentThisMonth.toLocaleString()}\n`;
+        csvContent += `Active Users Today,${analytics.overview.activeUsersToday.toLocaleString()}\n\n`;
         
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
+        // Top Performing Content
+        csvContent += `TOP PERFORMING CONTENT\n`;
+        csvContent += `Title,Type,Creator,Views,Likes\n`;
+        analytics.topContent.forEach(content => {
+            csvContent += `"${content.title}",${content.type},"${content.creator.name}",${content.views.toLocaleString()},${content.likes.toLocaleString()}\n`;
+        });
+        csvContent += `\n`;
+        
+        // Content by Category
+        csvContent += `CONTENT BY TOPIC\n`;
+        csvContent += `Topic,Count,Average Views,Average Likes\n`;
+        analytics.contentByCategory.forEach(category => {
+            csvContent += `${category.category},${category.count},${category.avgViews.toLocaleString()},${category.avgLikes.toLocaleString()}\n`;
+        });
+        csvContent += `\n`;
+        
+        // User Growth
+        csvContent += `USER GROWTH (Last 12 Months)\n`;
+        csvContent += `Month,New Users\n`;
+        analytics.userGrowth.forEach(growth => {
+            csvContent += `${growth.month},${growth.users.toLocaleString()}\n`;
+        });
+        csvContent += `\n`;
+        
+        // Goals Progress
+        csvContent += `GOALS PROGRESS\n`;
+        csvContent += `Goal,Current,Target,Progress %\n`;
+        analytics.goals.forEach(goal => {
+            csvContent += `"${goal.name}",${goal.current.toLocaleString()},${goal.target.toLocaleString()},${Math.round(goal.progress)}%\n`;
+        });
+        csvContent += `\n`;
+        
+        // Recent Users
+        csvContent += `RECENT USERS\n`;
+        csvContent += `Name,Email,Role,Registration Date\n`;
+        analytics.recentActivity.users.forEach(user => {
+            const regDate = new Date(user.createdAt).toLocaleDateString();
+            csvContent += `"${user.name || 'N/A'}","${user.email}",${user.role},${regDate}\n`;
+        });
+        csvContent += `\n`;
+        
+        // Recent Content
+        csvContent += `RECENT CONTENT\n`;
+        csvContent += `Title,Type,Creator,Status,Created Date\n`;
+        analytics.recentActivity.content.forEach(content => {
+            const createdDate = new Date(content.createdAt).toLocaleDateString();
+            csvContent += `"${content.title}",${content.type},"${content.creator.name}",${content.status},${createdDate}\n`;
+        });
+
+        // Create and download CSV file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `H3-Analytics-Report-${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        // Clean up the URL object
+        URL.revokeObjectURL(url);
     };
 
     if (loading) {
@@ -164,7 +247,9 @@ export default function AdminAnalytics() {
             <div className='min-h-screen bg-gray-50 flex items-center justify-center'>
                 <Card className='w-96'>
                     <CardContent className='p-6 text-center'>
-                        <h2 className='text-xl font-semibold mb-4'>Error Loading Analytics</h2>
+                        <h2 className='text-xl font-semibold mb-4'>
+                            Error Loading Analytics
+                        </h2>
                         <p className='text-gray-600 mb-4'>{error}</p>
                         <Button onClick={() => window.location.reload()}>
                             Try Again
@@ -199,7 +284,10 @@ export default function AdminAnalytics() {
                             </div>
                         </div>
                         <div className='flex items-center space-x-3'>
-                            <Badge variant='outline' className='bg-blue-50 text-blue-700 border-blue-200'>
+                            <Badge
+                                variant='outline'
+                                className='bg-blue-50 text-blue-700 border-blue-200'
+                            >
                                 Super Admin Access
                             </Badge>
                             <Button
@@ -208,7 +296,11 @@ export default function AdminAnalytics() {
                                 onClick={handleRefresh}
                                 disabled={refreshing}
                             >
-                                <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
+                                <RefreshCw
+                                    className={`h-4 w-4 mr-2 ${
+                                        refreshing ? 'animate-spin' : ''
+                                    }`}
+                                />
                                 Refresh
                             </Button>
                             <Button
@@ -217,7 +309,7 @@ export default function AdminAnalytics() {
                                 onClick={exportData}
                             >
                                 <Download className='h-4 w-4 mr-2' />
-                                Export
+                                Export CSV
                             </Button>
                         </div>
                     </div>
@@ -231,7 +323,9 @@ export default function AdminAnalytics() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>Total Views</p>
+                                    <p className='text-sm font-medium text-gray-600'>
+                                        Total Views
+                                    </p>
                                     <p className='text-3xl font-bold text-gray-900'>
                                         {analytics?.overview.totalViews.toLocaleString()}
                                     </p>
@@ -248,7 +342,9 @@ export default function AdminAnalytics() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>Engagement Rate</p>
+                                    <p className='text-sm font-medium text-gray-600'>
+                                        Engagement Rate
+                                    </p>
                                     <p className='text-3xl font-bold text-gray-900'>
                                         {analytics?.overview.avgEngagementRate}%
                                     </p>
@@ -265,7 +361,9 @@ export default function AdminAnalytics() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>Avg Watch Time</p>
+                                    <p className='text-sm font-medium text-gray-600'>
+                                        Avg Watch Time
+                                    </p>
                                     <p className='text-3xl font-bold text-gray-900'>
                                         2:34
                                     </p>
@@ -282,7 +380,9 @@ export default function AdminAnalytics() {
                         <CardContent className='p-6'>
                             <div className='flex items-center justify-between'>
                                 <div>
-                                    <p className='text-sm font-medium text-gray-600'>Total Interactions</p>
+                                    <p className='text-sm font-medium text-gray-600'>
+                                        Total Interactions
+                                    </p>
                                     <p className='text-3xl font-bold text-gray-900'>
                                         {analytics?.overview.totalLikes.toLocaleString()}
                                     </p>
@@ -304,30 +404,38 @@ export default function AdminAnalytics() {
                         </CardHeader>
                         <CardContent>
                             <div className='space-y-4'>
-                                {analytics?.topContent.slice(0, 5).map((content, index) => (
-                                    <div key={content.id} className='flex items-center space-x-4'>
-                                        <div className='flex-shrink-0'>
-                                            <div className='w-12 h-8 bg-gray-200 rounded flex items-center justify-center'>
-                                                {content.type === 'video' ? (
-                                                    <Video className='h-4 w-4 text-gray-500' />
-                                                ) : (
-                                                    <FileText className='h-4 w-4 text-gray-500' />
-                                                )}
+                                {analytics?.topContent
+                                    .slice(0, 5)
+                                    .map((content, index) => (
+                                        <div
+                                            key={content.id}
+                                            className='flex items-center space-x-4'
+                                        >
+                                            <div className='flex-shrink-0'>
+                                                <div className='w-12 h-8 bg-gray-200 rounded flex items-center justify-center'>
+                                                    {content.type ===
+                                                    'video' ? (
+                                                        <Video className='h-4 w-4 text-gray-500' />
+                                                    ) : (
+                                                        <FileText className='h-4 w-4 text-gray-500' />
+                                                    )}
+                                                </div>
+                                            </div>
+                                            <div className='flex-1 min-w-0'>
+                                                <p className='text-sm font-medium text-gray-900 truncate'>
+                                                    {content.title}
+                                                </p>
+                                                <p className='text-xs text-gray-500'>
+                                                    {content.views.toLocaleString()}{' '}
+                                                    views • {content.likes}{' '}
+                                                    likes
+                                                </p>
+                                            </div>
+                                            <div className='text-sm font-medium text-gray-900'>
+                                                #{index + 1}
                                             </div>
                                         </div>
-                                        <div className='flex-1 min-w-0'>
-                                            <p className='text-sm font-medium text-gray-900 truncate'>
-                                                {content.title}
-                                            </p>
-                                            <p className='text-xs text-gray-500'>
-                                                {content.views.toLocaleString()} views • {content.likes} likes
-                                            </p>
-                                        </div>
-                                        <div className='text-sm font-medium text-gray-900'>
-                                            #{index + 1}
-                                        </div>
-                                    </div>
-                                ))}
+                                    ))}
                             </div>
                         </CardContent>
                     </Card>
@@ -339,32 +447,63 @@ export default function AdminAnalytics() {
                         <CardContent>
                             <div className='space-y-4'>
                                 <div>
-                                    <h4 className='text-sm font-medium text-gray-900 mb-2'>Content by Topic</h4>
+                                    <h4 className='text-sm font-medium text-gray-900 mb-2'>
+                                        Content by Topic
+                                    </h4>
                                     <div className='space-y-2'>
-                                        {analytics?.contentByCategory.slice(0, 6).map((category) => (
-                                            <div key={category.category} className='flex items-center justify-between'>
-                                                <span className='text-sm text-gray-600'>{category.category}</span>
-                                                <div className='flex items-center space-x-2'>
-                                                    <span className='text-sm font-medium'>{category.count} items</span>
-                                                    <span className='text-xs text-gray-500'>({category.avgViews} avg views)</span>
+                                        {analytics?.contentByCategory
+                                            .slice(0, 6)
+                                            .map((category) => (
+                                                <div
+                                                    key={category.category}
+                                                    className='flex items-center justify-between'
+                                                >
+                                                    <span className='text-sm text-gray-600'>
+                                                        {category.category}
+                                                    </span>
+                                                    <div className='flex items-center space-x-2'>
+                                                        <span className='text-sm font-medium'>
+                                                            {category.count}{' '}
+                                                            items
+                                                        </span>
+                                                        <span className='text-xs text-gray-500'>
+                                                            ({category.avgViews}{' '}
+                                                            avg views)
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
                                     </div>
                                 </div>
-                                
+
                                 <div>
-                                    <h4 className='text-sm font-medium text-gray-900 mb-2'>Recent Activity</h4>
+                                    <h4 className='text-sm font-medium text-gray-900 mb-2'>
+                                        Recent Activity
+                                    </h4>
                                     <div className='space-y-2'>
-                                        {analytics?.recentActivity.content.slice(0, 4).map((content) => (
-                                            <div key={content.id} className='flex items-center justify-between'>
-                                                <div>
-                                                    <span className='text-sm text-gray-600 truncate'>{content.title}</span>
-                                                    <p className='text-xs text-gray-500'>{content.creator.name}</p>
+                                        {analytics?.recentActivity.content
+                                            .slice(0, 4)
+                                            .map((content) => (
+                                                <div
+                                                    key={content.id}
+                                                    className='flex items-center justify-between'
+                                                >
+                                                    <div>
+                                                        <span className='text-sm text-gray-600 truncate'>
+                                                            {content.title}
+                                                        </span>
+                                                        <p className='text-xs text-gray-500'>
+                                                            {
+                                                                content.creator
+                                                                    .name
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                    <span className='text-xs text-gray-500'>
+                                                        {content.status}
+                                                    </span>
                                                 </div>
-                                                <span className='text-xs text-gray-500'>{content.status}</span>
-                                            </div>
-                                        ))}
+                                            ))}
                                     </div>
                                 </div>
                             </div>
@@ -382,34 +521,66 @@ export default function AdminAnalytics() {
                             {analytics?.goals.map((goal) => (
                                 <div key={goal.name} className='space-y-2'>
                                     <div className='flex items-center justify-between'>
-                                        <h4 className='text-sm font-medium text-gray-900'>{goal.name}</h4>
-                                        <Badge 
-                                            variant={goal.progress >= 75 ? 'default' : 'secondary'}
-                                            className={goal.progress >= 75 ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
+                                        <h4 className='text-sm font-medium text-gray-900'>
+                                            {goal.name}
+                                        </h4>
+                                        <Badge
+                                            variant={
+                                                goal.progress >= 75
+                                                    ? 'default'
+                                                    : 'secondary'
+                                            }
+                                            className={
+                                                goal.progress >= 75
+                                                    ? 'bg-green-100 text-green-800'
+                                                    : 'bg-yellow-100 text-yellow-800'
+                                            }
                                         >
-                                            {goal.progress >= 75 ? 'On Track' : 'Behind'}
+                                            {goal.progress >= 75
+                                                ? 'On Track'
+                                                : 'Behind'}
                                         </Badge>
                                     </div>
                                     <div className='space-y-1'>
                                         <div className='flex items-center justify-between text-sm'>
                                             <span className='text-gray-600'>
-                                                {typeof goal.current === 'number' && goal.current < 1 
-                                                    ? (goal.current * 100).toFixed(1) + '%'
-                                                    : goal.current.toLocaleString()
-                                                } / {typeof goal.target === 'number' && goal.target < 1 
-                                                    ? (goal.target * 100).toFixed(1) + '%' 
-                                                    : goal.target.toLocaleString()
-                                                }
+                                                {typeof goal.current ===
+                                                    'number' && goal.current < 1
+                                                    ? (
+                                                          goal.current * 100
+                                                      ).toFixed(1) + '%'
+                                                    : goal.current.toLocaleString()}{' '}
+                                                /{' '}
+                                                {typeof goal.target ===
+                                                    'number' && goal.target < 1
+                                                    ? (
+                                                          goal.target * 100
+                                                      ).toFixed(1) + '%'
+                                                    : goal.target.toLocaleString()}
                                             </span>
-                                            <span className='font-medium'>{goal.progress.toFixed(1)}%</span>
+                                            <span className='font-medium'>
+                                                {goal.progress.toFixed(1)}%
+                                            </span>
                                         </div>
                                         <div className='w-full bg-gray-200 rounded-full h-2'>
-                                            <div 
-                                                className={`h-2 rounded-full ${goal.progress >= 75 ? 'bg-green-600' : 'bg-yellow-600'}`}
-                                                style={{ width: `${Math.min(goal.progress, 100)}%` }}
+                                            <div
+                                                className={`h-2 rounded-full ${
+                                                    goal.progress >= 75
+                                                        ? 'bg-green-600'
+                                                        : 'bg-yellow-600'
+                                                }`}
+                                                style={{
+                                                    width: `${Math.min(
+                                                        goal.progress,
+                                                        100
+                                                    )}%`,
+                                                }}
                                             ></div>
                                         </div>
-                                        <p className='text-xs text-gray-500'>Target: {goal.target.toLocaleString()}</p>
+                                        <p className='text-xs text-gray-500'>
+                                            Target:{' '}
+                                            {goal.target.toLocaleString()}
+                                        </p>
                                     </div>
                                 </div>
                             ))}
