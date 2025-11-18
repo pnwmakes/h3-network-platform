@@ -75,10 +75,10 @@ export default function UserManagement() {
 
             if (response.ok) {
                 setData({
-                    users: responseData.users,
+                    users: responseData.data?.users || [],
                     pagination: {
-                        total: responseData.totalUsers,
-                        pages: responseData.totalPages,
+                        total: responseData.data?.pagination?.total || 0,
+                        pages: responseData.data?.pagination?.pages || 1,
                         current: currentPage,
                         perPage: 10,
                     },
@@ -381,10 +381,10 @@ export default function UserManagement() {
                 <Card>
                     <CardHeader>
                         <CardTitle className='flex items-center justify-between'>
-                            <span>Users ({data.pagination.total})</span>
+                            <span>Users ({data?.pagination?.total || 0})</span>
                             <div className='text-sm text-gray-500'>
-                                Page {data.pagination.current} of{' '}
-                                {data.pagination.pages}
+                                Page {data?.pagination?.current || 1} of{' '}
+                                {data?.pagination?.pages || 1}
                             </div>
                         </CardTitle>
                     </CardHeader>
@@ -411,7 +411,7 @@ export default function UserManagement() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.users.map((user) => (
+                                    {data?.users?.map((user) => (
                                         <tr
                                             key={user.id}
                                             className='border-b border-gray-100 hover:bg-gray-50'
@@ -574,20 +574,20 @@ export default function UserManagement() {
                         </div>
 
                         {/* Pagination */}
-                        {data.pagination.pages > 1 && (
+                        {(data?.pagination?.pages || 1) > 1 && (
                             <div className='mt-6 flex items-center justify-between'>
                                 <div className='text-sm text-gray-500'>
                                     Showing{' '}
-                                    {(data.pagination.current - 1) *
-                                        data.pagination.perPage +
+                                    {((data?.pagination?.current || 1) - 1) *
+                                        (data?.pagination?.perPage || 10) +
                                         1}{' '}
                                     to{' '}
                                     {Math.min(
-                                        data.pagination.current *
-                                            data.pagination.perPage,
-                                        data.pagination.total
+                                        (data?.pagination?.current || 1) *
+                                            (data?.pagination?.perPage || 10),
+                                        data?.pagination?.total || 0
                                     )}{' '}
-                                    of {data.pagination.total} users
+                                    of {data?.pagination?.total || 0} users
                                 </div>
                                 <div className='flex items-center space-x-2'>
                                     <Button
@@ -598,7 +598,7 @@ export default function UserManagement() {
                                                 Math.max(1, prev - 1)
                                             )
                                         }
-                                        disabled={data.pagination.current === 1}
+                                        disabled={(data?.pagination?.current || 1) === 1}
                                         className='flex items-center space-x-1'
                                     >
                                         <ChevronLeft className='h-4 w-4' />
@@ -619,8 +619,8 @@ export default function UserManagement() {
                                                         key={page}
                                                         variant={
                                                             page ===
-                                                            data.pagination
-                                                                .current
+                                                            (data?.pagination
+                                                                ?.current || 1) === i
                                                                 ? 'default'
                                                                 : 'outline'
                                                         }
@@ -642,14 +642,14 @@ export default function UserManagement() {
                                         onClick={() =>
                                             setCurrentPage((prev) =>
                                                 Math.min(
-                                                    data.pagination.pages,
-                                                    prev + 1
+                                                    data?.pagination?.pages || 1,
+                                                    currentPage + 3
                                                 )
-                                            )
-                                        }
-                                        disabled={
-                                            data.pagination.current ===
-                                            data.pagination.pages
+                                            }
+                                        ),
+                                        disabled:
+                                            (data?.pagination?.current || 1) ===
+                                            (data?.pagination?.pages || 1)
                                         }
                                         className='flex items-center space-x-1'
                                     >
