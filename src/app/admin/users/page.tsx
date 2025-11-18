@@ -618,9 +618,7 @@ export default function UserManagement() {
                                                     <Button
                                                         key={page}
                                                         variant={
-                                                            page ===
-                                                            (data?.pagination
-                                                                ?.current || 1) === i
+                                                            page === (data?.pagination?.current || 1)
                                                                 ? 'default'
                                                                 : 'outline'
                                                         }
@@ -645,9 +643,9 @@ export default function UserManagement() {
                                                     data?.pagination?.pages || 1,
                                                     currentPage + 3
                                                 )
-                                            }
-                                        ),
-                                        disabled:
+                                            )
+                                        }
+                                        disabled={
                                             (data?.pagination?.current || 1) ===
                                             (data?.pagination?.pages || 1)
                                         }
