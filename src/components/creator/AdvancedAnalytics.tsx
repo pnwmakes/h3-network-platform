@@ -168,14 +168,22 @@ export function AdvancedAnalytics() {
         }
     };
 
-    const formatNumber = (num: number): string => {
-        if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-        if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-        return num.toString();
+    const formatNumber = (num: number | string | undefined): string => {
+        const numValue = typeof num === 'string' ? parseInt(num) : num;
+        if (typeof numValue !== 'number' || isNaN(numValue)) {
+            return '0';
+        }
+        if (numValue >= 1000000) return (numValue / 1000000).toFixed(1) + 'M';
+        if (numValue >= 1000) return (numValue / 1000).toFixed(1) + 'K';
+        return numValue.toString();
     };
 
-    const formatPercentage = (num: number): string => {
-        return `${num.toFixed(1)}%`;
+    const formatPercentage = (num: number | string | undefined): string => {
+        const numValue = typeof num === 'string' ? parseFloat(num) : num;
+        if (typeof numValue !== 'number' || isNaN(numValue)) {
+            return '0.0%';
+        }
+        return `${numValue.toFixed(1)}%`;
     };
 
     if (loading) {
@@ -281,18 +289,19 @@ export function AdvancedAnalytics() {
                 />
                 <MetricCard
                     title='Avg View Duration'
-                    value={`${Math.floor(
-                        analytics.overview.avgViewDuration / 60
-                    )}:${(analytics.overview.avgViewDuration % 60)
-                        .toString()
-                        .padStart(2, '0')}`}
+                    value={(() => {
+                        const duration = analytics.overview.avgViewDuration || 0;
+                        const minutes = Math.floor(duration / 60);
+                        const seconds = Math.floor(duration % 60);
+                        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                    })()}
                     change={8.3}
                     icon={<Clock className='h-5 w-5' />}
                     color='green'
                 />
                 <MetricCard
                     title='Content Published'
-                    value={analytics.overview.contentCount.toString()}
+                    value={(analytics.overview.contentCount || 0).toString()}
                     change={25.0}
                     icon={<Target className='h-5 w-5' />}
                     color='purple'

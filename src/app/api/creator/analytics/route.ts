@@ -31,7 +31,9 @@ export async function GET() {
                 totalComments: Math.floor(Math.random() * 500) + 50,
                 totalShares: Math.floor(Math.random() * 200) + 20,
                 averageWatchTime: '4:32',
-                engagementRate: (Math.random() * 0.1 + 0.02).toFixed(3),
+                avgViewDuration: Math.floor(Math.random() * 300) + 120, // seconds
+                engagementRate: Number(((Math.random() * 0.1 + 0.02) * 100).toFixed(1)),
+                contentCount: Math.floor(Math.random() * 50) + 10,
             },
             performance: {
                 topContent: [
