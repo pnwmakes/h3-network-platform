@@ -1,4 +1,108 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { ProfileSettings } from '@/components/creator/ProfileSettings';
+import { Loader2 } from 'lucide-react';
+
+interface CreatorProfile {
+    id: string;
+    displayName: string;
+    bio: string;
+    avatar: string;
+    avatarUrl?: string;
+    showName?: string;
+    funnyFact?: string;
+    youtubeUrl?: string;
+    tiktokUrl?: string;
+    websiteUrl?: string;
+    linkedinUrl?: string;
+    instagramUrl?: string;
+    isActive: boolean;
+    profileComplete: boolean;
+}
+
 export default function CreatorSettingsPage() {
+    const { data: session } = useSession();
+    const [profile, setProfile] = useState<CreatorProfile | null>(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            if (!session?.user?.id) return;
+            
+            try {
+                const response = await fetch('/api/creator/profile');
+                if (response.ok) {
+                    const data = await response.json();
+                    setProfile(data.creator);
+                } else {
+                    // Set mock profile for development
+                    setProfile({
+                        id: session.user.id,
+                        displayName: session.user.name || 'Creator',
+                        bio: '',
+                        avatar: '',
+                        avatarUrl: session.user.image || undefined,
+                        showName: '',
+                        funnyFact: '',
+                        youtubeUrl: '',
+                        tiktokUrl: '',
+                        websiteUrl: '',
+                        linkedinUrl: '',
+                        instagramUrl: '',
+                        isActive: true,
+                        profileComplete: false,
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                // Set fallback profile
+                setProfile({
+                    id: session?.user?.id || '',
+                    displayName: session?.user?.name || 'Creator',
+                    bio: '',
+                    avatar: '',
+                    avatarUrl: session?.user?.image || undefined,
+                    showName: '',
+                    funnyFact: '',
+                    youtubeUrl: '',
+                    tiktokUrl: '',
+                    websiteUrl: '',
+                    linkedinUrl: '',
+                    instagramUrl: '',
+                    isActive: true,
+                    profileComplete: false,
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfile();
+    }, [session?.user?.id, session?.user?.name, session?.user?.image]);
+
+    const handleProfileUpdate = (updatedProfile: CreatorProfile) => {
+        setProfile(updatedProfile);
+    };
+
+    if (loading) {
+        return (
+            <div className='flex items-center justify-center py-16'>
+                <Loader2 className='h-8 w-8 animate-spin text-blue-500' />
+                <span className='ml-2 text-gray-600'>Loading settings...</span>
+            </div>
+        );
+    }
+
+    if (!profile) {
+        return (
+            <div className='text-center py-16'>
+                <p className='text-gray-600'>Unable to load profile settings.</p>
+            </div>
+        );
+    }
+
     return (
         <div className='space-y-8'>
             {/* Header */}
@@ -12,42 +116,11 @@ export default function CreatorSettingsPage() {
                 </p>
             </div>
 
-            {/* Coming Soon */}
-            <div className='text-center py-16'>
-                <div className='mx-auto h-16 w-16 text-6xl mb-4'>⚙️</div>
-                <h3 className='text-lg font-medium text-gray-900 mb-2'>
-                    Creator Settings Coming Soon
-                </h3>
-                <p className='text-sm text-gray-500 mb-6 max-w-md mx-auto'>
-                    We&apos;re building comprehensive settings to help you
-                    customize your creator experience and manage your profile.
-                </p>
-                <div className='bg-purple-50 border border-purple-200 rounded-lg p-6 max-w-lg mx-auto'>
-                    <h4 className='font-medium text-purple-900 mb-2'>
-                        Planned Settings Features:
-                    </h4>
-                    <ul className='text-sm text-purple-800 space-y-1 text-left'>
-                        <li>• Profile & bio management</li>
-                        <li>• Notification preferences</li>
-                        <li>• Content visibility controls</li>
-                        <li>• Social media integration</li>
-                        <li>• Publishing defaults</li>
-                        <li>• Account & privacy settings</li>
-                    </ul>
-                </div>
-                <div className='mt-8'>
-                    <p className='text-xs text-gray-400'>
-                        For now, you can manage basic profile settings through
-                        your{' '}
-                        <a
-                            href='/profile'
-                            className='text-blue-600 hover:underline'
-                        >
-                            User Profile
-                        </a>
-                    </p>
-                </div>
-            </div>
+            {/* Profile Settings */}
+            <ProfileSettings 
+                profile={profile} 
+                onProfileUpdate={handleProfileUpdate}
+            />
         </div>
     );
 }
