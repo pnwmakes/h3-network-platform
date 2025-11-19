@@ -31,9 +31,9 @@ export function Header() {
     return (
         <header className='bg-white dark:bg-gray-950 shadow-lg border-b border-gray-200 dark:border-gray-800 transition-colors duration-200'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-                <div className='flex justify-between items-center h-20'>
-                    {/* Logo */}
-                    <div className='flex items-center space-x-4'>
+                <div className='flex items-center h-20 gap-8'>
+                    {/* Logo Section */}
+                    <div className='flex items-center min-w-0'>
                         <Link href='/' className='flex items-center'>
                             <Image
                                 src='/logos/H3 Logo.png'
@@ -44,18 +44,18 @@ export function Header() {
                                 priority
                             />
                         </Link>
-                        <div className='hidden md:block text-sm text-gray-500 dark:text-gray-300 border-l border-gray-200 dark:border-gray-800 pl-4 transition-colors duration-200'>
+                        <div className='hidden xl:block text-sm text-gray-500 dark:text-gray-300 border-l border-gray-200 dark:border-gray-800 pl-4 ml-4 transition-colors duration-200'>
                             Hope • Help • Humor
                         </div>
                     </div>
 
                     {/* Desktop Navigation */}
-                    <nav className='hidden lg:flex space-x-6'>
+                    <nav className='hidden xl:flex space-x-8'>
                         {navigation.map((item) => (
                             <Link
                                 key={item.name}
                                 href={item.href}
-                                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 ${
+                                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap ${
                                     isActive(item.href)
                                         ? 'text-blue-600 dark:text-blue-400 border-b-2 border-blue-600 dark:border-blue-400'
                                         : 'text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400'
@@ -67,33 +67,40 @@ export function Header() {
                     </nav>
 
                     {/* Search Bar - Desktop */}
-                    <div className='hidden xl:flex flex-1 max-w-md mx-6'>
+                    <div className='hidden xl:flex flex-1 max-w-lg justify-center'>
                         <SearchInput
-                            className='w-full'
+                            className='w-full max-w-md'
                             placeholder='Search videos, creators, and content...'
                         />
                     </div>
 
-                    {/* Right Side - Gear, Dark Mode, User Menu */}
-                    <div className='hidden lg:flex items-center space-x-3'>
+                    {/* Right Side - Actions and User Menu */}
+                    <div className='flex items-center space-x-6'>
                         {/* H3 Gear Shop Button */}
-                        <a
-                            href='https://www.astroformadesign.com/shop/55978954/h3-network'
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            className='bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105'
-                        >
-                            <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
-                                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' />
-                            </svg>
-                            <span>H3 Gear</span>
-                        </a>
+                        <div className='hidden lg:block'>
+                            <a
+                                href='https://www.astroformadesign.com/shop/55978954/h3-network'
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap'
+                            >
+                                <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' />
+                                </svg>
+                                <span>H3 Gear</span>
+                            </a>
+                        </div>
 
                         {/* Dark Mode Toggle */}
-                        <DarkModeToggle />
+                        <div className='hidden lg:block'>
+                            <DarkModeToggle />
+                        </div>
 
-                        {session ? (
-                            <div className='flex items-center space-x-3'>
+                        {/* User Menu */}
+                        <div className='hidden lg:flex items-center space-x-4'>
+
+                            {session ? (
+                                <div className='flex items-center space-x-4'>
                                 <Link
                                     href='/profile'
                                     className={`text-sm font-medium transition-colors duration-200 ${
@@ -149,27 +156,28 @@ export function Header() {
                                 >
                                     Sign Out
                                 </button>
-                            </div>
-                        ) : (
-                            <div className='flex items-center space-x-3'>
-                                <Link
-                                    href='/auth/signin'
-                                    className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
-                                >
-                                    Sign In
-                                </Link>
-                                <Link
-                                    href='/auth/register'
-                                    className='bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200'
-                                >
-                                    Join Community
-                                </Link>
-                            </div>
-                        )}
+                                </div>
+                            ) : (
+                                <div className='flex items-center space-x-4'>
+                                    <Link
+                                        href='/auth/signin'
+                                        className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
+                                    >
+                                        Sign In
+                                    </Link>
+                                    <Link
+                                        href='/auth/register'
+                                        className='bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200'
+                                    >
+                                        Join Community
+                                    </Link>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Mobile menu button */}
-                    <div className='lg:hidden'>
+                    <div className='lg:hidden ml-auto'>
                         <button
                             onClick={() =>
                                 setIsMobileMenuOpen(!isMobileMenuOpen)
