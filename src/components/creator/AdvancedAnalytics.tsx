@@ -671,7 +671,7 @@ export function AdvancedAnalytics() {
                                                     width: `${Math.min(
                                                         ((analytics.goals?.quarterly?.current || 0) /
                                                             (analytics.goals?.quarterly?.target || 1)) *
-                                                        100
+                                                        100,
                                                         100
                                                     )}%`,
                                                 }}
