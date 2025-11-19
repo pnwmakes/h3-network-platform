@@ -64,27 +64,33 @@ export async function GET() {
                         id: '1',
                         title: 'Understanding Criminal Justice Reform',
                         type: 'video',
-                        publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                        publishedAt: new Date(
+                            Date.now() - 5 * 24 * 60 * 60 * 1000
+                        ).toISOString(),
                         views: 2543,
                         engagement: 8.7,
                         likes: 156,
                         comments: 23,
                         shares: 12,
                         avgWatchTime: 240,
-                        thumbnail: 'https://img.youtube.com/vi/sample1/maxresdefault.jpg',
+                        thumbnail:
+                            'https://img.youtube.com/vi/sample1/maxresdefault.jpg',
                     },
                     {
                         id: '2',
                         title: 'Recovery Stories: Finding Hope',
                         type: 'video',
-                        publishedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+                        publishedAt: new Date(
+                            Date.now() - 12 * 24 * 60 * 60 * 1000
+                        ).toISOString(),
                         views: 1892,
                         engagement: 11.2,
                         likes: 134,
                         comments: 31,
                         shares: 8,
                         avgWatchTime: 195,
-                        thumbnail: 'https://img.youtube.com/vi/sample2/maxresdefault.jpg',
+                        thumbnail:
+                            'https://img.youtube.com/vi/sample2/maxresdefault.jpg',
                     },
                 ],
                 blogs: [
@@ -92,7 +98,9 @@ export async function GET() {
                         id: '3',
                         title: 'Reentry Support Systems',
                         type: 'blog',
-                        publishedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+                        publishedAt: new Date(
+                            Date.now() - 8 * 24 * 60 * 60 * 1000
+                        ).toISOString(),
                         views: 1456,
                         engagement: 9.3,
                         likes: 89,

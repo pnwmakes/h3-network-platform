@@ -368,8 +368,10 @@ export function AdvancedAnalytics() {
                         <CardContent>
                             <div className='space-y-4'>
                                 {[
-                                    ...(analytics.contentPerformance?.videos || []),
-                                    ...(analytics.contentPerformance?.blogs || []),
+                                    ...(analytics.contentPerformance?.videos ||
+                                        []),
+                                    ...(analytics.contentPerformance?.blogs ||
+                                        []),
                                 ]
                                     .sort((a, b) => b.views - a.views)
                                     .slice(0, 5)
@@ -440,33 +442,34 @@ export function AdvancedAnalytics() {
                                         Age Groups
                                     </h4>
                                     <div className='space-y-2'>
-                                        {(analytics.audienceInsights?.demographics?.ageGroups || []).map(
-                                            (group) => (
-                                                <div
-                                                    key={group.range}
-                                                    className='flex items-center justify-between'
-                                                >
-                                                    <span className='text-sm text-gray-600'>
-                                                        {group.range}
-                                                    </span>
-                                                    <div className='flex items-center gap-2'>
-                                                        <div className='w-24 bg-gray-200 rounded-full h-2'>
-                                                            <div
-                                                                className='bg-blue-500 h-2 rounded-full'
-                                                                style={{
-                                                                    width: `${group.percentage}%`,
-                                                                }}
-                                                            />
-                                                        </div>
-                                                        <span className='text-sm font-medium'>
-                                                            {formatPercentage(
-                                                                group.percentage
-                                                            )}
-                                                        </span>
+                                        {(
+                                            analytics.audienceInsights
+                                                ?.demographics?.ageGroups || []
+                                        ).map((group) => (
+                                            <div
+                                                key={group.range}
+                                                className='flex items-center justify-between'
+                                            >
+                                                <span className='text-sm text-gray-600'>
+                                                    {group.range}
+                                                </span>
+                                                <div className='flex items-center gap-2'>
+                                                    <div className='w-24 bg-gray-200 rounded-full h-2'>
+                                                        <div
+                                                            className='bg-blue-500 h-2 rounded-full'
+                                                            style={{
+                                                                width: `${group.percentage}%`,
+                                                            }}
+                                                        />
                                                     </div>
+                                                    <span className='text-sm font-medium'>
+                                                        {formatPercentage(
+                                                            group.percentage
+                                                        )}
+                                                    </span>
                                                 </div>
-                                            )
-                                        )}
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
                             </CardContent>
@@ -524,8 +527,10 @@ export function AdvancedAnalytics() {
                                     </thead>
                                     <tbody>
                                         {[
-                                            ...(analytics.contentPerformance?.videos || []),
-                                            ...(analytics.contentPerformance?.blogs || []),
+                                            ...(analytics.contentPerformance
+                                                ?.videos || []),
+                                            ...(analytics.contentPerformance
+                                                ?.blogs || []),
                                         ]
                                             .sort(
                                                 (a, b) =>
@@ -605,11 +610,13 @@ export function AdvancedAnalytics() {
                                             </span>
                                             <span className='text-sm text-gray-600'>
                                                 {formatNumber(
-                                                    analytics.goals?.monthly?.current || 0
+                                                    analytics.goals?.monthly
+                                                        ?.current || 0
                                                 )}{' '}
                                                 /{' '}
                                                 {formatNumber(
-                                                    analytics.goals?.monthly?.target || 0
+                                                    analytics.goals?.monthly
+                                                        ?.target || 0
                                                 )}
                                             </span>
                                         </div>
@@ -618,8 +625,13 @@ export function AdvancedAnalytics() {
                                                 className='bg-blue-500 h-2 rounded-full'
                                                 style={{
                                                     width: `${Math.min(
-                                                        ((analytics.goals?.monthly?.current || 0) /
-                                                            (analytics.goals?.monthly?.target || 1)) *
+                                                        ((analytics.goals
+                                                            ?.monthly
+                                                            ?.current || 0) /
+                                                            (analytics.goals
+                                                                ?.monthly
+                                                                ?.target ||
+                                                                1)) *
                                                             100,
                                                         100
                                                     )}%`,
@@ -628,8 +640,10 @@ export function AdvancedAnalytics() {
                                         </div>
                                         <p className='text-xs text-gray-500 mt-1'>
                                             {formatPercentage(
-                                                ((analytics.goals?.monthly?.current || 0) /
-                                                    (analytics.goals?.monthly?.target || 1)) *
+                                                ((analytics.goals?.monthly
+                                                    ?.current || 0) /
+                                                    (analytics.goals?.monthly
+                                                        ?.target || 1)) *
                                                     100
                                             )}{' '}
                                             of monthly goal
@@ -656,11 +670,13 @@ export function AdvancedAnalytics() {
                                             </span>
                                             <span className='text-sm text-gray-600'>
                                                 {formatNumber(
-                                                    analytics.goals?.quarterly?.current || 0
+                                                    analytics.goals?.quarterly
+                                                        ?.current || 0
                                                 )}{' '}
                                                 /{' '}
                                                 {formatNumber(
-                                                    analytics.goals?.quarterly?.target || 0
+                                                    analytics.goals?.quarterly
+                                                        ?.target || 0
                                                 )}
                                             </span>
                                         </div>
@@ -669,9 +685,14 @@ export function AdvancedAnalytics() {
                                                 className='bg-green-500 h-2 rounded-full'
                                                 style={{
                                                     width: `${Math.min(
-                                                        ((analytics.goals?.quarterly?.current || 0) /
-                                                            (analytics.goals?.quarterly?.target || 1)) *
-                                                        100,
+                                                        ((analytics.goals
+                                                            ?.quarterly
+                                                            ?.current || 0) /
+                                                            (analytics.goals
+                                                                ?.quarterly
+                                                                ?.target ||
+                                                                1)) *
+                                                            100,
                                                         100
                                                     )}%`,
                                                 }}
@@ -679,8 +700,10 @@ export function AdvancedAnalytics() {
                                         </div>
                                         <p className='text-xs text-gray-500 mt-1'>
                                             {formatPercentage(
-                                                ((analytics.goals?.quarterly?.current || 0) /
-                                                    (analytics.goals?.quarterly?.target || 1)) *
+                                                ((analytics.goals?.quarterly
+                                                    ?.current || 0) /
+                                                    (analytics.goals?.quarterly
+                                                        ?.target || 1)) *
                                                     100
                                             )}{' '}
                                             of quarterly goal
