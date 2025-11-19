@@ -31,7 +31,7 @@ export function Header() {
     return (
         <header className='bg-white dark:bg-gray-950 shadow-lg border-b border-gray-200 dark:border-gray-800 transition-colors duration-200'>
             <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-                <div className='flex justify-between items-center h-16'>
+                <div className='flex justify-between items-center h-20'>
                     {/* Logo */}
                     <div className='flex items-center space-x-4'>
                         <Link href='/' className='flex items-center'>
@@ -50,7 +50,7 @@ export function Header() {
                     </div>
 
                     {/* Desktop Navigation */}
-                    <nav className='hidden md:flex space-x-8'>
+                    <nav className='hidden lg:flex space-x-6'>
                         {navigation.map((item) => (
                             <Link
                                 key={item.name}
@@ -67,20 +67,33 @@ export function Header() {
                     </nav>
 
                     {/* Search Bar - Desktop */}
-                    <div className='hidden lg:flex flex-1 max-w-lg mx-8'>
+                    <div className='hidden xl:flex flex-1 max-w-md mx-6'>
                         <SearchInput
                             className='w-full'
                             placeholder='Search videos, creators, and content...'
                         />
                     </div>
 
-                    {/* User Menu */}
-                    <div className='hidden md:flex items-center space-x-4'>
+                    {/* Right Side - Gear, Dark Mode, User Menu */}
+                    <div className='hidden lg:flex items-center space-x-3'>
+                        {/* H3 Gear Shop Button */}
+                        <a
+                            href='https://www.astroformadesign.com/shop/55978954/h3-network'
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            className='bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105'
+                        >
+                            <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' />
+                            </svg>
+                            <span>H3 Gear</span>
+                        </a>
+
                         {/* Dark Mode Toggle */}
                         <DarkModeToggle />
 
                         {session ? (
-                            <div className='flex items-center space-x-4'>
+                            <div className='flex items-center space-x-3'>
                                 <Link
                                     href='/profile'
                                     className={`text-sm font-medium transition-colors duration-200 ${
@@ -89,7 +102,7 @@ export function Header() {
                                             : 'text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400'
                                     }`}
                                 >
-                                    My Profile
+                                    Profile
                                 </Link>
                                 {session.user.role === 'CREATOR' && (
                                     <Link
@@ -117,17 +130,17 @@ export function Header() {
                                         </Link>
                                         <Link
                                             href='/admin/dashboard'
-                                            className={`text-sm font-medium px-3 py-1 rounded-md transition-colors duration-200 ${
+                                            className={`text-sm font-medium px-2 py-1 rounded-md transition-colors duration-200 ${
                                                 isActive('/admin')
                                                     ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
                                                     : 'bg-red-50 text-red-600 hover:bg-red-100 dark:bg-red-900/50 dark:text-red-400 dark:hover:bg-red-900'
                                             }`}
                                         >
-                                            Admin Dashboard
+                                            Super Admin
                                         </Link>
                                     </>
                                 )}
-                                <span className='text-sm font-medium text-gray-700 dark:text-gray-100 transition-colors duration-200'>
+                                <span className='text-sm font-medium text-gray-700 dark:text-gray-100 transition-colors duration-200 border-l border-gray-200 dark:border-gray-800 pl-3'>
                                     Welcome, {session.user?.name}
                                 </span>
                                 <button
@@ -138,7 +151,7 @@ export function Header() {
                                 </button>
                             </div>
                         ) : (
-                            <div className='flex items-center space-x-4'>
+                            <div className='flex items-center space-x-3'>
                                 <Link
                                     href='/auth/signin'
                                     className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
@@ -149,14 +162,14 @@ export function Header() {
                                     href='/auth/register'
                                     className='bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200'
                                 >
-                                    Join Our Community
+                                    Join Community
                                 </Link>
                             </div>
                         )}
                     </div>
 
                     {/* Mobile menu button */}
-                    <div className='md:hidden'>
+                    <div className='lg:hidden'>
                         <button
                             onClick={() =>
                                 setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -188,11 +201,26 @@ export function Header() {
                     </div>
                 </div>
 
-                {/* Mobile Navigation Menu */}
+                        {/* Mobile Navigation Menu */}
                 {isMobileMenuOpen && (
-                    <div className='md:hidden border-t border-gray-200 dark:border-gray-800 py-4 transition-colors duration-200'>
+                    <div className='lg:hidden border-t border-gray-200 dark:border-gray-800 py-4 transition-colors duration-200'>
                         <div className='text-center text-xs text-gray-500 dark:text-gray-400 mb-4 transition-colors duration-200'>
                             Hope • Help • Humor
+                        </div>
+
+                        {/* Mobile H3 Gear Button */}
+                        <div className='px-3 mb-4'>
+                            <a
+                                href='https://www.astroformadesign.com/shop/55978954/h3-network'
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                className='w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 shadow-md'
+                            >
+                                <svg className='w-4 h-4' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
+                                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z' />
+                                </svg>
+                                <span>Shop H3 Gear</span>
+                            </a>
                         </div>
 
                         <div className='space-y-2'>

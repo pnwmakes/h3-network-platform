@@ -140,7 +140,7 @@ export default function AdminReports() {
 
         let csvContent = '';
         const date = new Date().toLocaleDateString();
-        
+
         csvContent += `H3 Network Platform - ${reportType.toUpperCase()} Report\n`;
         csvContent += `Generated on: ${date}\n\n`;
 
@@ -161,7 +161,7 @@ export default function AdminReports() {
 
             csvContent += `USERS BY ROLE\n`;
             csvContent += `Role,Count\n`;
-            reports.userActivity.usersByRole.forEach(user => {
+            reports.userActivity.usersByRole.forEach((user) => {
                 csvContent += `${user.role},${user._count.role}\n`;
             });
             csvContent += `\n`;
@@ -169,14 +169,14 @@ export default function AdminReports() {
             // Content by Status
             csvContent += `VIDEO CONTENT BY STATUS\n`;
             csvContent += `Status,Count\n`;
-            reports.contentActivity.contentByStatus.videos.forEach(video => {
+            reports.contentActivity.contentByStatus.videos.forEach((video) => {
                 csvContent += `${video.status},${video._count.status}\n`;
             });
             csvContent += `\n`;
 
             csvContent += `BLOG CONTENT BY STATUS\n`;
             csvContent += `Status,Count\n`;
-            reports.contentActivity.contentByStatus.blogs.forEach(blog => {
+            reports.contentActivity.contentByStatus.blogs.forEach((blog) => {
                 csvContent += `${blog.status},${blog._count.status}\n`;
             });
             csvContent += `\n`;
@@ -189,8 +189,9 @@ export default function AdminReports() {
 
             csvContent += `TOP CREATORS\n`;
             csvContent += `Name,Videos,Blogs,Total Content\n`;
-            reports.creatorActivity.topCreators.forEach(creator => {
-                const totalContent = creator._count.videos + creator._count.blogs;
+            reports.creatorActivity.topCreators.forEach((creator) => {
+                const totalContent =
+                    creator._count.videos + creator._count.blogs;
                 csvContent += `"${creator.displayName}",${creator._count.videos},${creator._count.blogs},${totalContent}\n`;
             });
             csvContent += `\n`;
@@ -210,25 +211,34 @@ export default function AdminReports() {
                 csvContent += `METRICS\n`;
                 csvContent += `Metric,Value\n`;
                 Object.entries(reportData).forEach(([key, value]) => {
-                    const formattedKey = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                    const formattedKey = key
+                        .replace(/([A-Z])/g, ' $1')
+                        .replace(/^./, (str) => str.toUpperCase());
                     csvContent += `${formattedKey},${value}\n`;
                 });
             }
         }
 
         // Create and download CSV file
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob([csvContent], {
+            type: 'text/csv;charset=utf-8;',
+        });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
-        
+
         link.setAttribute('href', url);
-        link.setAttribute('download', `H3-${reportType}-Report-${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute(
+            'download',
+            `H3-${reportType}-Report-${
+                new Date().toISOString().split('T')[0]
+            }.csv`
+        );
         link.style.visibility = 'hidden';
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         // Clean up the URL object
         URL.revokeObjectURL(url);
     };

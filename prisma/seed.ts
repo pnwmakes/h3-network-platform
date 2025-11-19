@@ -53,7 +53,7 @@ async function main() {
             email: 'noah@h3network.org',
             name: 'Noah',
             password: creatorPassword,
-            role: UserRole.CREATOR,
+            role: UserRole.SUPER_ADMIN,
             creator: {
                 create: {
                     displayName: 'Noah',

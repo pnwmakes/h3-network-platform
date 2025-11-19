@@ -150,11 +150,11 @@ export default function AdminAnalytics() {
         // Create CSV content with multiple sections
         let csvContent = '';
         const date = new Date().toLocaleDateString();
-        
+
         // Header section
         csvContent += `H3 Network Platform Analytics Report\n`;
         csvContent += `Generated on: ${date}\n\n`;
-        
+
         // Platform Overview
         csvContent += `PLATFORM OVERVIEW\n`;
         csvContent += `Metric,Value\n`;
@@ -167,69 +167,86 @@ export default function AdminAnalytics() {
         csvContent += `New Users This Month,${analytics.overview.newUsersThisMonth.toLocaleString()}\n`;
         csvContent += `New Content This Month,${analytics.overview.newContentThisMonth.toLocaleString()}\n`;
         csvContent += `Active Users Today,${analytics.overview.activeUsersToday.toLocaleString()}\n\n`;
-        
+
         // Top Performing Content
         csvContent += `TOP PERFORMING CONTENT\n`;
         csvContent += `Title,Type,Creator,Views,Likes\n`;
-        analytics.topContent.forEach(content => {
-            csvContent += `"${content.title}",${content.type},"${content.creator.name}",${content.views.toLocaleString()},${content.likes.toLocaleString()}\n`;
+        analytics.topContent.forEach((content) => {
+            csvContent += `"${content.title}",${content.type},"${
+                content.creator.name
+            }",${content.views.toLocaleString()},${content.likes.toLocaleString()}\n`;
         });
         csvContent += `\n`;
-        
+
         // Content by Category
         csvContent += `CONTENT BY TOPIC\n`;
         csvContent += `Topic,Count,Average Views,Average Likes\n`;
-        analytics.contentByCategory.forEach(category => {
-            csvContent += `${category.category},${category.count},${category.avgViews.toLocaleString()},${category.avgLikes.toLocaleString()}\n`;
+        analytics.contentByCategory.forEach((category) => {
+            csvContent += `${category.category},${
+                category.count
+            },${category.avgViews.toLocaleString()},${category.avgLikes.toLocaleString()}\n`;
         });
         csvContent += `\n`;
-        
+
         // User Growth
         csvContent += `USER GROWTH (Last 12 Months)\n`;
         csvContent += `Month,New Users\n`;
-        analytics.userGrowth.forEach(growth => {
+        analytics.userGrowth.forEach((growth) => {
             csvContent += `${growth.month},${growth.users.toLocaleString()}\n`;
         });
         csvContent += `\n`;
-        
+
         // Goals Progress
         csvContent += `GOALS PROGRESS\n`;
         csvContent += `Goal,Current,Target,Progress %\n`;
-        analytics.goals.forEach(goal => {
-            csvContent += `"${goal.name}",${goal.current.toLocaleString()},${goal.target.toLocaleString()},${Math.round(goal.progress)}%\n`;
+        analytics.goals.forEach((goal) => {
+            csvContent += `"${
+                goal.name
+            }",${goal.current.toLocaleString()},${goal.target.toLocaleString()},${Math.round(
+                goal.progress
+            )}%\n`;
         });
         csvContent += `\n`;
-        
+
         // Recent Users
         csvContent += `RECENT USERS\n`;
         csvContent += `Name,Email,Role,Registration Date\n`;
-        analytics.recentActivity.users.forEach(user => {
+        analytics.recentActivity.users.forEach((user) => {
             const regDate = new Date(user.createdAt).toLocaleDateString();
-            csvContent += `"${user.name || 'N/A'}","${user.email}",${user.role},${regDate}\n`;
+            csvContent += `"${user.name || 'N/A'}","${user.email}",${
+                user.role
+            },${regDate}\n`;
         });
         csvContent += `\n`;
-        
+
         // Recent Content
         csvContent += `RECENT CONTENT\n`;
         csvContent += `Title,Type,Creator,Status,Created Date\n`;
-        analytics.recentActivity.content.forEach(content => {
-            const createdDate = new Date(content.createdAt).toLocaleDateString();
+        analytics.recentActivity.content.forEach((content) => {
+            const createdDate = new Date(
+                content.createdAt
+            ).toLocaleDateString();
             csvContent += `"${content.title}",${content.type},"${content.creator.name}",${content.status},${createdDate}\n`;
         });
 
         // Create and download CSV file
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob([csvContent], {
+            type: 'text/csv;charset=utf-8;',
+        });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
-        
+
         link.setAttribute('href', url);
-        link.setAttribute('download', `H3-Analytics-Report-${new Date().toISOString().split('T')[0]}.csv`);
+        link.setAttribute(
+            'download',
+            `H3-Analytics-Report-${new Date().toISOString().split('T')[0]}.csv`
+        );
         link.style.visibility = 'hidden';
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         // Clean up the URL object
         URL.revokeObjectURL(url);
     };
