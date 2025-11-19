@@ -290,10 +290,13 @@ export function AdvancedAnalytics() {
                 <MetricCard
                     title='Avg View Duration'
                     value={(() => {
-                        const duration = analytics.overview.avgViewDuration || 0;
+                        const duration =
+                            analytics.overview.avgViewDuration || 0;
                         const minutes = Math.floor(duration / 60);
                         const seconds = Math.floor(duration % 60);
-                        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                        return `${minutes}:${seconds
+                            .toString()
+                            .padStart(2, '0')}`;
                     })()}
                     change={8.3}
                     icon={<Clock className='h-5 w-5' />}
@@ -365,8 +368,8 @@ export function AdvancedAnalytics() {
                         <CardContent>
                             <div className='space-y-4'>
                                 {[
-                                    ...analytics.contentPerformance.videos,
-                                    ...analytics.contentPerformance.blogs,
+                                    ...(analytics.contentPerformance?.videos || []),
+                                    ...(analytics.contentPerformance?.blogs || []),
                                 ]
                                     .sort((a, b) => b.views - a.views)
                                     .slice(0, 5)
@@ -437,7 +440,7 @@ export function AdvancedAnalytics() {
                                         Age Groups
                                     </h4>
                                     <div className='space-y-2'>
-                                        {analytics.audienceInsights.demographics.ageGroups.map(
+                                        {(analytics.audienceInsights?.demographics?.ageGroups || []).map(
                                             (group) => (
                                                 <div
                                                     key={group.range}
@@ -521,10 +524,8 @@ export function AdvancedAnalytics() {
                                     </thead>
                                     <tbody>
                                         {[
-                                            ...analytics.contentPerformance
-                                                .videos,
-                                            ...analytics.contentPerformance
-                                                .blogs,
+                                            ...(analytics.contentPerformance?.videos || []),
+                                            ...(analytics.contentPerformance?.blogs || []),
                                         ]
                                             .sort(
                                                 (a, b) =>
@@ -604,13 +605,11 @@ export function AdvancedAnalytics() {
                                             </span>
                                             <span className='text-sm text-gray-600'>
                                                 {formatNumber(
-                                                    analytics.goals.monthly
-                                                        .current
+                                                    analytics.goals?.monthly?.current || 0
                                                 )}{' '}
                                                 /{' '}
                                                 {formatNumber(
-                                                    analytics.goals.monthly
-                                                        .target
+                                                    analytics.goals?.monthly?.target || 0
                                                 )}
                                             </span>
                                         </div>
@@ -619,11 +618,8 @@ export function AdvancedAnalytics() {
                                                 className='bg-blue-500 h-2 rounded-full'
                                                 style={{
                                                     width: `${Math.min(
-                                                        (analytics.goals.monthly
-                                                            .current /
-                                                            analytics.goals
-                                                                .monthly
-                                                                .target) *
+                                                        ((analytics.goals?.monthly?.current || 0) /
+                                                            (analytics.goals?.monthly?.target || 1)) *
                                                             100,
                                                         100
                                                     )}%`,
@@ -632,10 +628,8 @@ export function AdvancedAnalytics() {
                                         </div>
                                         <p className='text-xs text-gray-500 mt-1'>
                                             {formatPercentage(
-                                                (analytics.goals.monthly
-                                                    .current /
-                                                    analytics.goals.monthly
-                                                        .target) *
+                                                ((analytics.goals?.monthly?.current || 0) /
+                                                    (analytics.goals?.monthly?.target || 1)) *
                                                     100
                                             )}{' '}
                                             of monthly goal
@@ -662,13 +656,11 @@ export function AdvancedAnalytics() {
                                             </span>
                                             <span className='text-sm text-gray-600'>
                                                 {formatNumber(
-                                                    analytics.goals.quarterly
-                                                        .current
+                                                    analytics.goals?.quarterly?.current || 0
                                                 )}{' '}
                                                 /{' '}
                                                 {formatNumber(
-                                                    analytics.goals.quarterly
-                                                        .target
+                                                    analytics.goals?.quarterly?.target || 0
                                                 )}
                                             </span>
                                         </div>
@@ -677,12 +669,9 @@ export function AdvancedAnalytics() {
                                                 className='bg-green-500 h-2 rounded-full'
                                                 style={{
                                                     width: `${Math.min(
-                                                        (analytics.goals
-                                                            .quarterly.current /
-                                                            analytics.goals
-                                                                .quarterly
-                                                                .target) *
-                                                            100,
+                                                        ((analytics.goals?.quarterly?.current || 0) /
+                                                            (analytics.goals?.quarterly?.target || 1)) *
+                                                        100
                                                         100
                                                     )}%`,
                                                 }}
@@ -690,10 +679,8 @@ export function AdvancedAnalytics() {
                                         </div>
                                         <p className='text-xs text-gray-500 mt-1'>
                                             {formatPercentage(
-                                                (analytics.goals.quarterly
-                                                    .current /
-                                                    analytics.goals.quarterly
-                                                        .target) *
+                                                ((analytics.goals?.quarterly?.current || 0) /
+                                                    (analytics.goals?.quarterly?.target || 1)) *
                                                     100
                                             )}{' '}
                                             of quarterly goal

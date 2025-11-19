@@ -30,7 +30,7 @@ export default function CreatorSettingsPage() {
     useEffect(() => {
         const fetchProfile = async () => {
             if (!session?.user?.id) return;
-            
+
             try {
                 const response = await fetch('/api/creator/profile');
                 if (response.ok) {
@@ -98,7 +98,9 @@ export default function CreatorSettingsPage() {
     if (!profile) {
         return (
             <div className='text-center py-16'>
-                <p className='text-gray-600'>Unable to load profile settings.</p>
+                <p className='text-gray-600'>
+                    Unable to load profile settings.
+                </p>
             </div>
         );
     }
@@ -117,8 +119,8 @@ export default function CreatorSettingsPage() {
             </div>
 
             {/* Profile Settings */}
-            <ProfileSettings 
-                profile={profile} 
+            <ProfileSettings
+                profile={profile}
                 onProfileUpdate={handleProfileUpdate}
             />
         </div>

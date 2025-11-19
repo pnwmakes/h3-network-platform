@@ -32,8 +32,76 @@ export async function GET() {
                 totalShares: Math.floor(Math.random() * 200) + 20,
                 averageWatchTime: '4:32',
                 avgViewDuration: Math.floor(Math.random() * 300) + 120, // seconds
-                engagementRate: Number(((Math.random() * 0.1 + 0.02) * 100).toFixed(1)),
+                engagementRate: Number(
+                    ((Math.random() * 0.1 + 0.02) * 100).toFixed(1)
+                ),
+                subscriberGrowth: Number((Math.random() * 20 + 5).toFixed(1)),
                 contentCount: Math.floor(Math.random() * 50) + 10,
+            },
+            timeRange: {
+                views: Array.from({ length: 7 }, (_, i) => ({
+                    date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split('T')[0],
+                    count: Math.floor(Math.random() * 500) + 100,
+                })),
+                engagement: Array.from({ length: 7 }, (_, i) => ({
+                    date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split('T')[0],
+                    rate: Number((Math.random() * 10 + 2).toFixed(1)),
+                })),
+                contentPublished: Array.from({ length: 7 }, (_, i) => ({
+                    date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
+                        .toISOString()
+                        .split('T')[0],
+                    count: Math.floor(Math.random() * 3),
+                })),
+            },
+            contentPerformance: {
+                videos: [
+                    {
+                        id: '1',
+                        title: 'Understanding Criminal Justice Reform',
+                        type: 'video',
+                        publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                        views: 2543,
+                        engagement: 8.7,
+                        likes: 156,
+                        comments: 23,
+                        shares: 12,
+                        avgWatchTime: 240,
+                        thumbnail: 'https://img.youtube.com/vi/sample1/maxresdefault.jpg',
+                    },
+                    {
+                        id: '2',
+                        title: 'Recovery Stories: Finding Hope',
+                        type: 'video',
+                        publishedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+                        views: 1892,
+                        engagement: 11.2,
+                        likes: 134,
+                        comments: 31,
+                        shares: 8,
+                        avgWatchTime: 195,
+                        thumbnail: 'https://img.youtube.com/vi/sample2/maxresdefault.jpg',
+                    },
+                ],
+                blogs: [
+                    {
+                        id: '3',
+                        title: 'Reentry Support Systems',
+                        type: 'blog',
+                        publishedAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+                        views: 1456,
+                        engagement: 9.3,
+                        likes: 89,
+                        comments: 15,
+                        shares: 24,
+                        avgWatchTime: 0,
+                        thumbnail: '/api/placeholder/300/200',
+                    },
+                ],
             },
             performance: {
                 topContent: [
@@ -72,7 +140,7 @@ export async function GET() {
                     engagement: Math.random() * 0.1 + 0.02,
                 })),
             },
-            audience: {
+            audienceInsights: {
                 demographics: {
                     ageGroups: [
                         { range: '18-24', percentage: 15 },
@@ -87,65 +155,60 @@ export async function GET() {
                         { country: 'United Kingdom', percentage: 6 },
                         { country: 'Australia', percentage: 4 },
                     ],
+                    interests: [
+                        { topic: 'Criminal Justice Reform', percentage: 32 },
+                        { topic: 'Addiction Recovery', percentage: 28 },
+                        { topic: 'Mental Health', percentage: 18 },
+                        { topic: 'Community Support', percentage: 15 },
+                        { topic: 'Legal Advocacy', percentage: 7 },
+                    ],
                 },
-                engagement: {
+                behavior: {
                     peakHours: [
-                        { hour: 0, engagement: 0.023 },
-                        { hour: 1, engagement: 0.018 },
-                        { hour: 2, engagement: 0.015 },
-                        { hour: 3, engagement: 0.012 },
-                        { hour: 4, engagement: 0.014 },
-                        { hour: 5, engagement: 0.019 },
-                        { hour: 6, engagement: 0.031 },
-                        { hour: 7, engagement: 0.048 },
-                        { hour: 8, engagement: 0.067 },
-                        { hour: 9, engagement: 0.083 },
-                        { hour: 10, engagement: 0.091 },
-                        { hour: 11, engagement: 0.098 },
-                        { hour: 12, engagement: 0.105 },
-                        { hour: 13, engagement: 0.112 },
-                        { hour: 14, engagement: 0.108 },
-                        { hour: 15, engagement: 0.115 },
-                        { hour: 16, engagement: 0.123 },
-                        { hour: 17, engagement: 0.118 },
-                        { hour: 18, engagement: 0.134 },
-                        { hour: 19, engagement: 0.142 },
-                        { hour: 20, engagement: 0.138 },
-                        { hour: 21, engagement: 0.125 },
-                        { hour: 22, engagement: 0.089 },
-                        { hour: 23, engagement: 0.056 },
+                        { hour: 0, activity: 0.023 },
+                        { hour: 1, activity: 0.018 },
+                        { hour: 2, activity: 0.015 },
+                        { hour: 3, activity: 0.012 },
+                        { hour: 4, activity: 0.014 },
+                        { hour: 5, activity: 0.019 },
+                        { hour: 6, activity: 0.031 },
+                        { hour: 7, activity: 0.048 },
+                        { hour: 8, activity: 0.067 },
+                        { hour: 9, activity: 0.083 },
+                        { hour: 10, activity: 0.091 },
+                        { hour: 11, activity: 0.098 },
+                        { hour: 12, activity: 0.105 },
+                        { hour: 13, activity: 0.112 },
+                        { hour: 14, activity: 0.108 },
+                        { hour: 15, activity: 0.115 },
+                        { hour: 16, activity: 0.123 },
+                        { hour: 17, activity: 0.118 },
+                        { hour: 18, activity: 0.134 },
+                        { hour: 19, activity: 0.142 },
+                        { hour: 20, activity: 0.138 },
+                        { hour: 21, activity: 0.125 },
+                        { hour: 22, activity: 0.089 },
+                        { hour: 23, activity: 0.056 },
+                    ],
+                    deviceTypes: [
+                        { type: 'Desktop', percentage: 45 },
+                        { type: 'Mobile', percentage: 38 },
+                        { type: 'Tablet', percentage: 17 },
                     ],
                 },
             },
-            goals: [
-                {
-                    id: '1',
-                    title: 'Monthly Views Target',
+            goals: {
+                monthly: {
                     target: 10000,
                     current: 7543,
-                    progress: 75.43,
-                    deadline: '2024-01-31',
-                    status: 'on-track',
+                    period: '2024-01',
                 },
-                {
-                    id: '2',
-                    title: 'Engagement Rate Goal',
-                    target: 0.08,
-                    current: 0.067,
-                    progress: 83.75,
-                    deadline: '2024-02-15',
-                    status: 'on-track',
+                quarterly: {
+                    target: 25000,
+                    current: 18234,
+                    period: 'Q1 2024',
                 },
-                {
-                    id: '3',
-                    title: 'Content Consistency',
-                    target: 20,
-                    current: 12,
-                    progress: 60,
-                    deadline: '2024-01-31',
-                    status: 'behind',
-                },
-            ],
+            },
         };
 
         return NextResponse.json({ success: true, analytics: mockAnalytics });

@@ -61,44 +61,44 @@ export function Header() {
                                 priority
                             />
                         </Link>
+                        {/* Navigation - Hidden on mobile, shown on desktop */}
+                        <nav className='hidden lg:flex items-center space-x-1 mr-auto'>
+                            {navigation.map((item) => (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`px-3 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap rounded-md ${
+                                        isActive(item.href)
+                                            ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                                            : 'text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                    }`}
+                                >
+                                    {item.name}
+                                </Link>
+                            ))}
 
-                    {/* Navigation - Hidden on mobile, shown on desktop */}
-                    <nav className='hidden lg:flex items-center space-x-1 mr-auto'>
-                        {navigation.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className={`px-3 py-2 text-sm font-medium transition-colors duration-200 whitespace-nowrap rounded-md ${
-                                    isActive(item.href)
-                                        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
-                                        : 'text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                                }`}
+                            {/* Search Icon - Part of navigation */}
+                            <button
+                                onClick={() => setIsSearchModalOpen(true)}
+                                className='p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 ml-1'
+                                title='Search videos, creators, and content'
                             >
-                                {item.name}
-                            </Link>
-                        ))}
-                        
-                        {/* Search Icon - Part of navigation */}
-                        <button
-                            onClick={() => setIsSearchModalOpen(true)}
-                            className='p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 ml-1'
-                            title='Search videos, creators, and content'
-                        >
-                            <svg
-                                className='w-5 h-5'
-                                fill='none'
-                                stroke='currentColor'
-                                viewBox='0 0 24 24'
-                            >
-                                <path
-                                    strokeLinecap='round'
-                                    strokeLinejoin='round'
-                                    strokeWidth={2}
-                                    d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-                                />
-                            </svg>
-                        </button>
-                    </nav>                        {/* Right side items */}
+                                <svg
+                                    className='w-5 h-5'
+                                    fill='none'
+                                    stroke='currentColor'
+                                    viewBox='0 0 24 24'
+                                >
+                                    <path
+                                        strokeLinecap='round'
+                                        strokeLinejoin='round'
+                                        strokeWidth={2}
+                                        d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                                    />
+                                </svg>
+                            </button>
+                        </nav>{' '}
+                        {/* Right side items */}
                         <div className='flex items-center space-x-3'>
                             {/* H3 Gear Shop Button */}
                             <div className='hidden lg:block'>
@@ -209,7 +209,6 @@ export function Header() {
                                 )}
                             </div>
                         </div>
-
                         {/* Mobile menu button */}
                         <div className='lg:hidden ml-auto flex-shrink-0'>
                             <button
