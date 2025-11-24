@@ -43,6 +43,22 @@ async function main() {
 
     console.log('✅ Created test viewer:', testViewer.email);
 
+    // Create Troy - temporary super admin for testing
+    const troyPassword = await bcrypt.hash('TroyAdmin2024!', 12);
+
+    const troyAdmin = await prisma.user.upsert({
+        where: { email: 'troy@h3network.org' },
+        update: {},
+        create: {
+            email: 'troy@h3network.org',
+            name: 'Troy',
+            password: troyPassword,
+            role: UserRole.SUPER_ADMIN,
+        },
+    });
+
+    console.log('✅ Created Troy admin:', troyAdmin.email);
+
     // Create sample creators with H3 Network-specific branding
     const creatorPassword = await bcrypt.hash('creator123', 12);
 
@@ -421,6 +437,7 @@ Because sometimes, the bravest thing you can do is laugh in the face of adversit
     console.log('✅ H3 Network database seeded successfully!');
     console.log(`Created:`);
     console.log(`- 1 super admin (admin@h3network.org / SuperAdmin123!)`);
+    console.log(`- 1 Troy admin (troy@h3network.org / TroyAdmin2024!)`);
     console.log(`- 1 test viewer (test@h3network.org / password123)`);
     console.log(`- 4 H3 Network creators (Noah, Rita, Marcus, Sarah)`);
     console.log(
@@ -433,7 +450,8 @@ Because sometimes, the bravest thing you can do is laugh in the face of adversit
     console.log('');
     console.log('🧪 To test the platform:');
     console.log('1. Super Admin: admin@h3network.org / SuperAdmin123!');
-    console.log('2. Test Viewer: test@h3network.org / password123');
+    console.log('2. Troy Admin: troy@h3network.org / TroyAdmin2024!');
+    console.log('3. Test Viewer: test@h3network.org / password123');
     console.log('3. Browse videos and creators');
     console.log('4. Save content and check /profile?tab=saved');
     console.log(
