@@ -33,18 +33,18 @@ function SignInContent() {
             const result = await signIn('credentials', {
                 email,
                 password,
-                redirect: false,
+                callbackUrl: '/',
             });
 
+            // signIn with callbackUrl will automatically redirect
+            // If we reach here, there was an error
             if (result?.error) {
                 setError('Invalid email or password');
-            } else if (result?.ok) {
-                router.push('/');
+                setIsLoadingCredentials(false);
             }
         } catch (err) {
             console.error('Sign in error:', err);
             setError('Sign in failed. Please try again.');
-        } finally {
             setIsLoadingCredentials(false);
         }
     };
