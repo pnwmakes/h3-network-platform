@@ -2,7 +2,6 @@
 
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { signOutAction } from '@/app/actions/auth';
 
 export function NavBar() {
     const { data: session, status } = useSession();
@@ -48,7 +47,20 @@ export function NavBar() {
                                     {session.user.role}
                                 </span>
                                 <button
-                                    onClick={() => signOutAction()}
+                                    onClick={async () => {
+                                        // Call NextAuth signout endpoint
+                                        await fetch('/api/auth/signout', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                            },
+                                            body: JSON.stringify({
+                                                callbackUrl: '/',
+                                            }),
+                                        });
+                                        // Force reload to clear client-side state
+                                        window.location.href = '/';
+                                    }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
                                     Sign out

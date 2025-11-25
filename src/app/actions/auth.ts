@@ -6,21 +6,7 @@ import { redirect } from 'next/navigation';
 export async function signOutAction() {
     const cookieStore = await cookies();
 
-    // Get all cookies
-    const allCookies = cookieStore.getAll();
-
-    // Delete all NextAuth related cookies
-    allCookies.forEach((cookie) => {
-        if (
-            cookie.name.includes('next-auth') ||
-            cookie.name.includes('__Secure-next-auth') ||
-            cookie.name.includes('__Host-next-auth')
-        ) {
-            cookieStore.delete(cookie.name);
-        }
-    });
-
-    // Also explicitly try to delete known cookie names
+    // Delete all NextAuth related cookies with proper options
     const cookieNames = [
         'next-auth.session-token',
         '__Secure-next-auth.session-token',
@@ -31,7 +17,27 @@ export async function signOutAction() {
     ];
 
     cookieNames.forEach((name) => {
-        cookieStore.delete(name);
+        try {
+            cookieStore.delete({
+                name,
+                path: '/',
+                domain: process.env.NODE_ENV === 'production' 
+                    ? '.netlify.app' 
+                    : undefined,
+            });
+        } catch (e) {
+            // Ignore errors for cookies that don't exist
+            console.error('Error deleting cookie:', name, e);
+        }
+    });
+
+    // Also try without domain specification
+    cookieNames.forEach((name) => {
+        try {
+            cookieStore.delete(name);
+        } catch (e) {
+            // Ignore errors
+        }
     });
 
     redirect('/');
