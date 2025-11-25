@@ -185,7 +185,9 @@ export function Header() {
                                             Welcome, {session.user?.name}
                                         </span>
                                         <button
-                                            onClick={() => signOut({ callbackUrl: '/', redirect: true })}
+                                            onClick={async () => {
+                                                await signOut({ callbackUrl: '/' });
+                                            }}
                                             className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
                                         >
                                             Sign Out
@@ -364,9 +366,9 @@ export function Header() {
                                             </>
                                         )}
                                         <button
-                                            onClick={() => {
-                                                signOut({ callbackUrl: '/', redirect: true });
+                                            onClick={async () => {
                                                 setIsMobileMenuOpen(false);
+                                                await signOut({ callbackUrl: '/' });
                                             }}
                                             className='block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'
                                         >
