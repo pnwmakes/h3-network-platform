@@ -13,22 +13,12 @@ import {
     CardTitle,
     CardDescription,
 } from '@/components/ui/card';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Mail, CheckCircle } from 'lucide-react';
 
-interface RegistrationFormProps {
-    // Public registration is always USER role
-    // Creators must apply separately through admin approval
-}
-
-export function RegistrationForm({}: RegistrationFormProps) {
+// Public registration is always USER role
+// Creators must apply separately through admin approval
+export function RegistrationForm() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -118,7 +108,8 @@ export function RegistrationForm({}: RegistrationFormProps) {
                             Registration Successful!
                         </h3>
                         <p className='text-gray-600 mb-4'>
-                            Welcome to H3 Network! You&apos;re being signed in automatically.
+                            Welcome to H3 Network! You&apos;re being signed in
+                            automatically.
                         </p>
                         <div className='flex items-center justify-center space-x-2 text-sm text-gray-500'>
                             <Loader2 className='h-4 w-4 animate-spin' />

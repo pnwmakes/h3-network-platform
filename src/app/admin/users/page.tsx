@@ -643,7 +643,7 @@ export default function UserManagement() {
                                         variant='outline'
                                         size='sm'
                                         onClick={() =>
-                                            setCurrentPage((prev) =>
+                                            setCurrentPage(
                                                 Math.min(
                                                     data?.pagination?.pages ||
                                                         1,
