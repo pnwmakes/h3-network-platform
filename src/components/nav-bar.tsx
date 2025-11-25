@@ -46,21 +46,12 @@ export function NavBar() {
                                 <span className='px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full'>
                                     {session.user.role}
                                 </span>
-                                <button
-                                    onClick={async () => {
-                                        try {
-                                            await fetch('/api/signout', {
-                                                method: 'POST',
-                                            });
-                                        } catch (e) {
-                                            console.error('Sign out error:', e);
-                                        }
-                                        window.location.replace('/');
-                                    }}
+                                <Link
+                                    href='/api/auth/signout'
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
                                     Sign out
-                                </button>
+                                </Link>
                             </div>
                         ) : (
                             <div className='flex items-center space-x-2'>

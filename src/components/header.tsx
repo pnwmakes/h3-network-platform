@@ -184,27 +184,12 @@ export function Header() {
                                         <span className='text-sm font-medium text-gray-700 dark:text-gray-100 transition-colors duration-200 border-l border-gray-200 dark:border-gray-800 pl-3'>
                                             Welcome, {session.user?.name}
                                         </span>
-                                        <button
-                                            onClick={async () => {
-                                                try {
-                                                    await fetch(
-                                                        '/api/signout',
-                                                        {
-                                                            method: 'POST',
-                                                        }
-                                                    );
-                                                } catch (e) {
-                                                    console.error(
-                                                        'Sign out error:',
-                                                        e
-                                                    );
-                                                }
-                                                window.location.replace('/');
-                                            }}
+                                        <Link
+                                            href='/api/auth/signout'
                                             className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
                                         >
                                             Sign Out
-                                        </button>
+                                        </Link>
                                     </div>
                                 ) : (
                                     <div className='flex items-center space-x-4'>
@@ -378,28 +363,15 @@ export function Header() {
                                                 </Link>
                                             </>
                                         )}
-                                        <button
-                                            onClick={async () => {
-                                                setIsMobileMenuOpen(false);
-                                                try {
-                                                    await fetch(
-                                                        '/api/signout',
-                                                        {
-                                                            method: 'POST',
-                                                        }
-                                                    );
-                                                } catch (e) {
-                                                    console.error(
-                                                        'Sign out error:',
-                                                        e
-                                                    );
-                                                }
-                                                window.location.replace('/');
-                                            }}
+                                        <Link
+                                            href='/api/auth/signout'
+                                            onClick={() =>
+                                                setIsMobileMenuOpen(false)
+                                            }
                                             className='block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'
                                         >
                                             Sign Out
-                                        </button>
+                                        </Link>
                                     </div>
                                 ) : (
                                     <div className='space-y-2'>
