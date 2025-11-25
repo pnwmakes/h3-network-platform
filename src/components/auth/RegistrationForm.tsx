@@ -23,21 +23,19 @@ import {
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Mail, CheckCircle } from 'lucide-react';
 
-type UserRole = 'USER' | 'CREATOR';
-
 interface RegistrationFormProps {
-    defaultRole?: UserRole;
+    // Public registration is always USER role
+    // Creators must apply separately through admin approval
 }
 
-export function RegistrationForm({
-    defaultRole = 'USER',
-}: RegistrationFormProps) {
+export function RegistrationForm({}: RegistrationFormProps) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
-        role: defaultRole,
+        // Force USER role for all public registrations
+        role: 'USER' as const,
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -92,12 +90,8 @@ export function RegistrationForm({
                 });
 
                 if (result?.ok) {
-                    // Redirect based on role
-                    if (formData.role === 'CREATOR') {
-                        router.push('/creator/onboarding');
-                    } else {
-                        router.push('/dashboard');
-                    }
+                    // All public registrations go to main page
+                    router.push('/');
                 }
             }, 2000);
         } catch (err) {
@@ -124,9 +118,7 @@ export function RegistrationForm({
                             Registration Successful!
                         </h3>
                         <p className='text-gray-600 mb-4'>
-                            {formData.role === 'CREATOR'
-                                ? "Welcome to H3 Network! We'll redirect you to complete your creator profile."
-                                : "Welcome to H3 Network! You're being signed in automatically."}
+                            Welcome to H3 Network! You&apos;re being signed in automatically.
                         </p>
                         <div className='flex items-center justify-center space-x-2 text-sm text-gray-500'>
                             <Loader2 className='h-4 w-4 animate-spin' />
@@ -181,30 +173,6 @@ export function RegistrationForm({
                             required
                             placeholder='Enter your email'
                         />
-                    </div>
-
-                    <div className='space-y-2'>
-                        <Label htmlFor='role'>Account Type</Label>
-                        <Select
-                            value={formData.role}
-                            onValueChange={(value: UserRole) =>
-                                handleInputChange('role', value)
-                            }
-                        >
-                            <SelectTrigger>
-                                <SelectValue placeholder='Select account type' />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value='USER'>
-                                    Community Member - Access content and engage
-                                    with our community
-                                </SelectItem>
-                                <SelectItem value='CREATOR'>
-                                    Content Creator - Share your story and
-                                    create content
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
                     </div>
 
                     <div className='space-y-2'>

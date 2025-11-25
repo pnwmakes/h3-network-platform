@@ -11,7 +11,9 @@ const registerSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Invalid email address'),
     password: z.string().min(8, 'Password must be at least 8 characters'),
-    role: z.enum(['USER', 'CREATOR']).optional().default('USER'),
+    // Public registration only allows USER role
+    // Creators must apply through admin approval process
+    role: z.enum(['USER']).optional().default('USER'),
 });
 
 export const POST = withApiSecurity(async (request: NextRequest) => {
@@ -55,32 +57,15 @@ export const POST = withApiSecurity(async (request: NextRequest) => {
         const saltRounds = 12;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-        // Convert role to UserRole enum
-        const userRole =
-            role === 'CREATOR' ? UserRole.CREATOR : UserRole.VIEWER;
-
-        // Create user
+        // Public registration always creates VIEWER role
+        // Creators must be promoted through admin panel
         const user = await prisma.user.create({
             data: {
                 name,
                 email,
                 password: hashedPassword,
-                role: userRole,
+                role: UserRole.VIEWER,
                 emailVerified: new Date(), // For MVP, auto-verify emails
-                // Create creator profile if role is CREATOR
-                ...(userRole === UserRole.CREATOR && {
-                    creator: {
-                        create: {
-                            displayName: name,
-                            bio: '',
-                            isActive: false, // Will be activated after profile completion
-                            profileComplete: false,
-                        },
-                    },
-                }),
-            },
-            include: {
-                creator: true,
             },
         });
 
