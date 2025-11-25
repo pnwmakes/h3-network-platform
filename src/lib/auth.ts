@@ -33,6 +33,11 @@ declare module 'next-auth/jwt' {
 
 export const authOptions: NextAuthOptions = {
     adapter: PrismaAdapter(prisma),
+    session: {
+        strategy: 'jwt',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+    },
+    debug: process.env.NODE_ENV === 'development',
     providers: [
         GoogleProvider({
             clientId: env.GOOGLE_CLIENT_ID,
@@ -94,9 +99,6 @@ export const authOptions: NextAuthOptions = {
             },
         }),
     ],
-    session: {
-        strategy: 'jwt',
-    },
     callbacks: {
         async jwt({ token, user }) {
             if (user) {

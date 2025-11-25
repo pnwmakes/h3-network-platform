@@ -72,18 +72,18 @@ export function RegistrationForm() {
             setSuccess(true);
 
             // Auto-login after successful registration
-            setTimeout(async () => {
-                const result = await signIn('credentials', {
-                    email: formData.email,
-                    password: formData.password,
-                    redirect: false,
-                });
+            const result = await signIn('credentials', {
+                email: formData.email,
+                password: formData.password,
+                callbackUrl: '/',
+            });
 
-                if (result?.ok) {
-                    // All public registrations go to main page
-                    router.push('/');
-                }
-            }, 2000);
+            if (!result?.ok) {
+                setError(
+                    'Account created but auto-login failed. Please sign in manually.'
+                );
+                setSuccess(false);
+            }
         } catch (err) {
             setError(
                 err instanceof Error ? err.message : 'Registration failed'
