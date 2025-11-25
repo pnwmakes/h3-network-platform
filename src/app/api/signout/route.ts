@@ -5,7 +5,6 @@ export async function POST(req: NextRequest) {
     const cookieStore = await cookies();
     
     const isProduction = process.env.NODE_ENV === 'production';
-    const domain = isProduction ? '.netlify.app' : undefined;
 
     // List of all possible NextAuth cookie names
     const cookieNames = [
@@ -20,63 +19,36 @@ export async function POST(req: NextRequest) {
         'next-auth.pkce.code_verifier',
     ];
 
-    // Delete each cookie with multiple strategies
+    // Create response first
+    const response = NextResponse.json({
+        success: true,
+        message: 'Signed out successfully',
+    });
+    
+    // Explicitly set cookies to expire in the past using response headers
     cookieNames.forEach((name) => {
-        // Strategy 1: Delete with domain
-        if (domain) {
-            try {
-                cookieStore.delete({
-                    name,
-                    path: '/',
-                    domain,
-                    secure: true,
-                    httpOnly: true,
-                });
-            } catch (e) {
-                // Ignore
-            }
-        }
+        // Set cookie with max-age=0 to delete it
+        response.cookies.set(name, '', {
+            path: '/',
+            expires: new Date(0),
+            maxAge: 0,
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: 'lax',
+        });
         
-        // Strategy 2: Delete with path only
-        try {
-            cookieStore.delete({
-                name,
-                path: '/',
-            });
-        } catch (e) {
-            // Ignore
-        }
-        
-        // Strategy 3: Simple delete
+        // Also delete from cookie store
         try {
             cookieStore.delete(name);
         } catch (e) {
             // Ignore
         }
     });
-
-    // Create response with Set-Cookie headers to explicitly clear cookies
-    const response = NextResponse.json({
-        success: true,
-        message: 'Signed out successfully',
-    });
-    
-    // Explicitly set cookies to expire in the past
-    cookieNames.forEach((name) => {
-        response.cookies.set(name, '', {
-            path: '/',
-            expires: new Date(0),
-            maxAge: 0,
-            ...(isProduction && {
-                domain: '.netlify.app',
-                secure: true,
-            }),
-        });
-    });
     
     // Set cache control to prevent caching
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private');
     response.headers.set('Pragma', 'no-cache');
+    response.headers.set('Expires', '0');
     
     return response;
 }
