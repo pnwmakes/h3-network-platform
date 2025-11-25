@@ -19,7 +19,17 @@ function SignInContent() {
         // Check if user is already signed in
         getSession().then((session) => {
             if (session) {
-                router.push('/');
+                // Redirect based on role
+                const role = session.user.role;
+                if (
+                    role === 'CREATOR' ||
+                    role === 'ADMIN' ||
+                    role === 'SUPER_ADMIN'
+                ) {
+                    router.push('/creator/dashboard');
+                } else {
+                    router.push('/');
+                }
             }
         });
     }, [router]);
@@ -33,14 +43,25 @@ function SignInContent() {
             const result = await signIn('credentials', {
                 email,
                 password,
-                callbackUrl: '/',
+                redirect: false,
             });
 
-            // signIn with callbackUrl will automatically redirect
-            // If we reach here, there was an error
             if (result?.error) {
                 setError('Invalid email or password');
                 setIsLoadingCredentials(false);
+            } else if (result?.ok) {
+                // Sign in successful, get session and redirect based on role
+                const session = await getSession();
+                if (session?.user) {
+                    const role = session.user.role;
+                    if (role === 'CREATOR' || role === 'ADMIN' || role === 'SUPER_ADMIN') {
+                        router.push('/creator/dashboard');
+                    } else {
+                        router.push('/');
+                    }
+                } else {
+                    router.push('/');
+                }
             }
         } catch (err) {
             console.error('Sign in error:', err);

@@ -126,9 +126,17 @@ export const authOptions: NextAuthOptions = {
             }
             return session;
         },
-        async signIn() {
-            // Allow all sign ins - we could add custom logic here later
+        async signIn({ user }) {
+            // Allow all sign ins
             return true;
+        },
+        async redirect({ url, baseUrl }) {
+            // If user is signing in, redirect based on their role
+            if (url.startsWith(baseUrl)) {
+                return url;
+            }
+            // Default redirect to home
+            return baseUrl;
         },
     },
     pages: {
