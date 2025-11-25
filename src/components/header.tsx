@@ -185,11 +185,9 @@ export function Header() {
                                             Welcome, {session.user?.name}
                                         </span>
                                         <button
-                                            onClick={() => {
-                                                signOut({
-                                                    redirect: true,
-                                                    callbackUrl: '/',
-                                                });
+                                            onClick={async () => {
+                                                await fetch('/api/auth/signout', { method: 'POST' });
+                                                window.location.href = '/';
                                             }}
                                             className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
                                         >
@@ -369,12 +367,10 @@ export function Header() {
                                             </>
                                         )}
                                         <button
-                                            onClick={() => {
+                                            onClick={async () => {
                                                 setIsMobileMenuOpen(false);
-                                                signOut({
-                                                    redirect: true,
-                                                    callbackUrl: '/',
-                                                });
+                                                await fetch('/api/auth/signout', { method: 'POST' });
+                                                window.location.href = '/';
                                             }}
                                             className='block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'
                                         >

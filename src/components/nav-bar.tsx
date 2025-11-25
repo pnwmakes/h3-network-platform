@@ -47,11 +47,9 @@ export function NavBar() {
                                     {session.user.role}
                                 </span>
                                 <button
-                                    onClick={() => {
-                                        signOut({
-                                            redirect: true,
-                                            callbackUrl: '/',
-                                        });
+                                    onClick={async () => {
+                                        await fetch('/api/auth/signout', { method: 'POST' });
+                                        window.location.href = '/';
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
