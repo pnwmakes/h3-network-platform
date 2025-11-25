@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
 
 export function NavBar() {
@@ -47,8 +47,8 @@ export function NavBar() {
                                     {session.user.role}
                                 </span>
                                 <button
-                                    onClick={() => {
-                                        window.location.href = '/api/auth/signout?callbackUrl=/';
+                                    onClick={async () => {
+                                        await signOut({ callbackUrl: '/', redirect: true });
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
