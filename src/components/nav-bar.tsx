@@ -62,12 +62,12 @@ export function NavBar() {
                                 >
                                     Create Account
                                 </Link>
-                                <button
-                                    onClick={() => signIn()}
+                                <Link
+                                    href='/auth/signin'
                                     className='bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700'
                                 >
                                     Sign in
-                                </button>
+                                </Link>
                             </div>
                         )}
                     </div>
