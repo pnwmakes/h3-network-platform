@@ -46,12 +46,14 @@ export function NavBar() {
                                 <span className='px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full'>
                                     {session.user.role}
                                 </span>
-                                <Link
-                                    href='/api/auth/signout'
+                                <button
+                                    onClick={() => {
+                                        window.location.href = '/api/auth/signout?callbackUrl=/';
+                                    }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
                                     Sign out
-                                </Link>
+                                </button>
                             </div>
                         ) : (
                             <div className='flex items-center space-x-2'>
