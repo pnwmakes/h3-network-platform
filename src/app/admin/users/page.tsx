@@ -512,7 +512,8 @@ export default function UserManagement() {
                                                             onClick={() =>
                                                                 handleUserAction(
                                                                     user.id,
-                                                                    user.creator!
+                                                                    user
+                                                                        .creator!
                                                                         .isActive
                                                                         ? 'deactivate'
                                                                         : 'activate'
