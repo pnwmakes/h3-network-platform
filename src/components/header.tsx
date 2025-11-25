@@ -186,17 +186,13 @@ export function Header() {
                                         </span>
                                         <button
                                             onClick={async () => {
-                                                // Call NextAuth signout endpoint
-                                                await fetch('/api/auth/signout', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                    },
-                                                    body: JSON.stringify({
-                                                        callbackUrl: '/',
-                                                    }),
-                                                });
-                                                // Force reload to clear client-side state
+                                                try {
+                                                    await fetch('/api/signout', {
+                                                        method: 'POST',
+                                                    });
+                                                } catch (e) {
+                                                    console.error('Sign out error:', e);
+                                                }
                                                 window.location.href = '/';
                                             }}
                                             className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
@@ -379,17 +375,13 @@ export function Header() {
                                         <button
                                             onClick={async () => {
                                                 setIsMobileMenuOpen(false);
-                                                // Call NextAuth signout endpoint
-                                                await fetch('/api/auth/signout', {
-                                                    method: 'POST',
-                                                    headers: {
-                                                        'Content-Type': 'application/json',
-                                                    },
-                                                    body: JSON.stringify({
-                                                        callbackUrl: '/',
-                                                    }),
-                                                });
-                                                // Force reload to clear client-side state
+                                                try {
+                                                    await fetch('/api/signout', {
+                                                        method: 'POST',
+                                                    });
+                                                } catch (e) {
+                                                    console.error('Sign out error:', e);
+                                                }
                                                 window.location.href = '/';
                                             }}
                                             className='block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'

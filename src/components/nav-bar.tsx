@@ -48,17 +48,13 @@ export function NavBar() {
                                 </span>
                                 <button
                                     onClick={async () => {
-                                        // Call NextAuth signout endpoint
-                                        await fetch('/api/auth/signout', {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                            },
-                                            body: JSON.stringify({
-                                                callbackUrl: '/',
-                                            }),
-                                        });
-                                        // Force reload to clear client-side state
+                                        try {
+                                            await fetch('/api/signout', {
+                                                method: 'POST',
+                                            });
+                                        } catch (e) {
+                                            console.error('Sign out error:', e);
+                                        }
                                         window.location.href = '/';
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'

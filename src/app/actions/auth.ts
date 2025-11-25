@@ -21,9 +21,10 @@ export async function signOutAction() {
             cookieStore.delete({
                 name,
                 path: '/',
-                domain: process.env.NODE_ENV === 'production' 
-                    ? '.netlify.app' 
-                    : undefined,
+                domain:
+                    process.env.NODE_ENV === 'production'
+                        ? '.netlify.app'
+                        : undefined,
             });
         } catch (e) {
             // Ignore errors for cookies that don't exist
