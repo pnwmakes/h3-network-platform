@@ -1,7 +1,8 @@
 'use client';
 
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { signOutAction } from '@/app/actions/auth';
 
 export function NavBar() {
     const { data: session, status } = useSession();
@@ -47,12 +48,7 @@ export function NavBar() {
                                     {session.user.role}
                                 </span>
                                 <button
-                                    onClick={async () => {
-                                        await signOut({
-                                            redirect: true,
-                                            callbackUrl: '/',
-                                        });
-                                    }}
+                                    onClick={() => signOutAction()}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
                                     Sign out
