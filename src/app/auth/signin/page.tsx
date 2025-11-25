@@ -44,17 +44,18 @@ function SignInContent() {
             const result = await signIn('credentials', {
                 email,
                 password,
-                redirect: true,
-                callbackUrl: '/',
+                redirect: false,
             });
 
             console.log('Sign in result:', result);
 
-            // If we get here with redirect: true, something went wrong
             if (result?.error) {
                 console.error('Sign in error:', result.error);
                 setError('Invalid email or password');
                 setIsLoadingCredentials(false);
+            } else if (result?.ok) {
+                // Sign in successful - force page reload to trigger useEffect
+                window.location.reload();
             }
         } catch (err) {
             console.error('Sign in error:', err);
