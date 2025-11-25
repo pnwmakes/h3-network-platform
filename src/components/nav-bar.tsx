@@ -48,7 +48,10 @@ export function NavBar() {
                                 </span>
                                 <button
                                     onClick={() => {
-                                        window.location.href = '/api/auth/signout';
+                                        signOut({
+                                            redirect: true,
+                                            callbackUrl: '/',
+                                        });
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
