@@ -55,7 +55,7 @@ export function NavBar() {
                                         } catch (e) {
                                             console.error('Sign out error:', e);
                                         }
-                                        window.location.href = '/';
+                                        window.location.replace('/');
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
