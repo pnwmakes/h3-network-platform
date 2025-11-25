@@ -48,7 +48,10 @@ export function NavBar() {
                                 </span>
                                 <button
                                     onClick={async () => {
-                                        await signOut({ callbackUrl: '/', redirect: true });
+                                        await signOut({
+                                            callbackUrl: '/',
+                                            redirect: true,
+                                        });
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
