@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 export async function POST(req: NextRequest) {
-    const cookieStore = await cookies();
-    
     const isProduction = process.env.NODE_ENV === 'production';
+    const isHttps =
+        req.headers.get('x-forwarded-proto') === 'https' || isProduction;
 
     // List of all possible NextAuth cookie names
     const cookieNames = [
@@ -19,37 +18,28 @@ export async function POST(req: NextRequest) {
         'next-auth.pkce.code_verifier',
     ];
 
-    // Create response first
-    const response = NextResponse.json({
-        success: true,
-        message: 'Signed out successfully',
-    });
-    
-    // Explicitly set cookies to expire in the past using response headers
+    // Redirect to home page
+    const response = NextResponse.redirect(new URL('/', req.url));
+
+    // Set all cookies to expire
     cookieNames.forEach((name) => {
-        // Set cookie with max-age=0 to delete it
         response.cookies.set(name, '', {
             path: '/',
             expires: new Date(0),
-            maxAge: 0,
+            maxAge: -1,
             httpOnly: true,
-            secure: isProduction,
+            secure: isHttps,
             sameSite: 'lax',
         });
-        
-        // Also delete from cookie store
-        try {
-            cookieStore.delete(name);
-        } catch (e) {
-            // Ignore
-        }
     });
-    
-    // Set cache control to prevent caching
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0, private');
+
+    // Set cache control headers
+    response.headers.set(
+        'Cache-Control',
+        'no-store, no-cache, must-revalidate, private'
+    );
     response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
-    
+
     return response;
 }
 
