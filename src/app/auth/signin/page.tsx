@@ -40,28 +40,21 @@ function SignInContent() {
         setIsLoadingCredentials(true);
 
         try {
+            console.log('Attempting sign in with:', email);
             const result = await signIn('credentials', {
                 email,
                 password,
-                redirect: false,
+                redirect: true,
+                callbackUrl: '/',
             });
 
+            console.log('Sign in result:', result);
+
+            // If we get here with redirect: true, something went wrong
             if (result?.error) {
+                console.error('Sign in error:', result.error);
                 setError('Invalid email or password');
                 setIsLoadingCredentials(false);
-            } else if (result?.ok) {
-                // Sign in successful, get session and redirect based on role
-                const session = await getSession();
-                if (session?.user) {
-                    const role = session.user.role;
-                    if (role === 'CREATOR' || role === 'ADMIN' || role === 'SUPER_ADMIN') {
-                        router.push('/creator/dashboard');
-                    } else {
-                        router.push('/');
-                    }
-                } else {
-                    router.push('/');
-                }
             }
         } catch (err) {
             console.error('Sign in error:', err);
