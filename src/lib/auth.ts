@@ -32,7 +32,8 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(prisma),
+    // DO NOT use adapter with JWT strategy - adapter is for database sessions
+    // adapter: PrismaAdapter(prisma),
     secret: env.NEXTAUTH_SECRET,
     session: {
         strategy: 'jwt',
@@ -50,7 +51,7 @@ export const authOptions: NextAuthOptions = {
             },
         },
     },
-    debug: process.env.NODE_ENV === 'development',
+    debug: true, // Enable debug in production to see what's happening
     providers: [
         GoogleProvider({
             clientId: env.GOOGLE_CLIENT_ID,
