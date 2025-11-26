@@ -47,11 +47,11 @@ export function NavBar() {
                                     {session.user.role}
                                 </span>
                                 <button
-                                    onClick={() => {
-                                        signOut({
-                                            callbackUrl: '/',
-                                            redirect: true,
-                                        });
+                                    onClick={async () => {
+                                        // Clear session and reload
+                                        await signOut({ redirect: false });
+                                        // Force reload to clear all state
+                                        window.location.replace('/');
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
