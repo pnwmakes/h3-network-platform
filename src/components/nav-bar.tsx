@@ -47,19 +47,7 @@ export function NavBar() {
                                     {session.user.role}
                                 </span>
                                 <button
-                                    onClick={async () => {
-                                        try {
-                                            // Call NextAuth signOut
-                                            await signOut({ redirect: false });
-                                            // Call custom endpoint to ensure cookies are cleared
-                                            await fetch('/api/auth/signout', { method: 'POST' });
-                                            // Redirect to home
-                                            window.location.href = '/';
-                                        } catch (error) {
-                                            console.error('Sign out error:', error);
-                                            window.location.href = '/';
-                                        }
-                                    }}
+                                    onClick={() => signOut()}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
                                     Sign out
