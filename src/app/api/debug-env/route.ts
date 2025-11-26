@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 
 export async function GET() {
     const headersList = headers();
-    
+
     return NextResponse.json({
         nodeEnv: process.env.NODE_ENV,
         nextauthUrl: process.env.NEXTAUTH_URL,

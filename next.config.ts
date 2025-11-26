@@ -37,6 +37,16 @@ const nextConfig: NextConfig = {
     async headers() {
         return [
             {
+                // Exclude auth routes from strict caching
+                source: '/api/auth/:path*',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'no-store, max-age=0, must-revalidate',
+                    },
+                ],
+            },
+            {
                 source: '/(.*)',
                 headers: [
                     {
