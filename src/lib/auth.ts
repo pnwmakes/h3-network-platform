@@ -135,7 +135,7 @@ export const authOptions: NextAuthOptions = {
         signOut: '/', // Redirect to homepage after sign out
     },
     events: {
-        async createUser() {
+        async createUser({ user }) {
             // New user created - could send welcome email here
             logger.info('New user created', {
                 userId: user.id,

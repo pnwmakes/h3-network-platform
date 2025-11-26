@@ -36,7 +36,7 @@ export async function signOutAction() {
     cookieNames.forEach((name) => {
         try {
             cookieStore.delete(name);
-        } catch (e) {
+        } catch {
             // Ignore errors
         }
     });
