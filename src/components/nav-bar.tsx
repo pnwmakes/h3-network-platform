@@ -48,9 +48,15 @@ export function NavBar() {
                                 </span>
                                 <button
                                     onClick={async () => {
-                                        // Clear session and reload
+                                        // Manually clear NextAuth cookies
+                                        document.cookie.split(';').forEach((c) => {
+                                            document.cookie = c
+                                                .replace(/^ +/, '')
+                                                .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
+                                        });
+                                        // Sign out
                                         await signOut({ redirect: false });
-                                        // Force reload to clear all state
+                                        // Force reload
                                         window.location.replace('/');
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
