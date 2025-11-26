@@ -1,6 +1,7 @@
 import NextAuth, { type NextAuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import { prisma } from '@/lib/prisma';
 import { env } from '@/lib/env';
 import { logger } from '@/lib/logger';
@@ -31,42 +32,13 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: NextAuthOptions = {
-    // DO NOT use adapter with JWT strategy - adapter is for database sessions
-    // adapter: PrismaAdapter(prisma),
+    // Use database sessions for Netlify compatibility
+    adapter: PrismaAdapter(prisma),
     secret: env.NEXTAUTH_SECRET,
     session: {
-        strategy: 'jwt',
+        strategy: 'database',
         maxAge: 30 * 24 * 60 * 60, // 30 days
-    },
-    // Explicit cookie configuration for Netlify serverless
-    cookies: {
-        sessionToken: {
-            name: `__Secure-next-auth.session-token`,
-            options: {
-                httpOnly: true,
-                sameSite: 'lax',
-                path: '/',
-                secure: true,
-            },
-        },
-        callbackUrl: {
-            name: `__Secure-next-auth.callback-url`,
-            options: {
-                httpOnly: true,
-                sameSite: 'lax',
-                path: '/',
-                secure: true,
-            },
-        },
-        csrfToken: {
-            name: `__Host-next-auth.csrf-token`,
-            options: {
-                httpOnly: true,
-                sameSite: 'lax',
-                path: '/',
-                secure: true,
-            },
-        },
+        updateAge: 24 * 60 * 60, // 24 hours
     },
     debug: true,
     providers: [
@@ -131,30 +103,20 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        async jwt({ token, user }) {
-            if (user) {
-                token.id = user.id;
-                token.role = user.role || 'VIEWER';
-            }
-            return token;
-        },
-        async session({ session, token }) {
-            if (token && session.user) {
-                session.user.id = token.id;
-                session.user.role = token.role;
+        async session({ session, user }) {
+            if (user && session.user) {
+                session.user.id = user.id;
+                session.user.role = (user as { role?: UserRole }).role || 'VIEWER';
             }
             return session;
         },
         async signIn() {
-            // Allow all sign ins
             return true;
         },
         async redirect({ url, baseUrl }) {
-            // If user is signing in, redirect based on their role
             if (url.startsWith(baseUrl)) {
                 return url;
             }
-            // Default redirect to home
             return baseUrl;
         },
     },
