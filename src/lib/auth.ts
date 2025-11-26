@@ -39,7 +39,6 @@ export const authOptions: NextAuthOptions = {
         maxAge: 30 * 24 * 60 * 60, // 30 days
     },
     useSecureCookies: process.env.NODE_ENV === 'production',
-    trustHost: true, // Required for Netlify
     debug: process.env.NODE_ENV === 'development',
     providers: [
         GoogleProvider({
@@ -117,7 +116,7 @@ export const authOptions: NextAuthOptions = {
             }
             return session;
         },
-        async signIn({ user }) {
+        async signIn() {
             // Allow all sign ins
             return true;
         },
@@ -136,7 +135,7 @@ export const authOptions: NextAuthOptions = {
         signOut: '/', // Redirect to homepage after sign out
     },
     events: {
-        async createUser({ user }) {
+        async createUser() {
             // New user created - could send welcome email here
             logger.info('New user created', {
                 userId: user.id,
