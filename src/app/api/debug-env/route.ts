@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 
 export async function GET() {
-    const headersList = headers();
+    const headersList = await headers();
 
     return NextResponse.json({
         nodeEnv: process.env.NODE_ENV,
