@@ -38,7 +38,36 @@ export const authOptions: NextAuthOptions = {
         strategy: 'jwt',
         maxAge: 30 * 24 * 60 * 60, // 30 days
     },
-    // Let NextAuth auto-configure based on NEXTAUTH_URL
+    // Explicit cookie configuration for Netlify serverless
+    cookies: {
+        sessionToken: {
+            name: `__Secure-next-auth.session-token`,
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true,
+            },
+        },
+        callbackUrl: {
+            name: `__Secure-next-auth.callback-url`,
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true,
+            },
+        },
+        csrfToken: {
+            name: `__Host-next-auth.csrf-token`,
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true,
+            },
+        },
+    },
     debug: true,
     providers: [
         GoogleProvider({
