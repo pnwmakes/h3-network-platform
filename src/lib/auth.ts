@@ -32,14 +32,13 @@ declare module 'next-auth/jwt' {
 }
 
 export const authOptions: NextAuthOptions = {
-    // Use database sessions for Netlify compatibility
-    adapter: PrismaAdapter(prisma),
     secret: env.NEXTAUTH_SECRET,
     session: {
-        strategy: 'database',
+        strategy: 'jwt',
         maxAge: 30 * 24 * 60 * 60, // 30 days
-        updateAge: 24 * 60 * 60, // 24 hours
     },
+    // Let NextAuth handle cookies automatically based on NEXTAUTH_URL
+    useSecureCookies: env.NEXTAUTH_URL?.startsWith('https://'),
     debug: true,
     providers: [
         GoogleProvider({
@@ -103,10 +102,17 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     callbacks: {
-        async session({ session, user }) {
-            if (user && session.user) {
-                session.user.id = user.id;
-                session.user.role = (user as { role?: UserRole }).role || 'VIEWER';
+        async jwt({ token, user }) {
+            if (user) {
+                token.id = user.id;
+                token.role = user.role || 'VIEWER';
+            }
+            return token;
+        },
+        async session({ session, token }) {
+            if (token && session.user) {
+                session.user.id = token.id;
+                session.user.role = token.role;
             }
             return session;
         },
