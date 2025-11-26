@@ -6,7 +6,9 @@ import { useEffect, useState } from 'react';
 export default function DebugAuthPage() {
     const { data: session, status } = useSession();
     const [cookies, setCookies] = useState<string>('');
-    const [envInfo, setEnvInfo] = useState<Record<string, unknown> | null>(null);
+    const [envInfo, setEnvInfo] = useState<Record<string, unknown> | null>(
+        null
+    );
 
     useEffect(() => {
         setCookies(document.cookie);
