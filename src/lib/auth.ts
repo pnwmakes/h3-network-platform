@@ -38,7 +38,39 @@ export const authOptions: NextAuthOptions = {
         strategy: 'jwt',
         maxAge: 30 * 24 * 60 * 60, // 30 days
     },
-    // Remove custom cookie configuration - let NextAuth handle it automatically
+    // Explicitly configure for production
+    useSecureCookies: true,
+    cookies: {
+        sessionToken: {
+            name: '__Secure-next-auth.session-token',
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true,
+                domain: 'h3-network.netlify.app', // Explicitly set domain
+            },
+        },
+        callbackUrl: {
+            name: '__Secure-next-auth.callback-url',
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true,
+                domain: 'h3-network.netlify.app',
+            },
+        },
+        csrfToken: {
+            name: '__Host-next-auth.csrf-token',
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true,
+            },
+        },
+    },
     debug: true, // Enable debug in production to see what's happening
     providers: [
         GoogleProvider({
