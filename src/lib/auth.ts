@@ -120,10 +120,6 @@ export const authOptions: NextAuthOptions = {
             return true;
         },
         async redirect({ url, baseUrl }) {
-            // After successful sign in, redirect to session fix endpoint
-            if (url === baseUrl || url.includes('/auth/signin')) {
-                return `${baseUrl}/api/auth/session-fix?redirect=${encodeURIComponent(baseUrl)}`;
-            }
             if (url.startsWith(baseUrl)) {
                 return url;
             }

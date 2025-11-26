@@ -7,12 +7,15 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# NextAuth requires proper cookie handling
+[functions]
+  included_files = [".env"]
+
 # Force NextAuth cookies to persist
 [[headers]]
   for = "/api/auth/*"
   [headers.values]
     Cache-Control = "no-store, must-revalidate, max-age=0"
-    Set-Cookie = "Path=/; Secure; HttpOnly; SameSite=Lax"
 
 # Disable caching for dynamic content
 [[headers]]
