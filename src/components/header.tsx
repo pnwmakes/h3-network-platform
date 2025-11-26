@@ -185,19 +185,8 @@ export function Header() {
                                             Welcome, {session.user?.name}
                                         </span>
                                         <button
-                                            onClick={async () => {
-                                                // Manually clear NextAuth cookies
-                                                document.cookie.split(';').forEach((c) => {
-                                                    document.cookie = c
-                                                        .replace(/^ +/, '')
-                                                        .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
-                                                });
-                                                // Sign out
-                                                await signOut({
-                                                    redirect: false,
-                                                });
-                                                // Force reload
-                                                window.location.replace('/');
+                                            onClick={() => {
+                                                signOut({ callbackUrl: '/' });
                                             }}
                                             className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
                                         >
@@ -377,20 +366,9 @@ export function Header() {
                                             </>
                                         )}
                                         <button
-                                            onClick={async () => {
+                                            onClick={() => {
                                                 setIsMobileMenuOpen(false);
-                                                // Manually clear NextAuth cookies
-                                                document.cookie.split(';').forEach((c) => {
-                                                    document.cookie = c
-                                                        .replace(/^ +/, '')
-                                                        .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
-                                                });
-                                                // Sign out
-                                                await signOut({
-                                                    redirect: false,
-                                                });
-                                                // Force reload
-                                                window.location.replace('/');
+                                                signOut({ callbackUrl: '/' });
                                             }}
                                             className='block w-full text-left px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'
                                         >

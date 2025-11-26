@@ -47,17 +47,8 @@ export function NavBar() {
                                     {session.user.role}
                                 </span>
                                 <button
-                                    onClick={async () => {
-                                        // Manually clear NextAuth cookies
-                                        document.cookie.split(';').forEach((c) => {
-                                            document.cookie = c
-                                                .replace(/^ +/, '')
-                                                .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
-                                        });
-                                        // Sign out
-                                        await signOut({ redirect: false });
-                                        // Force reload
-                                        window.location.replace('/');
+                                    onClick={() => {
+                                        signOut({ callbackUrl: '/' });
                                     }}
                                     className='text-sm text-gray-500 hover:text-gray-700'
                                 >
