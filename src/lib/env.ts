@@ -69,6 +69,11 @@ function validateEnv() {
         return {} as z.infer<typeof envSchema>;
     }
 
+    // Skip validation during build if variables aren't available
+    if (process.env.SKIP_ENV_VALIDATION === 'true') {
+        return process.env as unknown as z.infer<typeof envSchema>;
+    }
+
     try {
         return envSchema.parse(process.env);
     } catch (error) {
