@@ -54,8 +54,12 @@ function SignInContent() {
                 setError('Invalid email or password');
                 setIsLoadingCredentials(false);
             } else if (result?.ok) {
-                // Sign in successful - get session and redirect based on role
+                // Sign in successful - use hard redirect to ensure session loads
+                console.log('Sign in successful, redirecting...');
+                // Get fresh session
                 const session = await getSession();
+                console.log('Session after login:', session);
+
                 if (session?.user) {
                     const role = session.user.role;
                     if (
@@ -63,13 +67,29 @@ function SignInContent() {
                         role === 'ADMIN' ||
                         role === 'SUPER_ADMIN'
                     ) {
-                        router.push('/creator/dashboard');
+                        window.location.href = '/creator/dashboard';
                     } else {
-                        router.push('/');
+                        window.location.href = '/';
                     }
                 } else {
-                    // Fallback to homepage if session not immediately available
-                    router.push('/');
+                    // Fallback - try one more time after delay
+                    setTimeout(async () => {
+                        const retrySession = await getSession();
+                        if (retrySession?.user) {
+                            const role = retrySession.user.role;
+                            if (
+                                role === 'CREATOR' ||
+                                role === 'ADMIN' ||
+                                role === 'SUPER_ADMIN'
+                            ) {
+                                window.location.href = '/creator/dashboard';
+                            } else {
+                                window.location.href = '/';
+                            }
+                        } else {
+                            window.location.href = '/';
+                        }
+                    }, 500);
                 }
             }
         } catch (err) {
