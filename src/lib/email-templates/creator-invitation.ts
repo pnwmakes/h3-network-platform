@@ -1,6 +1,6 @@
 /**
  * Email Template for Creator Invitations
- * 
+ *
  * This template is used when a super admin invites a new creator to the platform.
  * It includes credentials and instructions for setting a password.
  */
