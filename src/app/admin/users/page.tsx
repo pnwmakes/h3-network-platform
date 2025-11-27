@@ -13,6 +13,7 @@ import {
     UserX,
     ChevronLeft,
     ChevronRight,
+    UserPlus,
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -270,12 +271,20 @@ export default function UserManagement() {
                                 </p>
                             </div>
                         </div>
-                        <Badge
-                            variant='outline'
-                            className='bg-red-50 text-red-700 border-red-200'
-                        >
-                            Super Admin Access
-                        </Badge>
+                        <div className='flex items-center space-x-3'>
+                            <Link href='/admin/creators/create'>
+                                <Button className='flex items-center space-x-2'>
+                                    <UserPlus className='h-4 w-4' />
+                                    <span>Invite Creator</span>
+                                </Button>
+                            </Link>
+                            <Badge
+                                variant='outline'
+                                className='bg-red-50 text-red-700 border-red-200'
+                            >
+                                Super Admin Access
+                            </Badge>
+                        </div>
                     </div>
                 </div>
             </div>

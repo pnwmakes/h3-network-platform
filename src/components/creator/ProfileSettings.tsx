@@ -102,7 +102,9 @@ export function ProfileSettings({
         }
     };
 
-    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageUpload = async (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
@@ -406,7 +408,9 @@ export function ProfileSettings({
                             <Button
                                 variant='outline'
                                 onClick={() =>
-                                    document.getElementById('avatar-upload')?.click()
+                                    document
+                                        .getElementById('avatar-upload')
+                                        ?.click()
                                 }
                                 disabled={isUploadingImage}
                                 type='button'

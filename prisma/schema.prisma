@@ -34,22 +34,24 @@ model Session {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  name          String?
-  email         String?        @unique
-  emailVerified DateTime?
-  image         String?
-  role          UserRole       @default(VIEWER)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  password      String?
-  accounts      Account[]
-  creator       Creator?
-  savedContent  SavedContent[]
-  sessions      Session[]
-  progress      UserProgress[]
-  likes         Like[]         @relation("UserLikes")
-  newsletters   Newsletter[]
+  id               String         @id @default(cuid())
+  name             String?
+  email            String?        @unique
+  emailVerified    DateTime?
+  image            String?
+  role             UserRole       @default(VIEWER)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  password         String?
+  resetToken       String?        @unique
+  resetTokenExpiry DateTime?
+  accounts         Account[]
+  creator          Creator?
+  savedContent     SavedContent[]
+  sessions         Session[]
+  progress         UserProgress[]
+  likes            Like[]         @relation("UserLikes")
+  newsletters      Newsletter[]
 }
 
 model VerificationToken {
