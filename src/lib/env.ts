@@ -71,7 +71,9 @@ function validateEnv() {
 
     // Skip validation during build if requested
     if (process.env.SKIP_ENV_VALIDATION === 'true') {
-        console.log('⚠️  Skipping environment validation (SKIP_ENV_VALIDATION=true)');
+        console.log(
+            '⚠️  Skipping environment validation (SKIP_ENV_VALIDATION=true)'
+        );
         return process.env as unknown as z.infer<typeof envSchema>;
     }
 
@@ -83,13 +85,15 @@ function validateEnv() {
             error.issues.forEach((issue) => {
                 console.error(`  - ${issue.path.join('.')}: ${issue.message}`);
             });
-            
+
             // If in build/production, skip validation to allow deploy
             if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
-                console.warn('⚠️  Continuing despite validation errors in production build');
+                console.warn(
+                    '⚠️  Continuing despite validation errors in production build'
+                );
                 return process.env as unknown as z.infer<typeof envSchema>;
             }
-            
+
             // Don't exit in Edge Runtime - just throw the error
             throw new Error(
                 `Environment validation failed: ${error.issues

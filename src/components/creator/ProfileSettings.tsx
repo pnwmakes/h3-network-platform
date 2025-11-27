@@ -55,6 +55,7 @@ export function ProfileSettings({
     });
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
     const [message, setMessage] = useState<{
         type: 'success' | 'error';
         text: string;
@@ -98,6 +99,90 @@ export function ProfileSettings({
             });
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate file type
+        if (!file.type.startsWith('image/')) {
+            setMessage({
+                type: 'error',
+                text: 'Please select an image file',
+            });
+            return;
+        }
+
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            setMessage({
+                type: 'error',
+                text: 'Image must be under 5MB',
+            });
+            return;
+        }
+
+        setIsUploadingImage(true);
+        setMessage(null);
+
+        try {
+            // For now, convert to base64 and store directly
+            // In production, you'd upload to a file storage service
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64String = reader.result as string;
+
+                try {
+                    const response = await fetch('/api/creator/profile', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            ...formData,
+                            avatarUrl: base64String,
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setMessage({
+                            type: 'success',
+                            text: 'Profile picture updated successfully!',
+                        });
+                        onProfileUpdate(data.creator);
+                    } else {
+                        setMessage({
+                            type: 'error',
+                            text: data.error || 'Failed to upload image',
+                        });
+                    }
+                } catch {
+                    setMessage({
+                        type: 'error',
+                        text: 'Failed to upload image. Please try again.',
+                    });
+                } finally {
+                    setIsUploadingImage(false);
+                }
+            };
+
+            reader.onerror = () => {
+                setMessage({
+                    type: 'error',
+                    text: 'Failed to read image file',
+                });
+                setIsUploadingImage(false);
+            };
+
+            reader.readAsDataURL(file);
+        } catch {
+            setMessage({
+                type: 'error',
+                text: 'Failed to process image',
+            });
+            setIsUploadingImage(false);
         }
     };
 
@@ -310,9 +395,33 @@ export function ProfileSettings({
                                 </div>
                             )}
 
-                            <Button variant='outline'>
-                                <Upload className='h-4 w-4 mr-2' />
-                                Change Picture
+                            <input
+                                type='file'
+                                id='avatar-upload'
+                                accept='image/*'
+                                className='hidden'
+                                onChange={handleImageUpload}
+                                disabled={isUploadingImage}
+                            />
+                            <Button
+                                variant='outline'
+                                onClick={() =>
+                                    document.getElementById('avatar-upload')?.click()
+                                }
+                                disabled={isUploadingImage}
+                                type='button'
+                            >
+                                {isUploadingImage ? (
+                                    <>
+                                        <Loader2 className='h-4 w-4 mr-2 animate-spin' />
+                                        Uploading...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Upload className='h-4 w-4 mr-2' />
+                                        Change Picture
+                                    </>
+                                )}
                             </Button>
 
                             <p className='text-xs text-gray-500 text-center'>
