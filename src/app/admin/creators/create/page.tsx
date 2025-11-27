@@ -73,6 +73,7 @@ export default function CreateCreatorPage() {
                 });
             }
         } catch (error) {
+            console.error('Creator invitation error:', error);
             setMessage({
                 type: 'error',
                 text: 'Network error. Please try again.',

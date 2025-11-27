@@ -12,7 +12,7 @@ import { Loader2, Lock, CheckCircle, AlertCircle } from 'lucide-react';
 export default function SetPasswordPage({
     params,
 }: {
-    params: { token: string };
+    params: Promise<{ token: string }>;
 }) {
     const router = useRouter();
     const [password, setPassword] = useState('');
@@ -21,6 +21,7 @@ export default function SetPasswordPage({
     const [isValidating, setIsValidating] = useState(true);
     const [isValidToken, setIsValidToken] = useState(false);
     const [userEmail, setUserEmail] = useState('');
+    const [token, setToken] = useState<string>('');
     const [message, setMessage] = useState<{
         type: 'success' | 'error';
         text: string;
@@ -30,10 +31,14 @@ export default function SetPasswordPage({
     useEffect(() => {
         const validateToken = async () => {
             try {
+                const resolvedParams = await params;
+                const resetToken = resolvedParams.token;
+                setToken(resetToken);
+                
                 const response = await fetch(`/api/auth/validate-reset-token`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: params.token }),
+                    body: JSON.stringify({ token: resetToken }),
                 });
 
                 if (response.ok) {
@@ -61,7 +66,7 @@ export default function SetPasswordPage({
         };
 
         validateToken();
-    }, [params.token]);
+    }, [params]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -91,7 +96,7 @@ export default function SetPasswordPage({
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    token: params.token,
+                    token: token,
                     password,
                 }),
             });
