@@ -38,7 +38,7 @@ export async function GET() {
             );
         }
 
-        const creatorId = user.creator?.id;
+        const creatorId = user?.creator?.id;
 
         // Get real analytics data from database
         const [videos, blogs, videoStats, blogStats] = await Promise.all([
