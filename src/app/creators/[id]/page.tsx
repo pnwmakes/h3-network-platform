@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { BackButton } from '@/components/back-button';
+import { FollowButton } from '@/components/ui/FollowButton';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
@@ -48,6 +49,11 @@ async function getCreator(id: string) {
                     },
                     orderBy: {
                         publishedAt: 'desc',
+                    },
+                },
+                _count: {
+                    select: {
+                        followers: true,
                     },
                 },
             },
@@ -142,6 +148,15 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
                     </div>
 
                     <div className='p-6'>
+                        {/* Follow Button */}
+                        <div className='mb-6 pb-6 border-b border-gray-200'>
+                            <FollowButton
+                                creatorId={creator.id}
+                                initialFollowerCount={creator._count.followers}
+                                size='lg'
+                            />
+                        </div>
+
                         {/* Creator Bio */}
                         {creator.bio && (
                             <div className='mb-6'>
