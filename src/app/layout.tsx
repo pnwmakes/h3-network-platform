@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
 import './globals.css';
 
 const geistSans = Geist({
@@ -57,9 +58,11 @@ export default function RootLayout({
                 suppressHydrationWarning={true}
             >
                 <Providers>
-                    <Header />
-                    <main>{children}</main>
-                    <Footer />
+                    <ErrorBoundary>
+                        <Header />
+                        <main>{children}</main>
+                        <Footer />
+                    </ErrorBoundary>
                 </Providers>
             </body>
         </html>

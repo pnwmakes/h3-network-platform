@@ -10,7 +10,7 @@ interface FollowButtonProps {
     creatorId: string;
     initialFollowing?: boolean;
     initialFollowerCount?: number;
-    size?: 'sm' | 'md' | 'lg';
+    size?: 'default' | 'sm' | 'lg' | 'icon';
     variant?: 'default' | 'outline';
 }
 
@@ -18,7 +18,7 @@ export function FollowButton({
     creatorId,
     initialFollowing = false,
     initialFollowerCount = 0,
-    size = 'md',
+    size = 'default',
     variant = 'default',
 }: FollowButtonProps) {
     const { data: session } = useSession();
@@ -51,19 +51,18 @@ export function FollowButton({
 
     const handleClick = async () => {
         if (!session?.user) {
-            router.push('/auth/signin?message=Please sign in to follow creators');
+            router.push(
+                '/auth/signin?message=Please sign in to follow creators'
+            );
             return;
         }
 
         setIsLoading(true);
 
         try {
-            const response = await fetch(
-                `/api/creators/${creatorId}/follow`,
-                {
-                    method: isFollowing ? 'DELETE' : 'POST',
-                }
-            );
+            const response = await fetch(`/api/creators/${creatorId}/follow`, {
+                method: isFollowing ? 'DELETE' : 'POST',
+            });
 
             if (response.ok) {
                 const data = await response.json();

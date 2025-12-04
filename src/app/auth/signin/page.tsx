@@ -40,25 +40,19 @@ function SignInContent() {
         setIsLoadingCredentials(true);
 
         try {
-            console.log('Attempting sign in with:', email);
             const result = await signIn('credentials', {
                 email,
                 password,
                 redirect: false,
             });
 
-            console.log('Sign in result:', result);
-
             if (result?.error) {
-                console.error('Sign in error:', result.error);
                 setError('Invalid email or password');
                 setIsLoadingCredentials(false);
             } else if (result?.ok) {
                 // Sign in successful - use hard redirect to ensure session loads
-                console.log('Sign in successful, redirecting...');
                 // Get fresh session
                 const session = await getSession();
-                console.log('Session after login:', session);
 
                 if (session?.user) {
                     const role = session.user.role;
@@ -93,7 +87,6 @@ function SignInContent() {
                 }
             }
         } catch (err) {
-            console.error('Sign in error:', err);
             setError('Sign in failed. Please try again.');
             setIsLoadingCredentials(false);
         }
@@ -104,7 +97,7 @@ function SignInContent() {
         try {
             await signIn('google', { callbackUrl: '/' });
         } catch (error) {
-            console.error('Google sign in failed:', error);
+            // Error will be handled by NextAuth
         } finally {
             setIsLoadingGoogle(false);
         }

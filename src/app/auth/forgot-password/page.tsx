@@ -73,7 +73,9 @@ export default function ForgotPasswordPage() {
                     {message && (
                         <Alert
                             variant={
-                                message.type === 'error' ? 'destructive' : 'default'
+                                message.type === 'error'
+                                    ? 'destructive'
+                                    : 'default'
                             }
                             className='mb-4'
                         >
@@ -96,12 +98,14 @@ export default function ForgotPasswordPage() {
                                     </code>
                                 </div>
                                 <p className='text-xs text-blue-800'>
-                                    This link will expire in 24 hours. Copy and use it to
-                                    reset your password.
+                                    This link will expire in 24 hours. Copy and
+                                    use it to reset your password.
                                 </p>
                             </div>
                             <Link href='/auth/login' className='block'>
-                                <Button className='w-full'>Return to Login</Button>
+                                <Button className='w-full'>
+                                    Return to Login
+                                </Button>
                             </Link>
                         </div>
                     ) : (
@@ -148,8 +152,8 @@ export default function ForgotPasswordPage() {
 
                     <div className='mt-6 pt-6 border-t'>
                         <p className='text-xs text-gray-500 text-center'>
-                            Note: When email service is configured, reset links will be
-                            sent automatically to your email.
+                            Note: When email service is configured, reset links
+                            will be sent automatically to your email.
                         </p>
                     </div>
                 </CardContent>
