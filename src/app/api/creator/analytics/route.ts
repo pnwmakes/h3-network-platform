@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 export async function GET() {
     try {
@@ -17,136 +18,234 @@ export async function GET() {
             );
         }
 
-        // Parameters for future analytics filtering
-        // const searchParams = request.nextUrl.searchParams;
-        // const timeRange = searchParams.get('timeRange') || '30d';
-        // const filter = searchParams.get('filter') || 'all';
+        // Get the creator's ID
+        const user = await prisma.user.findUnique({
+            where: { email: session.user.email! },
+            include: { creator: true },
+        });
 
-        // For now, return mock data since we don't have real analytics yet
-        // In a real implementation, you would query your analytics database
-        const mockAnalytics = {
+        if (!user?.creator && session.user.role !== 'SUPER_ADMIN') {
+            return NextResponse.json(
+                { error: 'Creator profile not found' },
+                { status: 404 }
+            );
+        }
+
+        const creatorId = user.creator?.id;
+
+        // Get real analytics data from database
+        const [videos, blogs, videoStats, blogStats] = await Promise.all([
+            // Get all videos for this creator
+            prisma.video.findMany({
+                where: creatorId ? { creatorId } : {},
+                select: {
+                    id: true,
+                    title: true,
+                    thumbnailUrl: true,
+                    viewCount: true,
+                    likeCount: true,
+                    publishedAt: true,
+                    createdAt: true,
+                    _count: {
+                        select: {
+                            likes: true,
+                        },
+                    },
+                },
+                orderBy: { viewCount: 'desc' },
+                take: 10,
+            }),
+            // Get all blogs for this creator
+            prisma.blog.findMany({
+                where: creatorId ? { creatorId } : {},
+                select: {
+                    id: true,
+                    title: true,
+                    featuredImage: true,
+                    viewCount: true,
+                    likeCount: true,
+                    publishedAt: true,
+                    createdAt: true,
+                    _count: {
+                        select: {
+                            likes: true,
+                        },
+                    },
+                },
+                orderBy: { viewCount: 'desc' },
+                take: 10,
+            }),
+            // Aggregate video stats
+            prisma.video.aggregate({
+                where: creatorId ? { creatorId } : {},
+                _sum: {
+                    viewCount: true,
+                    likeCount: true,
+                },
+                _count: true,
+            }),
+            // Aggregate blog stats
+            prisma.blog.aggregate({
+                where: creatorId ? { creatorId } : {},
+                _sum: {
+                    viewCount: true,
+                    likeCount: true,
+                },
+                _count: true,
+            }),
+        ]);
+
+        // Calculate totals
+        const totalViews =
+            (videoStats._sum.viewCount || 0) + (blogStats._sum.viewCount || 0);
+        const totalLikes =
+            (videoStats._sum.likeCount || 0) + (blogStats._sum.likeCount || 0);
+        const totalContent = videoStats._count + blogStats._count;
+
+        // Calculate engagement rate (likes / views * 100)
+        const engagementRate =
+            totalViews > 0
+                ? Number(((totalLikes / totalViews) * 100).toFixed(1))
+                : 0;
+
+        // Get views over time (last 30 days)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+        const recentVideos = await prisma.video.findMany({
+            where: {
+                ...(creatorId && { creatorId }),
+                publishedAt: { gte: thirtyDaysAgo },
+            },
+            select: {
+                publishedAt: true,
+                viewCount: true,
+            },
+        });
+
+        const recentBlogs = await prisma.blog.findMany({
+            where: {
+                ...(creatorId && { creatorId }),
+                publishedAt: { gte: thirtyDaysAgo },
+            },
+            select: {
+                publishedAt: true,
+                viewCount: true,
+            },
+        });
+
+        // Group views by date
+        const viewsByDate = new Map<string, number>();
+        [...recentVideos, ...recentBlogs].forEach((item) => {
+            if (item.publishedAt) {
+                const date = item.publishedAt.toISOString().split('T')[0];
+                viewsByDate.set(
+                    date,
+                    (viewsByDate.get(date) || 0) + (item.viewCount || 0)
+                );
+            }
+        });
+
+        // Create 30-day array
+        const viewsOverTime = Array.from({ length: 30 }, (_, i) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (29 - i));
+            const dateStr = date.toISOString().split('T')[0];
+            return {
+                date: dateStr,
+                views: viewsByDate.get(dateStr) || 0,
+                engagement: 0,
+            };
+        });
+
+        // Last 7 days
+        const last7Days = viewsOverTime.slice(-7).map((day) => ({
+            date: day.date,
+            count: day.views,
+        }));
+
+        // Format content performance
+        const topVideos = videos.slice(0, 5).map((video) => ({
+            id: video.id,
+            title: video.title,
+            type: 'video' as const,
+            publishedAt: video.publishedAt?.toISOString() || video.createdAt.toISOString(),
+            views: video.viewCount,
+            engagement: video.viewCount > 0 ? Number(((video._count.likes / video.viewCount) * 100).toFixed(1)) : 0,
+            likes: video.likeCount,
+            comments: 0,
+            shares: 0,
+            avgWatchTime: 0,
+            thumbnail: video.thumbnailUrl || '/api/placeholder/300/200',
+        }));
+
+        const topBlogs = blogs.slice(0, 3).map((blog) => ({
+            id: blog.id,
+            title: blog.title,
+            type: 'blog' as const,
+            publishedAt: blog.publishedAt?.toISOString() || blog.createdAt.toISOString(),
+            views: blog.viewCount,
+            engagement: blog.viewCount > 0 ? Number(((blog._count.likes / blog.viewCount) * 100).toFixed(1)) : 0,
+            likes: blog.likeCount,
+            comments: 0,
+            shares: 0,
+            avgWatchTime: 0,
+            thumbnail: blog.featuredImage || '/api/placeholder/300/200',
+        }));
+
+        // Top content combined
+        const topContent = [...topVideos, ...topBlogs]
+            .sort((a, b) => b.views - a.views)
+            .slice(0, 10)
+            .map((item) => ({
+                id: item.id,
+                title: item.title,
+                type: item.type,
+                views: item.views,
+                engagement: item.engagement / 100,
+                thumbnail: item.thumbnail,
+            }));
+
+        const analytics = {
             overview: {
-                totalViews: Math.floor(Math.random() * 10000) + 1000,
-                totalLikes: Math.floor(Math.random() * 1000) + 100,
-                totalComments: Math.floor(Math.random() * 500) + 50,
-                totalShares: Math.floor(Math.random() * 200) + 20,
-                averageWatchTime: '4:32',
-                avgViewDuration: Math.floor(Math.random() * 300) + 120, // seconds
-                engagementRate: Number(
-                    ((Math.random() * 0.1 + 0.02) * 100).toFixed(1)
-                ),
-                subscriberGrowth: Number((Math.random() * 20 + 5).toFixed(1)),
-                contentCount: Math.floor(Math.random() * 50) + 10,
+                totalViews,
+                totalLikes,
+                totalComments: 0,
+                totalShares: 0,
+                averageWatchTime: '0:00',
+                avgViewDuration: 0,
+                engagementRate,
+                subscriberGrowth: 0,
+                contentCount: totalContent,
             },
             timeRange: {
-                views: Array.from({ length: 7 }, (_, i) => ({
-                    date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
-                        .toISOString()
-                        .split('T')[0],
-                    count: Math.floor(Math.random() * 500) + 100,
+                views: last7Days,
+                engagement: last7Days.map((day) => ({
+                    date: day.date,
+                    rate: engagementRate,
                 })),
-                engagement: Array.from({ length: 7 }, (_, i) => ({
-                    date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
-                        .toISOString()
-                        .split('T')[0],
-                    rate: Number((Math.random() * 10 + 2).toFixed(1)),
-                })),
-                contentPublished: Array.from({ length: 7 }, (_, i) => ({
-                    date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000)
-                        .toISOString()
-                        .split('T')[0],
-                    count: Math.floor(Math.random() * 3),
-                })),
+                contentPublished: last7Days.map((day) => {
+                    const publishedCount = [
+                        ...recentVideos,
+                        ...recentBlogs,
+                    ].filter(
+                        (item) =>
+                            item.publishedAt?.toISOString().split('T')[0] ===
+                            day.date
+                    ).length;
+                    return {
+                        date: day.date,
+                        count: publishedCount,
+                    };
+                }),
             },
             contentPerformance: {
-                videos: [
-                    {
-                        id: '1',
-                        title: 'Understanding Criminal Justice Reform',
-                        type: 'video',
-                        publishedAt: new Date(
-                            Date.now() - 5 * 24 * 60 * 60 * 1000
-                        ).toISOString(),
-                        views: 2543,
-                        engagement: 8.7,
-                        likes: 156,
-                        comments: 23,
-                        shares: 12,
-                        avgWatchTime: 240,
-                        thumbnail:
-                            'https://img.youtube.com/vi/sample1/maxresdefault.jpg',
-                    },
-                    {
-                        id: '2',
-                        title: 'Recovery Stories: Finding Hope',
-                        type: 'video',
-                        publishedAt: new Date(
-                            Date.now() - 12 * 24 * 60 * 60 * 1000
-                        ).toISOString(),
-                        views: 1892,
-                        engagement: 11.2,
-                        likes: 134,
-                        comments: 31,
-                        shares: 8,
-                        avgWatchTime: 195,
-                        thumbnail:
-                            'https://img.youtube.com/vi/sample2/maxresdefault.jpg',
-                    },
-                ],
-                blogs: [
-                    {
-                        id: '3',
-                        title: 'Reentry Support Systems',
-                        type: 'blog',
-                        publishedAt: new Date(
-                            Date.now() - 8 * 24 * 60 * 60 * 1000
-                        ).toISOString(),
-                        views: 1456,
-                        engagement: 9.3,
-                        likes: 89,
-                        comments: 15,
-                        shares: 24,
-                        avgWatchTime: 0,
-                        thumbnail: '/api/placeholder/300/200',
-                    },
-                ],
+                videos: topVideos.slice(0, 2),
+                blogs: topBlogs.slice(0, 1),
             },
             performance: {
-                topContent: [
-                    {
-                        id: '1',
-                        title: 'Understanding Criminal Justice Reform',
-                        type: 'video',
-                        views: 2543,
-                        engagement: 0.087,
-                        thumbnail:
-                            'https://img.youtube.com/vi/sample1/maxresdefault.jpg',
-                    },
-                    {
-                        id: '2',
-                        title: 'Recovery Stories: Finding Hope',
-                        type: 'video',
-                        views: 1892,
-                        engagement: 0.112,
-                        thumbnail:
-                            'https://img.youtube.com/vi/sample2/maxresdefault.jpg',
-                    },
-                    {
-                        id: '3',
-                        title: 'Reentry Support Systems',
-                        type: 'blog',
-                        views: 1456,
-                        engagement: 0.093,
-                        thumbnail: '/api/placeholder/300/200',
-                    },
-                ],
-                viewsOverTime: Array.from({ length: 30 }, (_, i) => ({
-                    date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000)
-                        .toISOString()
-                        .split('T')[0],
-                    views: Math.floor(Math.random() * 200) + 50,
-                    engagement: Math.random() * 0.1 + 0.02,
-                })),
+                topContent,
+                viewsOverTime,
             },
             audienceInsights: {
                 demographics: {
@@ -208,18 +307,18 @@ export async function GET() {
             goals: {
                 monthly: {
                     target: 10000,
-                    current: 7543,
-                    period: '2024-01',
+                    current: totalViews,
+                    period: new Date().toISOString().slice(0, 7),
                 },
                 quarterly: {
                     target: 25000,
-                    current: 18234,
-                    period: 'Q1 2024',
+                    current: totalViews,
+                    period: `Q${Math.ceil((new Date().getMonth() + 1) / 3)} ${new Date().getFullYear()}`,
                 },
             },
         };
 
-        return NextResponse.json({ success: true, analytics: mockAnalytics });
+        return NextResponse.json({ success: true, analytics });
     } catch (error) {
         console.error('Analytics API error:', error);
         return NextResponse.json(
