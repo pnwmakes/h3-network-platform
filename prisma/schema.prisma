@@ -52,6 +52,7 @@ model User {
   progress         UserProgress[]
   likes            Like[]         @relation("UserLikes")
   newsletters      Newsletter[]
+  following        CreatorFollower[]
 }
 
 model VerificationToken {
@@ -82,6 +83,7 @@ model Creator {
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   scheduledContent ScheduledContent[]
   videos           Video[]
+  followers        CreatorFollower[]
 }
 
 model Show {
@@ -244,6 +246,20 @@ model ScheduledContent {
   blog        Blog?          @relation(fields: [blogId], references: [id], onDelete: Cascade)
   creator     Creator        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
   video       Video?         @relation(fields: [videoId], references: [id], onDelete: Cascade)
+}
+
+model CreatorFollower {
+  id        String   @id @default(cuid())
+  userId    String
+  creatorId String
+  createdAt DateTime @default(now())
+  
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  creator Creator @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, creatorId])
+  @@index([creatorId])
+  @@index([userId])
 }
 
 model NewsletterSubscriber {
