@@ -24,7 +24,14 @@ export async function GET() {
             include: { creator: true },
         });
 
-        if (!user?.creator && session.user.role !== 'SUPER_ADMIN') {
+        if (!user) {
+            return NextResponse.json(
+                { error: 'User not found' },
+                { status: 404 }
+            );
+        }
+
+        if (!user.creator && session.user.role !== 'SUPER_ADMIN') {
             return NextResponse.json(
                 { error: 'Creator profile not found' },
                 { status: 404 }
@@ -169,9 +176,19 @@ export async function GET() {
             id: video.id,
             title: video.title,
             type: 'video' as const,
-            publishedAt: video.publishedAt?.toISOString() || video.createdAt.toISOString(),
+            publishedAt:
+                video.publishedAt?.toISOString() ||
+                video.createdAt.toISOString(),
             views: video.viewCount,
-            engagement: video.viewCount > 0 ? Number(((video._count.likes / video.viewCount) * 100).toFixed(1)) : 0,
+            engagement:
+                video.viewCount > 0
+                    ? Number(
+                          (
+                              (video._count.likes / video.viewCount) *
+                              100
+                          ).toFixed(1)
+                      )
+                    : 0,
             likes: video.likeCount,
             comments: 0,
             shares: 0,
@@ -183,9 +200,17 @@ export async function GET() {
             id: blog.id,
             title: blog.title,
             type: 'blog' as const,
-            publishedAt: blog.publishedAt?.toISOString() || blog.createdAt.toISOString(),
+            publishedAt:
+                blog.publishedAt?.toISOString() || blog.createdAt.toISOString(),
             views: blog.viewCount,
-            engagement: blog.viewCount > 0 ? Number(((blog._count.likes / blog.viewCount) * 100).toFixed(1)) : 0,
+            engagement:
+                blog.viewCount > 0
+                    ? Number(
+                          ((blog._count.likes / blog.viewCount) * 100).toFixed(
+                              1
+                          )
+                      )
+                    : 0,
             likes: blog.likeCount,
             comments: 0,
             shares: 0,

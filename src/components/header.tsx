@@ -296,7 +296,7 @@ export function Header() {
                                         {item.name}
                                     </Link>
                                 ))}
-                                
+
                                 {/* Mobile Search Button */}
                                 <button
                                     onClick={() => {
