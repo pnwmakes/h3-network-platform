@@ -196,10 +196,10 @@ export function Footer() {
                                     <p className='text-sm text-gray-500'>
                                         Built by{' '}
                                         <Link
-                                            href='mailto:james@secondchancetech.io'
+                                            href='mailto:jm@redemption-tech.com'
                                             className='text-blue-400 hover:text-blue-300 transition-colors duration-200'
                                         >
-                                            Second Chance Tech
+                                            Redemption Tech
                                         </Link>
                                     </p>
                                 </div>
