@@ -39,8 +39,8 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
     // Check if we're in Inside Mode
     const insideMode = isInsideMode();
 
-    // Check if user can watch this video
-    const canWatch = canWatchVideo(videoId);
+    // Check if user can watch this video (bypass limits in Inside Mode)
+    const canWatch = insideMode || canWatchVideo(videoId);
 
     // Determine why limit was reached (for modal messaging)
     const { videosRemaining } = getRemainingAllowance();
@@ -158,8 +158,8 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
     };
 
     const onPlay: YouTubeProps['onPlay'] = () => {
-        // Check if anonymous user can watch before allowing play
-        if (isAnonymous && !canWatch) {
+        // Check if anonymous user can watch before allowing play (bypass in Inside Mode)
+        if (isAnonymous && !canWatch && !insideMode) {
             setShowRegistrationPrompt(true);
             if (player) {
                 player.pauseVideo();
@@ -312,8 +312,8 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
                 </div>
             )}
 
-            {/* Preview limit warning for anonymous users */}
-            {isAnonymous && !hasReachedLimit && (
+            {/* Preview limit warning for anonymous users - Hidden in Inside Mode */}
+            {!insideMode && isAnonymous && !hasReachedLimit && (
                 <div className='mt-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200'>
                     <p className='text-sm text-yellow-800'>
                         <span className='font-medium'>Preview Mode</span> - You
@@ -330,8 +330,8 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
                 </div>
             )}
 
-            {/* Sign in prompt for anonymous users who haven't hit limits yet */}
-            {isAnonymous && !hasReachedLimit && (
+            {/* Sign in prompt for anonymous users who haven't hit limits yet - Hidden in Inside Mode */}
+            {!insideMode && isAnonymous && !hasReachedLimit && (
                 <div className='mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200'>
                     <p className='text-sm text-blue-800'>
                         <span className='font-medium'>
@@ -342,14 +342,16 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
                 </div>
             )}
 
-            {/* Registration prompt modal */}
-            <RegistrationPrompt
-                isOpen={showRegistrationPrompt}
-                onClose={() => setShowRegistrationPrompt(false)}
-                trigger={limitTrigger}
-                videosWatched={viewingData?.videosWatched.length || 0}
-                timeWatched={viewingData?.totalWatchTime || 0}
-            />
+            {/* Registration prompt modal - Hidden in Inside Mode */}
+            {!insideMode && (
+                <RegistrationPrompt
+                    isOpen={showRegistrationPrompt}
+                    onClose={() => setShowRegistrationPrompt(false)}
+                    trigger={limitTrigger}
+                    videosWatched={viewingData?.videosWatched.length || 0}
+                    timeWatched={viewingData?.totalWatchTime || 0}
+                />
+            )}
         </div>
     );
 }

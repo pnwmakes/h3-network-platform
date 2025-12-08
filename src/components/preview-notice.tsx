@@ -4,14 +4,16 @@ import { useSession } from 'next-auth/react';
 import { useAnonymousViewing } from '@/hooks/use-anonymous-viewing';
 import { useState } from 'react';
 import { RegistrationPrompt } from './registration-prompt';
+import { isInsideMode } from '@/lib/inside-mode';
 
 export function PreviewNotice() {
+    const insideMode = isInsideMode();
     const { data: session } = useSession();
     const { viewingData, hasReachedLimit } = useAnonymousViewing();
     const [showRegistrationPrompt, setShowRegistrationPrompt] = useState(false);
 
-    // Don't show notice if user is signed in
-    if (session) {
+    // Don't show notice if user is signed in or in Inside Mode
+    if (session || insideMode) {
         return null;
     }
 

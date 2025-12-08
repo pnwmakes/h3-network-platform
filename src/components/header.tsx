@@ -7,8 +7,10 @@ import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { SearchInput } from './search-input';
 import { DarkModeToggle } from './dark-mode-toggle';
+import { isInsideMode } from '@/lib/inside-mode';
 
 export function Header() {
+    const insideMode = isInsideMode();
     const { data: session } = useSession();
     const pathname = usePathname();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -197,20 +199,22 @@ export function Header() {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className='flex items-center space-x-4'>
-                                        <Link
-                                            href='/auth/signin'
-                                            className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
-                                        >
-                                            Sign In
-                                        </Link>
-                                        <Link
-                                            href='/auth/register'
-                                            className='bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200'
-                                        >
-                                            Join Community
-                                        </Link>
-                                    </div>
+                                    !insideMode && (
+                                        <div className='flex items-center space-x-4'>
+                                            <Link
+                                                href='/auth/signin'
+                                                className='text-sm font-medium text-gray-700 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200'
+                                            >
+                                                Sign In
+                                            </Link>
+                                            <Link
+                                                href='/auth/register'
+                                                className='bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors duration-200'
+                                            >
+                                                Join Community
+                                            </Link>
+                                        </div>
+                                    )
                                 )}
                             </div>
                         </div>
@@ -406,26 +410,28 @@ export function Header() {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className='space-y-2'>
-                                        <Link
-                                            href='/auth/signin'
-                                            onClick={() =>
-                                                setIsMobileMenuOpen(false)
-                                            }
-                                            className='block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'
-                                        >
-                                            Sign In
-                                        </Link>
-                                        <Link
-                                            href='/auth/register'
-                                            onClick={() =>
-                                                setIsMobileMenuOpen(false)
-                                            }
-                                            className='block mx-3 my-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-blue-700 text-center transition-colors duration-200'
-                                        >
-                                            Join Our Community
-                                        </Link>
-                                    </div>
+                                    !insideMode && (
+                                        <div className='space-y-2'>
+                                            <Link
+                                                href='/auth/signin'
+                                                onClick={() =>
+                                                    setIsMobileMenuOpen(false)
+                                                }
+                                                className='block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors duration-200'
+                                            >
+                                                Sign In
+                                            </Link>
+                                            <Link
+                                                href='/auth/register'
+                                                onClick={() =>
+                                                    setIsMobileMenuOpen(false)
+                                                }
+                                                className='block mx-3 my-2 bg-blue-600 text-white px-4 py-2 rounded-lg text-base font-medium hover:bg-blue-700 text-center transition-colors duration-200'
+                                            >
+                                                Join Our Community
+                                            </Link>
+                                        </div>
+                                    )
                                 )}
                             </div>
                         </div>
