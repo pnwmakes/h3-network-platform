@@ -1,13 +1,13 @@
-<svg width="768" height="768" viewBox="0 0 768 768" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="768" height="200" viewBox="0 0 768 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Door Icon -->
-  <rect x="96" y="295" width="106" height="178" stroke="black" stroke-width="10" fill="none"/>
-  <path d="M96 295 L149 250 L149 428 L96 473 Z" stroke="black" stroke-width="10" fill="none"/>
-  <path d="M202 295 L149 250" stroke="black" stroke-width="10"/>
-  <line x1="175" y1="383" x2="185" y2="383" stroke="black" stroke-width="6"/>
+  <rect x="10" y="40" width="80" height="120" stroke="white" stroke-width="8" fill="none"/>
+  <path d="M10 40 L50 10 L50 130 L10 160 Z" stroke="white" stroke-width="8" fill="none"/>
+  <path d="M90 40 L50 10" stroke="white" stroke-width="8"/>
+  <circle cx="75" cy="100" r="4" fill="white"/>
   
   <!-- Text: Redemption -->
-  <text x="235" y="400" font-family="Arial, sans-serif" font-size="90" font-weight="700" fill="black">Redemption</text>
+  <text x="110" y="100" font-family="Arial, sans-serif" font-size="60" font-weight="700" fill="white">Redemption</text>
   
   <!-- Text: Tech -->
-  <text x="235" y="480" font-family="Arial, sans-serif" font-size="90" font-weight="400" fill="black">Tech</text>
+  <text x="110" y="150" font-family="Arial, sans-serif" font-size="60" font-weight="400" fill="white">Tech</text>
 </svg>

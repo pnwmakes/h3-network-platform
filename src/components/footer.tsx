@@ -197,14 +197,14 @@ export function Footer() {
                                         <span>Built by</span>
                                         <Link
                                             href='mailto:jm@redemption-tech.com'
-                                            className='flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors duration-200'
+                                            className='flex items-center gap-2 hover:opacity-80 transition-opacity duration-200'
                                         >
                                             <Image
                                                 src='/logos/redemption-tech.svg'
                                                 alt='Redemption Tech'
-                                                width={120}
-                                                height={30}
-                                                className='h-6 w-auto'
+                                                width={140}
+                                                height={40}
+                                                className='h-8 w-auto'
                                             />
                                         </Link>
                                     </div>
