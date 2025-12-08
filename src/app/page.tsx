@@ -266,7 +266,6 @@ export default function Home() {
                                         Learn More →
                                     </Link>
                                 )}
-                                </Link>
                             </div>
                         </div>
 
