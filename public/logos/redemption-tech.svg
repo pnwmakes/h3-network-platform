@@ -1,0 +1,13 @@
+<svg width="768" height="768" viewBox="0 0 768 768" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Door Icon -->
+  <rect x="96" y="295" width="106" height="178" stroke="black" stroke-width="10" fill="none"/>
+  <path d="M96 295 L149 250 L149 428 L96 473 Z" stroke="black" stroke-width="10" fill="none"/>
+  <path d="M202 295 L149 250" stroke="black" stroke-width="10"/>
+  <line x1="175" y1="383" x2="185" y2="383" stroke="black" stroke-width="6"/>
+  
+  <!-- Text: Redemption -->
+  <text x="235" y="400" font-family="Arial, sans-serif" font-size="90" font-weight="700" fill="black">Redemption</text>
+  
+  <!-- Text: Tech -->
+  <text x="235" y="480" font-family="Arial, sans-serif" font-size="90" font-weight="400" fill="black">Tech</text>
+</svg>

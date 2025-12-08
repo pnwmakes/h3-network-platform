@@ -193,15 +193,21 @@ export function Footer() {
                                     </Link>
                                 </div>
                                 <div className='mt-4 pt-4 border-t border-gray-800'>
-                                    <p className='text-sm text-gray-500'>
-                                        Built by{' '}
+                                    <div className='flex items-center gap-2 text-sm text-gray-500'>
+                                        <span>Built by</span>
                                         <Link
                                             href='mailto:jm@redemption-tech.com'
-                                            className='text-blue-400 hover:text-blue-300 transition-colors duration-200'
+                                            className='flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors duration-200'
                                         >
-                                            Redemption Tech
+                                            <Image
+                                                src='/logos/redemption-tech.svg'
+                                                alt='Redemption Tech'
+                                                width={120}
+                                                height={30}
+                                                className='h-6 w-auto'
+                                            />
                                         </Link>
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                         )}
