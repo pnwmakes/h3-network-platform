@@ -5,6 +5,7 @@ import YouTube, { YouTubeProps } from 'react-youtube';
 import { useSession } from 'next-auth/react';
 import { useAnonymousViewing } from '@/hooks/use-anonymous-viewing';
 import { RegistrationPrompt } from './registration-prompt';
+import { isInsideMode } from '@/lib/inside-mode';
 
 interface VideoPlayerProps {
     videoId: string;
@@ -34,6 +35,9 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
     const [showRegistrationPrompt, setShowRegistrationPrompt] = useState(false);
     const [lastTrackedTime, setLastTrackedTime] = useState(0);
     const [playerError, setPlayerError] = useState<string | null>(null);
+    
+    // Check if we're in Inside Mode
+    const insideMode = isInsideMode();
 
     // Check if user can watch this video
     const canWatch = canWatchVideo(videoId);
@@ -231,9 +235,11 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
             rel: 0,
             showinfo: 0,
             controls: 1,
-            disablekb: 0,
-            enablejsapi: 1,
-            fs: 1,
+            // Inside Mode: Strict restrictions to prevent external navigation
+            disablekb: insideMode ? 1 : 0,          // Disable keyboard shortcuts in Inside Mode
+            enablejsapi: insideMode ? 0 : 1,        // Disable JS API in Inside Mode
+            fs: insideMode ? 0 : 1,                 // Disable fullscreen in Inside Mode
+            iv_load_policy: insideMode ? 3 : 1,     // Disable annotations in Inside Mode
             playsinline: 1,
         },
     };
@@ -248,14 +254,16 @@ export function VideoPlayer({ videoId, youtubeId }: VideoPlayerProps) {
                                 Video Player Error
                             </p>
                             <p className='text-sm'>{playerError}</p>
-                            <a
-                                href={`https://www.youtube.com/watch?v=${youtubeId}`}
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                className='inline-block mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
-                            >
-                                Watch on YouTube
-                            </a>
+                            {!insideMode && (
+                                <a
+                                    href={`https://www.youtube.com/watch?v=${youtubeId}`}
+                                    target='_blank'
+                                    rel='noopener noreferrer'
+                                    className='inline-block mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700'
+                                >
+                                    Watch on YouTube
+                                </a>
+                            )}
                         </div>
                     </div>
                 ) : (
