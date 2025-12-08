@@ -281,8 +281,8 @@ export default function Home() {
                                         </span>
                                     </div>
                                     <p className='text-gray-600 mb-6'>
-                                        We believe in quality over quantity. Share
-                                        your show or blog idea with us!
+                                        We believe in quality over quantity.
+                                        Share your show or blog idea with us!
                                     </p>
                                     <Link
                                         href='https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf'
@@ -554,7 +554,10 @@ export default function Home() {
 
                 {/* Newsletter Subscription - Hidden in Inside Mode */}
                 {!insideMode && (
-                    <NewsletterSubscription variant='inline' className='mt-16' />
+                    <NewsletterSubscription
+                        variant='inline'
+                        className='mt-16'
+                    />
                 )}
             </main>
         </div>

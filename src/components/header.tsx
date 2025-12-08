@@ -102,30 +102,32 @@ export function Header() {
                         </nav>{' '}
                         {/* Right side items */}
                         <div className='flex items-center space-x-3'>
-                            {/* H3 Gear Shop Button */}
-                            <div className='hidden lg:block'>
-                                <a
-                                    href='https://www.astroformadesign.com/shop/55978954/h3-network'
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap'
-                                >
-                                    <svg
-                                        className='w-4 h-4'
-                                        fill='none'
-                                        stroke='currentColor'
-                                        viewBox='0 0 24 24'
+                            {/* H3 Gear Shop Button - Hidden in Inside Mode */}
+                            {!insideMode && (
+                                <div className='hidden lg:block'>
+                                    <a
+                                        href='https://www.astroformadesign.com/shop/55978954/h3-network'
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        className='bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center space-x-2 shadow-md hover:shadow-lg transform hover:scale-105 whitespace-nowrap'
                                     >
-                                        <path
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                            strokeWidth={2}
-                                            d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
-                                        />
-                                    </svg>
-                                    <span>H3 Gear</span>
-                                </a>
-                            </div>
+                                        <svg
+                                            className='w-4 h-4'
+                                            fill='none'
+                                            stroke='currentColor'
+                                            viewBox='0 0 24 24'
+                                        >
+                                            <path
+                                                strokeLinecap='round'
+                                                strokeLinejoin='round'
+                                                strokeWidth={2}
+                                                d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+                                            />
+                                        </svg>
+                                        <span>H3 Gear</span>
+                                    </a>
+                                </div>
+                            )}
 
                             {/* Dark Mode Toggle */}
                             <div className='hidden lg:block'>
@@ -258,30 +260,32 @@ export function Header() {
                                 Hope • Help • Humor
                             </div>
 
-                            {/* Mobile H3 Gear Button */}
-                            <div className='px-3 mb-4'>
-                                <a
-                                    href='https://www.astroformadesign.com/shop/55978954/h3-network'
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 shadow-md'
-                                >
-                                    <svg
-                                        className='w-4 h-4'
-                                        fill='none'
-                                        stroke='currentColor'
-                                        viewBox='0 0 24 24'
+                            {/* Mobile H3 Gear Button - Hidden in Inside Mode */}
+                            {!insideMode && (
+                                <div className='px-3 mb-4'>
+                                    <a
+                                        href='https://www.astroformadesign.com/shop/55978954/h3-network'
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        className='w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-3 rounded-lg text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center space-x-2 shadow-md'
                                     >
-                                        <path
-                                            strokeLinecap='round'
-                                            strokeLinejoin='round'
-                                            strokeWidth={2}
-                                            d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
-                                        />
-                                    </svg>
-                                    <span>Shop H3 Gear</span>
-                                </a>
-                            </div>
+                                        <svg
+                                            className='w-4 h-4'
+                                            fill='none'
+                                            stroke='currentColor'
+                                            viewBox='0 0 24 24'
+                                        >
+                                            <path
+                                                strokeLinecap='round'
+                                                strokeLinejoin='round'
+                                                strokeWidth={2}
+                                                d='M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+                                            />
+                                        </svg>
+                                        <span>Shop H3 Gear</span>
+                                    </a>
+                                </div>
+                            )}
 
                             <div className='space-y-2'>
                                 {navigation.map((item) => (

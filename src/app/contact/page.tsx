@@ -190,10 +190,10 @@ export default function ContactPage() {
                                     Want to Share Your Story?
                                 </h3>
                                 <p className='text-gray-700 mb-4'>
-                                    We&apos;re always looking for authentic voices
-                                    and inspiring content. If you have a story to
-                                    tell or want to contribute to our community,
-                                    we&apos;d love to hear from you.
+                                    We&apos;re always looking for authentic
+                                    voices and inspiring content. If you have a
+                                    story to tell or want to contribute to our
+                                    community, we&apos;d love to hear from you.
                                 </p>
                                 <a
                                     href='https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf'

@@ -6,7 +6,7 @@ import { isInsideMode } from '@/lib/inside-mode';
 
 export function Footer() {
     const insideMode = isInsideMode();
-    
+
     return (
         <footer className='bg-gray-900 text-white'>
             {/* Newsletter Signup Section - Hidden in Inside Mode */}
@@ -14,8 +14,8 @@ export function Footer() {
                 <div className='bg-gradient-to-r from-blue-600 to-green-600 py-12'>
                     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center'>
                         <h2 className='text-3xl font-bold mb-4'>
-                            SUBSCRIBE TO THE H3 NETWORK TODAY! IT&apos;S FREE...SO
-                            WHY NOT?
+                            SUBSCRIBE TO THE H3 NETWORK TODAY! IT&apos;S
+                            FREE...SO WHY NOT?
                         </h2>
                         <div className='max-w-md mx-auto flex gap-4'>
                             <input
