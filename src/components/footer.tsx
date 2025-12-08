@@ -172,7 +172,6 @@ export function Footer() {
                             Get In Touch
                         </h3>
                         {insideMode ? (
-                            {/* Inside Mode - No external contact */}
                             <p className='text-gray-400'>
                                 Content provided by H3 Network
                             </p>

@@ -10,8 +10,10 @@ import {
     Linkedin,
 } from 'lucide-react';
 import { useState } from 'react';
+import { isInsideMode } from '@/lib/inside-mode';
 
 export default function ContactPage() {
+    const insideMode = isInsideMode();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -143,62 +145,66 @@ export default function ContactPage() {
                             </div>
                         </div>
 
-                        {/* Social Media */}
-                        <div>
-                            <h3 className='text-xl font-semibold text-gray-900 mb-4'>
-                                Follow Us
-                            </h3>
-                            <div className='flex gap-4'>
+                        {/* Social Media - Hidden in Inside Mode */}
+                        {!insideMode && (
+                            <div>
+                                <h3 className='text-xl font-semibold text-gray-900 mb-4'>
+                                    Follow Us
+                                </h3>
+                                <div className='flex gap-4'>
+                                    <a
+                                        href='http://www.youtube.com/@hopehelphumor'
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        className='bg-red-100 p-3 rounded-lg hover:bg-red-200 transition-colors'
+                                        aria-label='YouTube'
+                                    >
+                                        <Youtube className='h-6 w-6 text-red-600' />
+                                    </a>
+                                    <a
+                                        href='http://www.instagram.com/hopehelphumor'
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        className='bg-pink-100 p-3 rounded-lg hover:bg-pink-200 transition-colors'
+                                        aria-label='Instagram'
+                                    >
+                                        <Instagram className='h-6 w-6 text-pink-600' />
+                                    </a>
+                                    <a
+                                        href='https://www.linkedin.com/company/hopehelphumor-network/'
+                                        target='_blank'
+                                        rel='noopener noreferrer'
+                                        className='bg-blue-100 p-3 rounded-lg hover:bg-blue-200 transition-colors'
+                                        aria-label='LinkedIn'
+                                    >
+                                        <Linkedin className='h-6 w-6 text-blue-600' />
+                                    </a>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Content Submission - Hidden in Inside Mode */}
+                        {!insideMode && (
+                            <div className='bg-gradient-to-br from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6'>
+                                <h3 className='text-lg font-semibold text-gray-900 mb-3'>
+                                    Want to Share Your Story?
+                                </h3>
+                                <p className='text-gray-700 mb-4'>
+                                    We&apos;re always looking for authentic voices
+                                    and inspiring content. If you have a story to
+                                    tell or want to contribute to our community,
+                                    we&apos;d love to hear from you.
+                                </p>
                                 <a
-                                    href='http://www.youtube.com/@hopehelphumor'
+                                    href='https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf'
                                     target='_blank'
                                     rel='noopener noreferrer'
-                                    className='bg-red-100 p-3 rounded-lg hover:bg-red-200 transition-colors'
-                                    aria-label='YouTube'
+                                    className='inline-block bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors'
                                 >
-                                    <Youtube className='h-6 w-6 text-red-600' />
-                                </a>
-                                <a
-                                    href='http://www.instagram.com/hopehelphumor'
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='bg-pink-100 p-3 rounded-lg hover:bg-pink-200 transition-colors'
-                                    aria-label='Instagram'
-                                >
-                                    <Instagram className='h-6 w-6 text-pink-600' />
-                                </a>
-                                <a
-                                    href='https://www.linkedin.com/company/hopehelphumor-network/'
-                                    target='_blank'
-                                    rel='noopener noreferrer'
-                                    className='bg-blue-100 p-3 rounded-lg hover:bg-blue-200 transition-colors'
-                                    aria-label='LinkedIn'
-                                >
-                                    <Linkedin className='h-6 w-6 text-blue-600' />
+                                    Pitch Your Content
                                 </a>
                             </div>
-                        </div>
-
-                        {/* Content Submission */}
-                        <div className='bg-gradient-to-br from-blue-50 to-green-50 border border-blue-200 rounded-lg p-6'>
-                            <h3 className='text-lg font-semibold text-gray-900 mb-3'>
-                                Want to Share Your Story?
-                            </h3>
-                            <p className='text-gray-700 mb-4'>
-                                We&apos;re always looking for authentic voices
-                                and inspiring content. If you have a story to
-                                tell or want to contribute to our community,
-                                we&apos;d love to hear from you.
-                            </p>
-                            <a
-                                href='https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf'
-                                target='_blank'
-                                rel='noopener noreferrer'
-                                className='inline-block bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors'
-                            >
-                                Pitch Your Content
-                            </a>
-                        </div>
+                        )}
                     </div>
 
                     {/* Contact Form */}

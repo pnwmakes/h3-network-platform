@@ -7,9 +7,11 @@ import CountdownBanner from '@/components/CountdownBanner';
 import { QuickAccessCard } from '@/components/quick-access-card';
 import ContentGrid from '@/components/ContentGrid';
 import NewsletterSubscription from '@/components/NewsletterSubscription';
+import { isInsideMode } from '@/lib/inside-mode';
 
 export default function Home() {
     const { data: session, status } = useSession();
+    const insideMode = isInsideMode();
 
     return (
         <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
@@ -148,13 +150,15 @@ export default function Home() {
                                     tackle the topics that matter most to our
                                     community.
                                 </p>
-                                <Link
-                                    href='http://linktr.ee/h3dontpanic'
-                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target='_blank'
-                                >
-                                    Learn More →
-                                </Link>
+                                {!insideMode && (
+                                    <Link
+                                        href='http://linktr.ee/h3dontpanic'
+                                        className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                        target='_blank'
+                                    >
+                                        Learn More →
+                                    </Link>
+                                )}
                             </div>
                         </div>
 
@@ -173,13 +177,15 @@ export default function Home() {
                                     powerful stories of redemption and second
                                     chances.
                                 </p>
-                                <Link
-                                    href='https://linktr.ee/secondchancesessions'
-                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target='_blank'
-                                >
-                                    Learn More →
-                                </Link>
+                                {!insideMode && (
+                                    <Link
+                                        href='https://linktr.ee/secondchancesessions'
+                                        className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                        target='_blank'
+                                    >
+                                        Learn More →
+                                    </Link>
+                                )}
                             </div>
                         </div>
 
@@ -198,13 +204,15 @@ export default function Home() {
                                     those struggling with addiction and
                                     recovery.
                                 </p>
-                                <Link
-                                    href='https://linktr.ee/hopejunkiespodcast'
-                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target='_blank'
-                                >
-                                    Learn More →
-                                </Link>
+                                {!insideMode && (
+                                    <Link
+                                        href='https://linktr.ee/hopejunkiespodcast'
+                                        className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                        target='_blank'
+                                    >
+                                        Learn More →
+                                    </Link>
+                                )}
                             </div>
                         </div>
 
@@ -222,13 +230,15 @@ export default function Home() {
                                     George K L Smith provides insights from
                                     inside the system and beyond.
                                 </p>
-                                <Link
-                                    href='https://linktr.ee/insideoutgkls'
-                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target='_blank'
-                                >
-                                    Learn More →
-                                </Link>
+                                {!insideMode && (
+                                    <Link
+                                        href='https://linktr.ee/insideoutgkls'
+                                        className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                        target='_blank'
+                                    >
+                                        Learn More →
+                                    </Link>
+                                )}
                             </div>
                         </div>
 
@@ -247,39 +257,44 @@ export default function Home() {
                                     perspectives from the justice-impacted
                                     community.
                                 </p>
-                                <Link
-                                    href='https://linktr.ee/prisonpod'
-                                    className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
-                                    target='_blank'
-                                >
-                                    Learn More →
+                                {!insideMode && (
+                                    <Link
+                                        href='https://linktr.ee/prisonpod'
+                                        className='inline-flex items-center text-blue-600 hover:text-blue-700 font-semibold'
+                                        target='_blank'
+                                    >
+                                        Learn More →
+                                    </Link>
+                                )}
                                 </Link>
                             </div>
                         </div>
 
-                        <div className='bg-gradient-to-br from-blue-50 to-green-50 rounded-xl shadow-lg overflow-hidden border-2 border-blue-200'>
-                            <div className='p-8 text-center'>
-                                <h3 className='text-2xl font-bold text-gray-900 mb-4'>
-                                    WANT TO PITCH YOUR IDEA?
-                                </h3>
-                                <div className='mb-6'>
-                                    <span className='inline-block bg-yellow-500 text-gray-900 px-6 py-2 rounded-full text-sm font-semibold'>
-                                        NOW ACCEPTING PITCHES!
-                                    </span>
+                        {!insideMode && (
+                            <div className='bg-gradient-to-br from-blue-50 to-green-50 rounded-xl shadow-lg overflow-hidden border-2 border-blue-200'>
+                                <div className='p-8 text-center'>
+                                    <h3 className='text-2xl font-bold text-gray-900 mb-4'>
+                                        WANT TO PITCH YOUR IDEA?
+                                    </h3>
+                                    <div className='mb-6'>
+                                        <span className='inline-block bg-yellow-500 text-gray-900 px-6 py-2 rounded-full text-sm font-semibold'>
+                                            NOW ACCEPTING PITCHES!
+                                        </span>
+                                    </div>
+                                    <p className='text-gray-600 mb-6'>
+                                        We believe in quality over quantity. Share
+                                        your show or blog idea with us!
+                                    </p>
+                                    <Link
+                                        href='https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf'
+                                        className='inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold transition-colors duration-200'
+                                        target='_blank'
+                                    >
+                                        LEARN MORE!
+                                    </Link>
                                 </div>
-                                <p className='text-gray-600 mb-6'>
-                                    We believe in quality over quantity. Share
-                                    your show or blog idea with us!
-                                </p>
-                                <Link
-                                    href='https://hopehelphumor.com/wp-content/uploads/2025/08/H3-Network_Pitch-1.pdf'
-                                    className='inline-flex items-center bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 font-semibold transition-colors duration-200'
-                                    target='_blank'
-                                >
-                                    LEARN MORE!
-                                </Link>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
@@ -538,8 +553,10 @@ export default function Home() {
                     </div>
                 </div>
 
-                {/* Newsletter Subscription */}
-                <NewsletterSubscription variant='inline' className='mt-16' />
+                {/* Newsletter Subscription - Hidden in Inside Mode */}
+                {!insideMode && (
+                    <NewsletterSubscription variant='inline' className='mt-16' />
+                )}
             </main>
         </div>
     );

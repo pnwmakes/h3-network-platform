@@ -5,6 +5,7 @@ import { FollowButton } from '@/components/ui/FollowButton';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatDistanceToNow } from 'date-fns';
+import { isInsideMode } from '@/lib/inside-mode';
 import {
     Users,
     Video,
@@ -76,6 +77,9 @@ function formatDuration(seconds: number): string {
 export default async function CreatorPage({ params }: CreatorPageProps) {
     const { id } = await params;
     const creator = await getCreator(id);
+    
+    // Check if we're in Inside Mode
+    const insideMode = isInsideMode();
 
     if (!creator) {
         notFound();
@@ -181,8 +185,8 @@ export default async function CreatorPage({ params }: CreatorPageProps) {
                             </div>
                         )}
 
-                        {/* Social Media Links */}
-                        {(creator.linkedinUrl ||
+                        {/* Social Media Links - Hidden in Inside Mode */}
+                        {!insideMode && (creator.linkedinUrl ||
                             creator.instagramUrl ||
                             creator.tiktokUrl ||
                             creator.websiteUrl) && (
