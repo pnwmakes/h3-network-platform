@@ -3,7 +3,6 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import CountdownBanner from '@/components/CountdownBanner';
 import { QuickAccessCard } from '@/components/quick-access-card';
 import ContentGrid from '@/components/ContentGrid';
 import NewsletterSubscription from '@/components/NewsletterSubscription';
@@ -15,9 +14,6 @@ export default function Home() {
 
     return (
         <div className='min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors duration-200'>
-            {/* Countdown Banner */}
-            <CountdownBanner />
-
             <main className='max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8'>
                 {/* Hero Section */}
                 <div className='text-center mb-16'>
