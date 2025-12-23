@@ -22,9 +22,9 @@ export default function Home() {
                         <Image
                             src='/logos/H3 Logo_with HopeHelpHumor.png'
                             alt='H3 Network - Hope, Help, Humor'
-                            width={600}
-                            height={200}
-                            className='h-32 md:h-48 w-auto max-w-full'
+                            width={800}
+                            height={267}
+                            className='h-48 md:h-72 w-auto max-w-full'
                             priority
                         />
                     </div>
